@@ -2,3 +2,6 @@
 *.asm
 
 antlr/
+Code_genere/
+
+exe

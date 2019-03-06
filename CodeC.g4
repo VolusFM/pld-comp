@@ -1,38 +1,20 @@
 grammar CodeC;
 
-prog
-    : function
-    ;
+prog: function;
 
-function
-    : functionheader '{' functionbody '}'
-    ;
+function: functionheader '{' functionbody '}';
 
-functionheader
-    : type name parameters
-    ;
+functionheader: type name parameters;
 
-functionbody
-    : 'return' INTVAL ';'
-    ;
+functionbody: 'return' INTVAL ';';
 
-type
-    : 'int'
-    ;
+type: 'int';
 
-name
-    : 'main'
-    ;
+name: 'main';
 
-parameters
-    : '(' ')'
-    ;
+parameters: '(' ')' ;
 
-INTVAL
-    : [0-9]+
-    ;
+INTVAL : [0-9]+;
 
-WS
-    : [ \n\t\r] -> skip
-    ;
+WS: [ \n\t\r] -> skip; 
 
