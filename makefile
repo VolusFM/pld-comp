@@ -1,22 +1,23 @@
 GRAM = Grammar
 EXE = Compil
 CLEAN = clean
+TARGET_FOLDER = code_antlr
 
 INT = CodeC.g4
-TOKEN = Code_genere/$(INT:.g4=.tokens) Code_genere/$(INT:.g4=Lexer.tokens)
-FIC = Code_genere/$(INT:.g4=Lexer.h) Code_genere/$(INT:.g4=Parser.h) Code_genere/$(INT:.g4=Visitor.h) Code_genere/$(INT:.g4=BaseVisitor.h)
-INTERP = Code_genere/$(INT:.g4=.interp) Code_genere/$(INT:.g4=Lexer.interp)
+TOKEN = $(TARGET_FOLDER)/$(INT:.g4=.tokens) $(TARGET_FOLDER)/$(INT:.g4=Lexer.tokens)
+FIC = $(TARGET_FOLDER)/$(INT:.g4=Lexer.h) $(TARGET_FOLDER)/$(INT:.g4=Parser.h) $(TARGET_FOLDER)/$(INT:.g4=Visitor.h) $(TARGET_FOLDER)/$(INT:.g4=BaseVisitor.h)
+INTERP = $(TARGET_FOLDER)/$(INT:.g4=.interp) $(TARGET_FOLDER)/$(INT:.g4=Lexer.interp)
 REAL = $(FIC:.h=.cpp)
 
 RM = rm
 RMFLAGS = -f
 LIBS = core
 ECHO = echo
-GRAMFLAGS = -visitor -no-listener -Dlanguage=Cpp -o "Code_genere"
+GRAMFLAGS = -visitor -no-listener -Dlanguage=Cpp -o "$(TARGET_FOLDER)"
 COMPFLAGS = clang++ -DTRACE -g -std=c++11 -I
 
 ANTLR=/shares/public/tp/ANTLR4-CPP/bin/antlr4
-ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP
+ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP/#antlr4-runtime
 
 .PHONY : $(CLEAN)
 
