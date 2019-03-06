@@ -16,6 +16,7 @@ COMPFLAGS = clang++ -DTRACE -g -std=c++11 -I
 
 ANTLR=/shares/public/tp/ANTLR4-CPP/bin/antlr4
 ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP
+ANTLRLIBRUNTIME=ANTLR4-CPP/lib/libantlr4-runtime.a
 
 .PHONY : $(CLEAN)
 
