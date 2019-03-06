@@ -5,6 +5,7 @@ CLEAN = clean
 INT = CodeC.g4
 TOKEN = Code_genere/$(INT:.g4=.tokens) Code_genere/$(INT:.g4=Lexer.tokens)
 FIC = Code_genere/$(INT:.g4=Lexer.h) Code_genere/$(INT:.g4=Parser.h) Code_genere/$(INT:.g4=Visitor.h) Code_genere/$(INT:.g4=BaseVisitor.h)
+INTERP = Code_genere/$(INT:.g4=.interp) Code_genere/$(INT:.g4=Lexer.interp)
 REAL = $(FIC:.h=.cpp)
 
 RM = rm
@@ -33,3 +34,4 @@ $(CLEAN) :
 	$(RM) $(RMFLAGS) $(EXE) $(FIC) $(LIBS)
 	$(RM) $(RMFLAGS) $(EXE) $(REAL) $(LIBS)
 	$(RM) $(RMFLAGS) $(EXE) $(TOKEN) $(LIBS)
+	$(RM) $(RMFLAGS) $(EXE) $(INTERP) $(LIBS)
