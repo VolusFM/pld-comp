@@ -13,11 +13,12 @@ RM = rm
 RMFLAGS = -f
 LIBS = core
 ECHO = echo
-GRAMFLAGS = -visitor -no-listener -Dlanguage=Cpp -o "$(TARGET_FOLDER)"
+GRAMFLAGS = -visitor -no-listener -Dlanguage=Cpp -o $(TARGET_FOLDER)
 COMPFLAGS = clang++ -DTRACE -g -std=c++11 -I
 
 ANTLR=/shares/public/tp/ANTLR4-CPP/bin/antlr4
-ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP/#antlr4-runtime
+ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP/antlr4-runtime
+ANTLRLIBRUNTIME=/shares/public/tp/ANTLR4-CPP/lib/libantlr4-runtime.a
 
 .PHONY : $(CLEAN)
 
@@ -28,7 +29,7 @@ $(GRAM) : $(OBJ)
 	$(ANTLR) $(GRAMFLAGS) $(INT)
 
 $(EXE):
-	$(COMPFLAGS) $(ANTLRRUNTIME)/ *.cpp -o exe $(ANTLRLIBRUNTIME)
+	$(COMPFLAGS) $(ANTLRRUNTIME)/ *.cpp $(TARGET_FOLDER)/*.cpp -o exe $(ANTLRLIBRUNTIME)
 
 $(CLEAN) :
 	$(ECHO) "Effacement"

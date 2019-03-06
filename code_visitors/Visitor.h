@@ -1,7 +1,7 @@
 #pragma once
 
 #include "antlr4-runtime.h"
-#include "../grammaireBaseVisitor.h"
+#include "../code_antlr/CodeCBaseVisitor.h"
 
 
 class  Visiteur : public CodeCBaseVisitor {
