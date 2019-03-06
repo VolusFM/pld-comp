@@ -8,6 +8,7 @@ using namespace antlr4;
 using namespace std;
 
 int main(int argc, const char* argv[]) {
+  // CodeCLexer lexer(CharStream.fromFileName("./input.c"));
   ANTLRInputStream input("int main() { return 42; }");
   CodeCLexer lexer(&input);
   CommonTokenStream tokens(&lexer);
