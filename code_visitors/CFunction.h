@@ -17,6 +17,6 @@ public:
   
   // map<string, pair<CType, int>> tos;
   
-  vector<CInstruction> instructions;
+  vector<CInstruction*> instructions;
 };
 
