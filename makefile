@@ -4,7 +4,8 @@ GRAM = Grammar
 EXE = Compil
 CLEAN = clean
 FILE = dirs
-TARGET_FOLDER = code_antlr
+TARGET_FOLDER = code_visitors
+ANTLR_TARGET_FOLDER = code_antlr
 
 JAVA=/usr/bin/java
 INT = CodeC.g4
@@ -42,7 +43,7 @@ $(GRAM) : $(INT)
 	$(OSNAME)$(ANTLR) $(GRAMFLAGS) -o $(TARGET_FOLDER) $(INT)
 
 $(EXE):
-	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(TARGET_FOLDER)/*.cpp -o exe *.cpp $(OSNAME)$(ANTLRLIBRUNTIME)
+	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(ANTLR_TARGET_FOLDER)/*.cpp $(TARGET_FOLDER)/*.cpp -o exe *.cpp $(OSNAME)$(ANTLRLIBRUNTIME)
 
 $(FILE):
 	$(ECHO) "Making directory"
