@@ -1,12 +1,13 @@
 #pragma once
 
-using namespace std;
-
 #include <string>
+using std::string;
 #include <vector>
+using std::vector;
 
 #include "antlr4-runtime.h"
 #include "../code_antlr/CodeCBaseVisitor.h"
+
 #include "CProg.h"
 #include "CFunction.h"
 
