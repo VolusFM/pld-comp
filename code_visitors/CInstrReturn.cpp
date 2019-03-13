@@ -12,12 +12,9 @@ string CInstrReturn::to_asm() const
     }
     else
     {
-       code += "  movl $" + to_string(returnvalue) + ", %eax\n"; 
+       code += "  movl $" + to_string(* returnValue) + ", %eax\n"; 
     }
     code += "  popq %rbp\n";
     code += "  ret\n";
     return code;
 }
-  
-
-

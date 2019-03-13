@@ -1,9 +1,11 @@
 #pragma once
 
 #include <string>
-using std::string;
+#include "CInstruction.h"
 
-class CInstrReturn : public CInstruction{
+using namespace std;
+
+class CInstrReturn : public CInstruction {
 public:
   string to_asm() const;
   
