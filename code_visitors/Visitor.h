@@ -31,7 +31,7 @@ public:
   }
 
   virtual antlrcpp::Any visitFunctionbody(CodeCParser::FunctionbodyContext *ctx) override {
-    return (int) stoi(ctx->INTVAL()->getText());
+    //return (int) stoi(ctx->INTVAL()->getText());
   }
 
   virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override {
