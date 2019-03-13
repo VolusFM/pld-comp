@@ -2,27 +2,26 @@ grammar CodeC;
 
 prog: function;
 
-function: functionheader '{' functionbody '}';
+function: functionheader '{' instructions '}';
 
-functionheader: type name parameters;
+functionheader: type IDENT parameters;
 
-functionbody: instructions;
+instructions: instruction*;
 
-instructions: instructions instruction
-            | instruction ;
+instruction: instrreturn ';' #return
+	| vardefinition ';' #def_variable
+	| expression ';' #instru_expr;
 
-instruction: (instrreturn | vardefinition | expression) ';';
+vardefinition: type IDENT #var_without_expr
+	| type IDENT '=' expression #var_with_expr ;
 
-vardefinition: type IDENT vardefinitionend;
-vardefinitionend: /*epsilon*/ | ('=' expression);
+expression: INTVAL #const
+        | (IDENT '=' INTVAL) #affectation ;
 
-expression: INTVAL | (IDENT '=' INTVAL);
-
-instrreturn: 'return' INTVAL;
+instrreturn: 'return' INTVAL #return_expr
+	| 'return' #return_void;
 
 type: 'int';
-
-name: IDENT;
 
 parameters: '(' ')' ;
 
