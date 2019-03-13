@@ -1,12 +1,13 @@
 #pragma once
 
 #include <string>
-using std::string;
+#include "CInstruction.h"
 
-class CFunction {
+using namespace std;
+
+class CInstrReturn : public CInstruction {
 public:
   string to_asm() const;
   
-  string name;
-  int returnvalue;
+  int* returnValue;
 };

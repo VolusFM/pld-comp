@@ -1,7 +1,5 @@
 #include "CProg.h"
 
-using namespace std;
-
 string CProg::to_asm() const {
   string code;
   code += ".text\n";
@@ -11,3 +9,4 @@ string CProg::to_asm() const {
   }
   return code;
 }
+

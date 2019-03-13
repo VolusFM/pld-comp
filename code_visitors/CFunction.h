@@ -1,13 +1,22 @@
 #pragma once
 
 #include <string>
+using std::string;
+#include <vector>
+using std::vector;
 
-using namespace std;
+#include "CInstruction.h"
+
+typedef string CType;
 
 class CFunction {
 public:
   string to_asm() const;
   
   string name;
-  int returnvalue;
+  
+  // map<string, pair<CType, int>> tos;
+  
+  vector<CInstruction*> instructions;
 };
+
