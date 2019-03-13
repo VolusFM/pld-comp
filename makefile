@@ -2,6 +2,7 @@
 
 GRAM = Grammar
 EXE = Compil
+BINARY = yottacompilatron9001
 CLEAN = clean
 FILE = dirs
 TARGET_FOLDER = code_visitors
@@ -43,7 +44,7 @@ $(GRAM) : $(INT)
 	$(OSNAME)$(ANTLR) $(GRAMFLAGS) -o $(ANTLR_TARGET_FOLDER) $(INT)
 
 $(EXE):
-	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(ANTLR_TARGET_FOLDER)/*.cpp $(TARGET_FOLDER)/*.cpp -o exe *.cpp $(OSNAME)$(ANTLRLIBRUNTIME)
+	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(ANTLR_TARGET_FOLDER)/*.cpp $(TARGET_FOLDER)/*.cpp -o $(BINARY) *.cpp $(OSNAME)$(ANTLRLIBRUNTIME)
 
 $(FILE):
 	$(ECHO) "Making directory"
@@ -52,3 +53,5 @@ $(FILE):
 $(CLEAN) :
 	$(ECHO) "Effacement"
 	$(RM) $(RMFLAGS) $(ANTLR_TARGET_FOLDER)
+	$(RM) $(BINARY)
+
