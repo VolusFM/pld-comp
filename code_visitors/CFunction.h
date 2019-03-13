@@ -1,8 +1,8 @@
 #pragma once
 
-using namespace std;
-
 #include <string>
+
+using namespace std;
 
 class CFunction {
 public:
