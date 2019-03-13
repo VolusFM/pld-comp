@@ -3,10 +3,9 @@
 #include <string>
 using std::string;
 
-class CFunction {
+class CInstrReturn : public CInstruction{
 public:
   string to_asm() const;
   
-  string name;
-  int returnvalue;
+  int* returnValue;
 };
