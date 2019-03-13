@@ -9,6 +9,7 @@ using namespace std;
 #include "../code_antlr/CodeCBaseVisitor.h"
 #include "CProg.h"
 #include "CFunction.h"
+#include "CVarDefinition.h"
 
 class Visitor : public CodeCBaseVisitor {
 public:
@@ -28,14 +29,21 @@ public:
 
   virtual antlrcpp::Any visitFunctionheader(CodeCParser::FunctionheaderContext *ctx) override {
     return visit(ctx->name());
-  }
-
+  }  
+  
+  
+  
+  virtual antlrcpp::Any visitVarDefinition(CodeCParser::VardefinitionContext *ctx) override {
+    return visit(ctx->name());
+  }  
+  
+/*
   virtual antlrcpp::Any visitFunctionbody(CodeCParser::FunctionbodyContext *ctx) override {
     //return (int) stoi(ctx->INTVAL()->getText());
 
     return 42; //TODO: remove this when visitors are updated
   }
-
+*/
   virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override {
     return visitChildren(ctx);
   }
