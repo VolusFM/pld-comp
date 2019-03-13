@@ -6,7 +6,19 @@ function: functionheader '{' functionbody '}';
 
 functionheader: type name parameters;
 
-functionbody: 'return' INTVAL ';';
+functionbody: instructions;
+
+instructions: instructions instruction
+            | instruction ;
+
+instruction: (instrreturn | vardefinition | expression) ';';
+
+vardefinition: type IDENT vardefinitionend;
+vardefinitionend: /*epsilon*/ | ('=' expression);
+
+expression: INTVAL | (IDENT '=' INTVAL);
+
+instrreturn: 'return' INTVAL;
 
 type: 'int';
 
