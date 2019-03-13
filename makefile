@@ -40,15 +40,15 @@ all : $(FILE) $(GRAM) $(EXE)
 
 $(GRAM) : $(INT)
 	$(ECHO) "ANLTR4"
-	$(OSNAME)$(ANTLR) $(GRAMFLAGS) -o $(TARGET_FOLDER) $(INT)
+	$(OSNAME)$(ANTLR) $(GRAMFLAGS) -o $(ANTLR_TARGET_FOLDER) $(INT)
 
 $(EXE):
 	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(ANTLR_TARGET_FOLDER)/*.cpp $(TARGET_FOLDER)/*.cpp -o exe *.cpp $(OSNAME)$(ANTLRLIBRUNTIME)
 
 $(FILE):
 	$(ECHO) "Making directory"
-	mkdir -p $(TARGET_FOLDER)
+	mkdir -p $(ANTLR_TARGET_FOLDER)
 
 $(CLEAN) :
 	$(ECHO) "Effacement"
-	$(RM) $(RMFLAGS) $(TARGET_FOLDER)
+	$(RM) $(RMFLAGS) $(ANTLR_TARGET_FOLDER)
