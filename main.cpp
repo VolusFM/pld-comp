@@ -3,6 +3,7 @@
 #include "code_antlr/CodeCParser.h"
 #include "code_antlr/CodeCVisitor.h"
 #include "code_visitors/Visitor.h"
+#include "code_visitors/CProg.h"
 
 using namespace antlr4;
 using namespace std;
