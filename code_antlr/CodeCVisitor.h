@@ -27,6 +27,18 @@ public:
 
     virtual antlrcpp::Any visitFunctionbody(CodeCParser::FunctionbodyContext *context) = 0;
 
+    virtual antlrcpp::Any visitInstructions(CodeCParser::InstructionsContext *context) = 0;
+
+    virtual antlrcpp::Any visitInstruction(CodeCParser::InstructionContext *context) = 0;
+
+    virtual antlrcpp::Any visitVardefinition(CodeCParser::VardefinitionContext *context) = 0;
+
+    virtual antlrcpp::Any visitVardefinitionend(CodeCParser::VardefinitionendContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpression(CodeCParser::ExpressionContext *context) = 0;
+
+    virtual antlrcpp::Any visitInstrreturn(CodeCParser::InstrreturnContext *context) = 0;
+
     virtual antlrcpp::Any visitType(CodeCParser::TypeContext *context) = 0;
 
     virtual antlrcpp::Any visitName(CodeCParser::NameContext *context) = 0;

@@ -13,7 +13,7 @@ class  CodeCLexer : public antlr4::Lexer {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    INTVAL = 8, IDENT = 9, WS = 10
+    T__7 = 8, INTVAL = 9, IDENT = 10, WS = 11
   };
 
   CodeCLexer(antlr4::CharStream *input);
