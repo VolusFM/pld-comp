@@ -1,10 +1,11 @@
 #pragma once
 
 #include <string>
+using std::string;
 #include <vector>
-#include "CFunction.h"
+using std::vector;
 
-using namespace std;
+#include "CFunction.h"
 
 class CProg {
 public:
@@ -14,3 +15,4 @@ public:
 
   vector<CFunction> functions;
 };
+
