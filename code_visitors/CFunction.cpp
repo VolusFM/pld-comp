@@ -16,6 +16,7 @@ string CFunction::to_asm() const {
   code += "  popq %rbp # restore %rbp from the stack\n";
   code += "  ret\n";
   return code;
+  //TODO : remove duplicate instructions based on what is implemented in CInstrReturn
 }
 
   // code += "  movl $" + to_string(returnvalue) + ", %eax\n";
