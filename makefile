@@ -1,12 +1,13 @@
 #Télécharger Clang!!! (brew install llvm)
 
-GRAM = Grammar
-EXE = Compil
+GRAM = grammar
+EXE = compil
 BINARY = yottacompilatron9001
 CLEAN = clean
 FILE = dirs
 TARGET_FOLDER = code_visitors
 ANTLR_TARGET_FOLDER = code_antlr
+FILE_CHECKED = $(ANTLR_TARGET_FOLDER)/CodeCBaseVisitor.h
 
 JAVA=/usr/bin/java
 INT = CodeC.g4
@@ -39,12 +40,15 @@ endif
 
 all : $(FILE) $(GRAM) $(EXE)
 
-$(GRAM) : $(INT)
+$(GRAM) : $(FILE_CHECKED)
+
+$(FILE_CHECKED) : $(INT)
 	$(ECHO) "ANLTR4"
 	$(OSNAME)$(ANTLR) $(GRAMFLAGS) -o $(ANTLR_TARGET_FOLDER) $(INT)
+	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(ANTLR_TARGET_FOLDER)/*.cpp -c
 
 $(EXE):
-	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(ANTLR_TARGET_FOLDER)/*.cpp $(TARGET_FOLDER)/*.cpp -o $(BINARY) *.cpp $(OSNAME)$(ANTLRLIBRUNTIME)
+	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(TARGET_FOLDER)/*.cpp *.o *.cpp -o $(BINARY) $(OSNAME)$(ANTLRLIBRUNTIME)
 
 $(FILE):
 	$(ECHO) "Making directory"

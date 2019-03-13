@@ -33,6 +33,7 @@ public:
 
   virtual antlrcpp::Any visitFunctionbody(CodeCParser::FunctionbodyContext *ctx) override {
     //return (int) stoi(ctx->INTVAL()->getText());
+
     return 42; //TODO: remove this when visitors are updated
   }
 
