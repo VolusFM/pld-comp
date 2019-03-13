@@ -2,12 +2,11 @@
 *.asm
 
 antlr/
-Code_genere/
 bac_a_sable/
 code_antlr
 *.dSYM
 
-exe
+yottacompilatron9001
 
 # General
 .DS_Store
