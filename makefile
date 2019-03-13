@@ -2,15 +2,16 @@ GRAM = Grammar
 EXE = Compil
 CLEAN = clean
 ANTLR_TARGET_FOLDER = code_antlr
+TARGET_FOLDER = code_visitors
 
 INT = CodeC.g4
 TOKEN = $(ANTLR_TARGET_FOLDER)/$(INT:.g4=.tokens) $(ANTLR_TARGET_FOLDER)/$(INT:.g4=Lexer.tokens)
-FIC = $(ANTLR_TARGET_FOLDER)/$(INT:.g4=Lexer.h) $(ANTLR_TARGET_FOLDER)/$(INT:.g4=Parser.h) $(TARGET_FOLDER)/$(INT:.g4=Visitor.h) $(ANTLR_TARGET_FOLDER)/$(INT:.g4=BaseVisitor.h)
+FIC = $(ANTLR_TARGET_FOLDER)/$(INT:.g4=Lexer.h) $(ANTLR_TARGET_FOLDER)/$(INT:.g4=Parser.h) $(TARGET_FOLDER)/$(*.h) $(ANTLR_TARGET_FOLDER)/$(INT:.g4=BaseVisitor.h)
 INTERP = $(ANTLR_TARGET_FOLDER)/$(INT:.g4=.interp) $(ANTLR_TARGET_FOLDER)/$(INT:.g4=Lexer.interp)
 REAL = $(FIC:.h=.cpp)
 
 RM = rm
-RMFLAGS = -f
+RMFLAGS = -f -v
 LIBS = core
 ECHO = echo
 GRAMFLAGS = -visitor -no-listener -Dlanguage=Cpp -o $(ANTLR_TARGET_FOLDER)
@@ -29,7 +30,7 @@ $(GRAM) : $(OBJ)
 	$(ANTLR) $(GRAMFLAGS) $(INT)
 
 $(EXE):
-	$(COMPFLAGS) *.cpp $(ANTLR_TARGET_FOLDER)/*.cpp -o exe $(ANTLRLIBRUNTIME)
+	$(COMPFLAGS) *.cpp $(ANTLR_TARGET_FOLDER)/*.cpp $(TARGET_FOLDER)/*.cpp -o exe $(ANTLRLIBRUNTIME)
 
 $(CLEAN) :
 	$(ECHO) "Effacement"

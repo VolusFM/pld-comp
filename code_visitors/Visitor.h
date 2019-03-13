@@ -1,46 +1,14 @@
 #pragma once
 
-#include <string>
-using std::string;
+using namespace std;
 
+#include <string>
 #include <vector>
-using std::vector;
 
 #include "antlr4-runtime.h"
 #include "../code_antlr/CodeCBaseVisitor.h"
-
-class CFunction {
-public:
-  string to_asm() const;
-  
-  string name;
-  int returnvalue;
-};
-
-string CFunction::to_asm() const {
-  string code;
-  code += name + ":\n";
-  code += "  movl $" + std::to_string(returnvalue) + ", %eax\n";
-  code += "  ret\n";
-  return code;
-}
-
-class CProg {
-public:
-  string to_asm() const;
-  
-  vector<CFunction> functions;
-};
-
-string CProg::to_asm() const {
-  string code;
-  code += ".text\n";
-  code += ".global main\n";
-  for (const CFunction& f : functions) {
-    code += f.to_asm();
-  }
-  return code;
-}
+#include "CProg.h"
+#include "CFunction.h"
 
 class Visitor : public CodeCBaseVisitor {
 public:
