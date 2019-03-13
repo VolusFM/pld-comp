@@ -1,16 +1,15 @@
 #include "CVarDefinition.h"
 
 
-string CVarDefinition::to_asm(int memCase) const {
+string CVarDefinition::to_asm() const {
 //TODO : memCase positif, nb case memoire a partir de rbp
 	string code="";
 	if(expression){
-		code += expression.to_asm(); //TODO : return adress resultat expression 
+		code += expression->to_asm(); //TODO : return adress resultat expression 
 										// soit eax soit $valeur
-		code += "movl " + expression.result();
-		code += "-" + memCase + "(%rbp) \n";
-	} else	{
-		return code;
+		//code += "movl " + expression->result();
+		//code += "-4(%rbp) \n";
 	}
+	return code;
 }
 

@@ -2,7 +2,7 @@
 
 #include <string>
 #include "CInstruction.h"
-#include "CType.h"
+//#include "CType.h"
 #include "CExpression.h"
 using std::string;
 
