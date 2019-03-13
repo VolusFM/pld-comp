@@ -31,6 +31,30 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitInstructions(CodeCParser::InstructionsContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitInstruction(CodeCParser::InstructionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitVardefinition(CodeCParser::VardefinitionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitVardefinitionend(CodeCParser::VardefinitionendContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpression(CodeCParser::ExpressionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitInstrreturn(CodeCParser::InstrreturnContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override {
     return visitChildren(ctx);
   }
