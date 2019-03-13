@@ -15,7 +15,7 @@ using namespace std;
 int main(int argc, const char* argv[]) {
 
   if (argc != 2) {
-    cout << "Syntax : exe <file.c>" << endl;
+    cout << "Syntaxe : exe <fichier.c>" << endl;
     exit(EXIT_FAILURE);
   } 
 
