@@ -5,7 +5,7 @@ using std::string;
 
 class CInstruction {
 public:
-  string to_asm() const;
+  virtual string to_asm() const = 0;
   
 };
 

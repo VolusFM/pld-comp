@@ -10,6 +10,7 @@ using std::vector;
 
 #include "CProg.h"
 #include "CFunction.h"
+#include "CVarDefinition.h"
 
 class Visitor : public CodeCBaseVisitor {
 public:
@@ -41,6 +42,10 @@ public:
     return new vector<CInstruction>(instructions);
   }
 
+  virtual antlrcpp::Any visitVarDefinition(CodeCParser::VardefinitionContext *ctx) override {
+    return visit(ctx->name());
+  }
+
   /* TEMPORAIRE */
   virtual antlrcpp::Any visitReturn(CodeCParser::ReturnContext *ctx) override {
     return new CInstruction();
@@ -54,7 +59,8 @@ public:
   /* TEMPORAIRE */
 
   //return (int) stoi(ctx->INTVAL()->getText());
-  
+
+
   virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override {
     return visitChildren(ctx);
   }
