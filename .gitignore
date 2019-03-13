@@ -3,7 +3,9 @@
 
 antlr/
 bac_a_sable/
-code_antlr
+code_antlr/*.h
+code_antlr/*.interp
+code_antlr/*.cpp
 *.dSYM
 
 yottacompilatron9001
