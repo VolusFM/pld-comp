@@ -1,10 +1,12 @@
 GRAM = Grammar
 EXE = Compil
 CLEAN = clean
+TARGET_FOLDER = code_antlr
 
 INT = CodeC.g4
-TOKEN = $(INT:.g4=.tokens) $(INT:.g4=Lexer.tokens)
-FIC = $(INT:.g4=Lexer.h) $(INT:.g4=Parser.h) $(INT:.g4=Visitor.h) $(INT:.g4=BaseVisitor.h)
+TOKEN = $(TARGET_FOLDER)/$(INT:.g4=.tokens) $(TARGET_FOLDER)/$(INT:.g4=Lexer.tokens)
+FIC = $(TARGET_FOLDER)/$(INT:.g4=Lexer.h) $(TARGET_FOLDER)/$(INT:.g4=Parser.h) $(TARGET_FOLDER)/$(INT:.g4=Visitor.h) $(TARGET_FOLDER)/$(INT:.g4=BaseVisitor.h)
+INTERP = $(TARGET_FOLDER)/$(INT:.g4=.interp) $(TARGET_FOLDER)/$(INT:.g4=Lexer.interp)
 REAL = $(FIC:.h=.cpp)
 
 RM = rm
@@ -15,8 +17,8 @@ GRAMFLAGS = -visitor -no-listener -Dlanguage=Cpp
 COMPFLAGS = clang++ -DTRACE -g -std=c++11 -I
 
 ANTLR=/shares/public/tp/ANTLR4-CPP/bin/antlr4
-ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP
-ANTLRLIBRUNTIME=ANTLR4-CPP/lib/libantlr4-runtime.a
+ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP/antlr4-runtime
+ANTLRLIBRUNTIME=/shares/public/tp/ANTLR4-CPP/lib/libantlr4-runtime.a
 
 .PHONY : $(CLEAN)
 
@@ -24,13 +26,14 @@ all : $(GRAM) $(EXE)
 
 $(GRAM) : $(OBJ)
 	$(ECHO) "ANLTR4"
-	$(ANTLR) $(GRAMFLAGS) $(INT)
+	$(ANTLR) $(GRAMFLAGS) -o $(TARGET_FOLDER) $(INT)
 
 $(EXE):
-	$(COMPFLAGS) $(ANTLRRUNTIME)/ *.cpp -o exe $(ANTLRLIBRUNTIME)
+	$(COMPFLAGS) $(ANTLRRUNTIME)/*.cpp $(TARGET_FOLDER)/*.cpp -o exe $(ANTLRLIBRUNTIME)
 
 $(CLEAN) :
 	$(ECHO) "Effacement"
 	$(RM) $(RMFLAGS) $(EXE) $(FIC) $(LIBS)
 	$(RM) $(RMFLAGS) $(EXE) $(REAL) $(LIBS)
 	$(RM) $(RMFLAGS) $(EXE) $(TOKEN) $(LIBS)
+	$(RM) $(RMFLAGS) $(EXE) $(INTERP) $(LIBS)
