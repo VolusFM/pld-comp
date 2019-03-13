@@ -1,10 +1,10 @@
 #pragma once
 
-using namespace std;
-
 #include <string>
 #include <vector>
 #include "CFunction.h"
+
+using namespace std;
 
 class CProg {
 public:
