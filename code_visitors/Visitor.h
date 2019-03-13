@@ -11,14 +11,13 @@ using std::vector;
 
 class CFunction {
 public:
-  CFunction (string n, int rv) :name(n),returnvalue(rv) {} ;
-  string to_asm();
+  string to_asm() const;
   
   string name;
   int returnvalue;
 };
 
-string CFunction::to_asm() {
+string CFunction::to_asm() const {
   string code;
   code += name + ":\n";
   code += "  movl $" + std::to_string(returnvalue) + ", %eax\n";
@@ -28,17 +27,17 @@ string CFunction::to_asm() {
 
 class CProg {
 public:
-  string to_asm();
+  string to_asm() const;
   
-  vector<CFunction*> functions;
+  vector<CFunction> functions;
 };
 
-string CProg::to_asm() {
+string CProg::to_asm() const {
   string code;
   code += ".text\n";
   code += ".global main\n";
-  for (CFunction* f : functions) {
-    code += f->to_asm();
+  for (const CFunction& f : functions) {
+    code += f.to_asm();
   }
   return code;
 }
@@ -48,14 +47,14 @@ public:
 
   virtual antlrcpp::Any visitProg(CodeCParser::ProgContext *ctx) override {
     CProg * prog = new CProg();
-    prog->functions.push_back((CFunction*) visit(ctx->function()));
+    prog->functions.push_back(*((CFunction*) visit(ctx->function())));
     return (CProg*) prog;
   }
   
   virtual antlrcpp::Any visitFunction(CodeCParser::FunctionContext *ctx) override {
-    CFunction* func = new CFunction("main", 42);
-    //func.name = "main"; // (string) visitChildren(ctx->functionheader());
-    //func.returnvalue = 42; // (int) visitChildren(ctx->functionbody());
+    CFunction* func = new CFunction();
+    func->name = "main"; // (string) visit(ctx->functionheader());
+    func->returnvalue = (int) visit(ctx->functionbody());
     return (CFunction*) func;
   }
 
