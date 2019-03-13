@@ -21,13 +21,13 @@ public:
   
   virtual antlrcpp::Any visitFunction(CodeCParser::FunctionContext *ctx) override {
     CFunction* func = new CFunction();
-    func->name = "main"; // (string) visit(ctx->functionheader());
+    func->name = *((string *) visit(ctx->functionheader()));
     func->returnvalue = (int) visit(ctx->functionbody());
     return (CFunction*) func;
   }
 
   virtual antlrcpp::Any visitFunctionheader(CodeCParser::FunctionheaderContext *ctx) override {
-    return visitChildren(ctx->name());
+    return visit(ctx->name());
   }
 
   virtual antlrcpp::Any visitFunctionbody(CodeCParser::FunctionbodyContext *ctx) override {
@@ -39,7 +39,7 @@ public:
   }
 
   virtual antlrcpp::Any visitName(CodeCParser::NameContext *ctx) override {
-    return string(ctx->IDENT()->getText());
+    return new string(ctx->IDENT()->getText());
   }
 
   virtual antlrcpp::Any visitParameters(CodeCParser::ParametersContext *ctx) override {
