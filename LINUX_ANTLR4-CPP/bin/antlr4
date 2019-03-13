@@ -1,0 +1,3 @@
+#!/bin/bash
+export CLASSPATH=".:./antlr-4.7.1-complete.jar:$CLASSPATH"
+exec java -jar ./antlr-4.7.1-complete.jar "$@"
