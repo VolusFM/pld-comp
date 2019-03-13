@@ -1,3 +1,7 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include "antlr4-runtime.h"
 #include "code_antlr/CodeCLexer.h"
 #include "code_antlr/CodeCParser.h"
@@ -9,8 +13,19 @@ using namespace antlr4;
 using namespace std;
 
 int main(int argc, const char* argv[]) {
-  // CodeCLexer lexer(CharStream.fromFileName("./input.c"));
-  ANTLRInputStream input("int main() { return 42; }");
+
+  if (argc != 2) {
+    cout << "Syntax : exe <file.c>" << endl;
+    exit(EXIT_FAILURE);
+  } 
+
+  stringstream in; 
+  if (argc == 2) {
+    ifstream fichier(argv[1]);
+    in << fichier.rdbuf();
+  }
+
+  ANTLRInputStream input(in.str());
   CodeCLexer lexer(&input);
   CommonTokenStream tokens(&lexer);
   
