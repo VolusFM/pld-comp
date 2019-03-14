@@ -4,7 +4,7 @@ GRAM = grammar
 EXE = compil
 BINARY = yottacompilatron9001
 CLEAN = clean
-FILE = dirs
+OUTPUT_FOLDERS = output_folders
 TARGET_FOLDER = code_visitors
 ANTLR_TARGET_FOLDER = code_antlr
 OUTPUT = output
@@ -15,11 +15,11 @@ INT = CodeC.g4
 FIC = $(INT:.g4=Lexer.h) $(INT:.g4=Parser.h) $(INT:.g4=Visitor.h) $(INT:.g4=BaseVisitor.h)
 
 RM = rm
-RMFLAGS = -rf
+RMFLAGS = -f
 ECHO = echo
 GRAMFLAGS = -visitor -no-listener -Dlanguage=Cpp
-COMPFLAGS = clang++ -DTRACE -g -std=c++11 -I
-CC = g++
+COMPFLAGS = -DTRACE -g -std=c++11 -I $(ANTLRRUNTIME)
+CPPC = clang++
 
 OSNAME = LINUX
 
@@ -38,29 +38,37 @@ ANTLR = $(ANTLRDIR)/bin/antlr4
 ANTLRRUNTIME = $(ANTLRDIR)/antlr4-runtime
 ANTLRLIBRUNTIME = $(ANTLRDIR)/lib/libantlr4-runtime.a
 
-.PHONY : $(CLEAN)
+#make USE="g++"
+#pour compiler sur les ordis du départ n'ayant pas clang++
+ifeq ($(USE),g++)
+CPPC = g++-6 -Wno-attributes
+ANTLRRUNTIME = /shares/public/tp/antlr/antlr4-runtime
+ANTLRLIBRUNTIME = /shares/public/tp/antlr/lib/libantlr4-runtime.a
+endif
 
-all : $(FILE) $(GRAM) $(EXE)
+.PHONY : $(CLEAN) $(OUTPUT_FOLDERS)
+
+all : $(OUTPUT_FOLDERS) $(GRAM) $(EXE)
 
 $(GRAM) : $(FILE_CHECKED)
 
 $(FILE_CHECKED) : $(INT)
 	$(ECHO) "ANLTR4"
 	$(ANTLR) $(GRAMFLAGS) -o $(ANTLR_TARGET_FOLDER) $(INT)
-	$(COMPFLAGS) $(ANTLRRUNTIME) $(ANTLR_TARGET_FOLDER)/*.cpp -c
-
-$(EXE):
-	$(COMPFLAGS) $(ANTLRRUNTIME) $(TARGET_FOLDER)/*.cpp *.o *.cpp -o $(BINARY) $(ANTLRLIBRUNTIME)
+	$(CPPC) $(COMPFLAGS) $(ANTLR_TARGET_FOLDER)/*.cpp -c
 	mv *.o $(OUTPUT)
 
-$(FILE):
+$(EXE):
+	$(CPPC) $(COMPFLAGS) $(TARGET_FOLDER)/*.cpp $(OUTPUT)/*.o *.cpp $(ANTLRLIBRUNTIME) -o $(BINARY)
+
+$(OUTPUT_FOLDERS):
 	$(ECHO) "Making directory"
 	mkdir -p $(ANTLR_TARGET_FOLDER)
 	mkdir -p $(OUTPUT)
 
 $(CLEAN) :
 	$(ECHO) "Effacement"
-	$(RM) $(RMFLAGS) $(ANTLR_TARGET_FOLDER)
-	$(RM) $(RMFLAGS) $(OUTPUT)
-	$(RM) $(BINARY)
+	$(RM) $(RMFLAGS) -r $(ANTLR_TARGET_FOLDER)
+	$(RM) $(RMFLAGS) -r $(OUTPUT)
+	$(RM) $(RMFLAGS) $(BINARY)
 
