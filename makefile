@@ -7,6 +7,7 @@ CLEAN = clean
 FILE = dirs
 TARGET_FOLDER = code_visitors
 ANTLR_TARGET_FOLDER = code_antlr
+OUTPUT = output
 FILE_CHECKED = $(ANTLR_TARGET_FOLDER)/CodeCBaseVisitor.h
 
 JAVA=/usr/bin/java
@@ -49,13 +50,16 @@ $(FILE_CHECKED) : $(INT)
 
 $(EXE):
 	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(TARGET_FOLDER)/*.cpp *.o *.cpp -o $(BINARY) $(OSNAME)$(ANTLRLIBRUNTIME)
+	mv *.o $(OUTPUT)
 
 $(FILE):
 	$(ECHO) "Making directory"
 	mkdir -p $(ANTLR_TARGET_FOLDER)
+	mkdir -p $(OUTPUT)
 
 $(CLEAN) :
 	$(ECHO) "Effacement"
 	$(RM) $(RMFLAGS) $(ANTLR_TARGET_FOLDER)
+	$(RM) $(RMFLAGS) $(OUTPUT)
 	$(RM) $(BINARY)
 
