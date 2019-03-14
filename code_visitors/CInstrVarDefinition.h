@@ -3,14 +3,17 @@
 #include <string>
 using std::string;
 
+// #include "CType.h"
 #include "CInstruction.h"
 #include "CExpression.h"
 
-class CInstrReturn : public CInstruction {
+class CInstrVarDefinition: public CInstruction {
 public:
-  CInstrReturn();
   string to_asm() const;
   
+  /*forcement un int*/
+  //CType type;
+  string name;
   CExpression* expr;
 };
 

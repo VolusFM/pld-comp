@@ -10,8 +10,8 @@ using std::vector;
 
 #include "CProg.h"
 #include "CFunction.h"
-// #include "CVarDefinition.h"
 #include "CExpression.h"
+#include "CInstrReturn.h"
 
 class Visitor : public CodeCBaseVisitor {
 public:
@@ -50,6 +50,18 @@ public:
     return new vector<CInstruction*>(instructions);
   }
 
+  virtual antlrcpp::Any visitReturn(CodeCParser::ReturnContext *ctx) override {
+    return (CInstruction*) ((CInstrReturn*) visit(ctx->instrreturn()));
+  }
+  virtual antlrcpp::Any visitReturn_expr(CodeCParser::Return_exprContext *ctx) override {
+    CInstrReturn* instr = new CInstrReturn();
+    instr->expr = (CExpression*) visit(ctx->expression());
+    return instr;
+  }
+  virtual antlrcpp::Any visitReturn_void(CodeCParser::Return_voidContext *ctx) override {
+    return new CInstrReturn();
+  }
+
 /*
   virtual antlrcpp::Any visitVarDefinition(CodeCParser::VardefinitionContext *ctx) override {
     return new string(ctx->IDENT()->getText());
@@ -57,23 +69,24 @@ public:
 */
 
   /* TEMPORAIRE */
-  virtual antlrcpp::Any visitReturn(CodeCParser::ReturnContext *ctx) override {
-    return (CInstruction*) new CExpressionInt();
-  }
   virtual antlrcpp::Any visitDef_variable(CodeCParser::Def_variableContext *ctx) override {
     return (CInstruction*) new CExpressionInt();
   }
   /* TEMPORAIRE */
 
+  virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx) override {
+    return (CInstruction*) ((CExpression*) visit(ctx->expression()));
+  }
+
   virtual antlrcpp::Any visitVariable(CodeCParser::VariableContext *ctx) override {
     CExpressionVar* expr = new CExpressionVar();
     expr->variable = ctx->IDENT()->getText();
-    return (CInstruction*) expr;
+    return (CExpression*) expr;
   }
   virtual antlrcpp::Any visitConst(CodeCParser::ConstContext *ctx) override {
     CExpressionInt* expr = new CExpressionInt();
     expr->valeur = (int) stoi(ctx->INTVAL()->getText());
-    return (CInstruction*) expr;
+    return (CExpression*) expr;
   }
   virtual antlrcpp::Any visitAffectation(CodeCParser::AffectationContext *ctx) override {
     CExpressionInt* rhs = new CExpressionInt();
@@ -86,7 +99,7 @@ public:
     expr->lhs = lhs;
     expr->op = '=';
     expr->rhs = rhs;
-    return (CInstruction*) expr;
+    return (CExpression*) expr;
   }
   
   virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override {

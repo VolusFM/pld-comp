@@ -11,7 +11,7 @@ instructions: instruction*;
 
 instruction: instrreturn ';' #return
 	| vardefinition ';' #def_variable
-	| expression ';' #instru_expr;
+	| expression ';' #instr_expr;
 
 vardefinition: type IDENT #var_without_expr
 	| type IDENT '=' expression #var_with_expr;
