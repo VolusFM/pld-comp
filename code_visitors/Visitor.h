@@ -12,6 +12,7 @@ using std::vector;
 #include "CFunction.h"
 #include "CExpression.h"
 #include "CInstrReturn.h"
+#include "CInstrVarDefinition.h"
 
 class Visitor : public CodeCBaseVisitor {
 public:
@@ -62,17 +63,22 @@ public:
     return new CInstrReturn();
   }
 
-/*
-  virtual antlrcpp::Any visitVarDefinition(CodeCParser::VardefinitionContext *ctx) override {
-    return new string(ctx->IDENT()->getText());
+  virtual antlrcpp::Any visitInstr_def(CodeCParser::Instr_defContext *ctx) override {
+    return (CInstruction*) ((CInstrVarDefinition*) visit(ctx->vardefinition()));
   }
-*/
-
-  /* TEMPORAIRE */
-  virtual antlrcpp::Any visitDef_variable(CodeCParser::Def_variableContext *ctx) override {
-    return (CInstruction*) new CExpressionInt();
+  virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx) override {
+    CInstrVarDefinition* var = new CInstrVarDefinition();
+    var->type = "int";
+    var->name = ctx->IDENT()->getText();
+    return var;
   }
-  /* TEMPORAIRE */
+  virtual antlrcpp::Any visitDef_var_with_expr(CodeCParser::Def_var_with_exprContext *ctx) override {
+    CInstrVarDefinition* var = new CInstrVarDefinition();
+    var->type = "int";
+    var->name = ctx->IDENT()->getText();
+    var->expr = (CExpression*) visit(ctx->expression());
+    return var;
+  }
 
   virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx) override {
     return (CInstruction*) ((CExpression*) visit(ctx->expression()));

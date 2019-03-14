@@ -10,11 +10,11 @@ instructionsbloc: '{' instructions '}';
 instructions: instruction*;
 
 instruction: instrreturn ';' #return
-	| vardefinition ';' #def_variable
+	| vardefinition ';' #instr_def
 	| expression ';' #instr_expr;
 
-vardefinition: type IDENT #var_without_expr
-	| type IDENT '=' expression #var_with_expr;
+vardefinition: type IDENT #def_var
+	| type IDENT '=' expression #def_var_with_expr;
 
 expression: INTVAL #const
 	| IDENT #variable
