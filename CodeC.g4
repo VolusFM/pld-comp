@@ -1,11 +1,12 @@
 grammar CodeC;
 
-prog: function;
+prog: function*;
 
-function: functionheader '{' instructions '}';
+function: functionheader instructionsbloc;
 
 functionheader: type IDENT parameters;
 
+instructionsbloc: '{' instructions '}';
 instructions: instruction*;
 
 instruction: instrreturn ';' #return
@@ -13,12 +14,13 @@ instruction: instrreturn ';' #return
 	| expression ';' #instru_expr;
 
 vardefinition: type IDENT #var_without_expr
-	| type IDENT '=' expression #var_with_expr ;
+	| type IDENT '=' expression #var_with_expr;
 
 expression: INTVAL #const
-        | (IDENT '=' INTVAL) #affectation ;
+	| IDENT #variable
+	| (IDENT '=' INTVAL) #affectation;
 
-instrreturn: 'return' INTVAL #return_expr
+instrreturn: 'return' expression #return_expr
 	| 'return' #return_void;
 
 type: 'int';
@@ -26,7 +28,7 @@ type: 'int';
 parameters: '(' ')' ;
 
 INTVAL : [0-9]+;
-IDENT : [a-zA-Z][a-zA-Z0-9]+;
+IDENT : [a-zA-Z][a-zA-Z0-9]*;
 
 WS: [ \n\t\r] -> skip; 
 

@@ -10,7 +10,7 @@ using std::vector;
 
 #include "CProg.h"
 #include "CFunction.h"
-// #include "CVarDefinition.h" // committez aussi ce fichier si vous commitez Visitor.h avec cette ligne
+// #include "CVarDefinition.h"
 #include "CExpression.h"
 
 class Visitor : public CodeCBaseVisitor {
@@ -18,14 +18,18 @@ public:
 
   virtual antlrcpp::Any visitProg(CodeCParser::ProgContext *ctx) override {
     CProg prog;
-    prog.functions.push_back(*((CFunction*) visit(ctx->function())));
+    
+    for (auto ctx_func : ctx->function()) {
+      prog.functions.push_back(*( (CFunction*) visit(ctx_func) ));
+    }
+    
     return new CProg(prog);
   }
   
   virtual antlrcpp::Any visitFunction(CodeCParser::FunctionContext *ctx) override {
     CFunction func;
     func.name = *( (string*) visit(ctx->functionheader()) );
-    func.instructions = *( (vector<CInstruction*>*) visit(ctx->instructions()) );
+    func.instructions = *( (vector<CInstruction*>*) visit(ctx->instructionsbloc()) );
     return new CFunction(func);
   }
 
@@ -33,11 +37,14 @@ public:
     return new string(ctx->IDENT()->getText());
   }
 
+  virtual antlrcpp::Any visitInstructionsbloc(CodeCParser::InstructionsblocContext *ctx) override {
+    return visit(ctx->instructions());
+  }
   virtual antlrcpp::Any visitInstructions(CodeCParser::InstructionsContext *ctx) override {
     vector<CInstruction*> instructions;
     
     for (auto ctx_instr : ctx->instruction()) {
-      // instructions.push_back((CInstruction*) visit(ctx_instr));
+      instructions.push_back((CInstruction*) visit(ctx_instr));
     }
     
     return new vector<CInstruction*>(instructions);
@@ -45,23 +52,28 @@ public:
 
 /*
   virtual antlrcpp::Any visitVarDefinition(CodeCParser::VardefinitionContext *ctx) override {
-    return visit(ctx->name());
+    return new string(ctx->IDENT()->getText());
   }
 */
 
   /* TEMPORAIRE */
   virtual antlrcpp::Any visitReturn(CodeCParser::ReturnContext *ctx) override {
-    return new CExpressionInt();
+    return (CInstruction*) new CExpressionInt();
   }
   virtual antlrcpp::Any visitDef_variable(CodeCParser::Def_variableContext *ctx) override {
-    return new CExpressionInt();
+    return (CInstruction*) new CExpressionInt();
   }
   /* TEMPORAIRE */
 
+  virtual antlrcpp::Any visitVariable(CodeCParser::VariableContext *ctx) override {
+    CExpressionVar* expr = new CExpressionVar();
+    expr->variable = ctx->IDENT()->getText();
+    return (CInstruction*) expr;
+  }
   virtual antlrcpp::Any visitConst(CodeCParser::ConstContext *ctx) override {
     CExpressionInt* expr = new CExpressionInt();
     expr->valeur = (int) stoi(ctx->INTVAL()->getText());
-    return expr;
+    return (CInstruction*) expr;
   }
   virtual antlrcpp::Any visitAffectation(CodeCParser::AffectationContext *ctx) override {
     CExpressionInt* rhs = new CExpressionInt();
@@ -74,7 +86,7 @@ public:
     expr->lhs = lhs;
     expr->op = '=';
     expr->rhs = rhs;
-    return expr;
+    return (CInstruction*) expr;
   }
   
   virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override {
