@@ -21,11 +21,7 @@ GRAMFLAGS = -visitor -no-listener -Dlanguage=Cpp
 COMPFLAGS = clang++ -DTRACE -g -std=c++11 -I
 CC = g++
 
-ANTLR=ANTLR4-CPP/bin/antlr4
-ANTLRRUNTIME=ANTLR4-CPP/antlr4-runtime
-ANTLRLIBRUNTIME=ANTLR4-CPP/lib/libantlr4-runtime.a
-
-OSNAME = LINUX_
+OSNAME = LINUX
 
 ifeq ($(OS),Windows_NT)
 	#Windows
@@ -33,9 +29,14 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Darwin)
 		#Mac
-		OSNAME = MAC_
+		OSNAME = MAC
 	endif
 endif
+
+ANTLRDIR=ANTLR/$(OSNAME)-CPP
+ANTLR = $(ANTLRDIR)/bin/antlr4
+ANTLRRUNTIME = $(ANTLRDIR)/antlr4-runtime
+ANTLRLIBRUNTIME = $(ANTLRDIR)/lib/libantlr4-runtime.a
 
 .PHONY : $(CLEAN)
 
@@ -45,11 +46,11 @@ $(GRAM) : $(FILE_CHECKED)
 
 $(FILE_CHECKED) : $(INT)
 	$(ECHO) "ANLTR4"
-	$(OSNAME)$(ANTLR) $(GRAMFLAGS) -o $(ANTLR_TARGET_FOLDER) $(INT)
-	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(ANTLR_TARGET_FOLDER)/*.cpp -c
+	$(ANTLR) $(GRAMFLAGS) -o $(ANTLR_TARGET_FOLDER) $(INT)
+	$(COMPFLAGS) $(ANTLRRUNTIME) $(ANTLR_TARGET_FOLDER)/*.cpp -c
 
 $(EXE):
-	$(COMPFLAGS) $(OSNAME)$(ANTLRRUNTIME) $(TARGET_FOLDER)/*.cpp *.o *.cpp -o $(BINARY) $(OSNAME)$(ANTLRLIBRUNTIME)
+	$(COMPFLAGS) $(ANTLRRUNTIME) $(TARGET_FOLDER)/*.cpp *.o *.cpp -o $(BINARY) $(ANTLRLIBRUNTIME)
 	mv *.o $(OUTPUT)
 
 $(FILE):
