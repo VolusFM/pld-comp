@@ -7,9 +7,9 @@ using std::string;
 #include "CExpression.h"
 typedef string CType;
 
-class CInstrVarDefinition: public CInstruction {
+class CInstrVariable: public CInstruction {
 public:
-  CInstrVarDefinition();
+  CInstrVariable();
   string to_asm() const;
   
   CType type;

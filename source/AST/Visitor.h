@@ -12,7 +12,7 @@ using std::vector;
 #include "CFunction.h"
 #include "CExpression.h"
 #include "CInstrReturn.h"
-#include "CInstrVarDefinition.h"
+#include "CInstrVariable.h"
 
 class Visitor : public CodeCBaseVisitor {
 public:
@@ -31,6 +31,7 @@ public:
     CFunction func;
     func.name = *( (string*) visit(ctx->functionheader()) );
     func.instructions = *( (vector<CInstruction*>*) visit(ctx->instructionsbloc()) );
+    func.fill_tos();
     return new CFunction(func);
   }
   
@@ -64,16 +65,16 @@ public:
   }
   
   virtual antlrcpp::Any visitInstr_def(CodeCParser::Instr_defContext *ctx) override {
-    return (CInstruction*) ((CInstrVarDefinition*) visit(ctx->vardefinition()));
+    return (CInstruction*) ((CInstrVariable*) visit(ctx->vardefinition()));
   }
   virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx) override {
-    CInstrVarDefinition* var = new CInstrVarDefinition();
+    CInstrVariable* var = new CInstrVariable();
     var->type = "int";
     var->name = ctx->IDENT()->getText();
     return var;
   }
   virtual antlrcpp::Any visitDef_var_with_expr(CodeCParser::Def_var_with_exprContext *ctx) override {
-    CInstrVarDefinition* var = new CInstrVarDefinition();
+    CInstrVariable* var = new CInstrVariable();
     var->type = "int";
     var->name = ctx->IDENT()->getText();
     var->expr = (CExpression*) visit(ctx->expression());

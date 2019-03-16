@@ -4,6 +4,8 @@
 using std::string;
 #include <vector>
 using std::vector;
+#include <map>
+using std::map;
 
 #include "CInstruction.h"
 
@@ -13,9 +15,12 @@ class CFunction {
 public:
   string to_asm() const;
   
+  void fill_tos();
+  
   string name;
   
-  // map<string, pair<CType, int>> tos;
+  vector<string> tos;
+  map<string, CType> tosType;
   
   vector<CInstruction*> instructions;
 };

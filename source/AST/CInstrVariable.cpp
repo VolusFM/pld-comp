@@ -1,11 +1,11 @@
-#include "CInstrVarDefinition.h"
+#include "CInstrVariable.h"
 
-CInstrVarDefinition::CInstrVarDefinition()
+CInstrVariable::CInstrVariable()
 : expr(nullptr)
 {
 }
 
-string CInstrVarDefinition::to_asm() const {
+string CInstrVariable::to_asm() const {
 //TODO : memCase positif, nb case memoire a partir de rbp
 	string code;
 	if (expr != nullptr) {
