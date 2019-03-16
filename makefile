@@ -4,7 +4,7 @@
 GRAM = grammar
 EXE = compil
 CLEAN = clean
-OBJECTS = objects
+OBJECTS = objs
 
 # directories
 
@@ -24,7 +24,7 @@ JAVA = /usr/bin/java
 
 GRAM_FILE = CodeC.g4
 GRAM_FILECHECK = $(SOURCE_ANTLR)/CodeCBaseVisitor.h
-FIC = $(GRAM_FILE:.g4=Lexer.h) $(GRAM_FILE:.g4=Parser.h) $(GRAM_FILE:.g4=Visitor.h) $(GRAM_FILE:.g4=BaseVisitor.h)
+OBJS_FILECHECK = $(OBJS_ANTLR)/CodeCBaseVisitor.o
 
 RM = rm
 RMFLAGS = -rf
@@ -61,13 +61,13 @@ endif
 all : $(GRAM) $(OBJECTS) $(EXE)
 
 $(GRAM) : $(GRAM_FILECHECK)
-
 $(GRAM_FILECHECK) : $(GRAM_FILE)
 	$(ECHO) "building grammar"
 	mkdir -p $(SOURCE_ANTLR)
 	$(ANTLR) $(GRAMFLAGS) -o $(SOURCE_ANTLR) $(GRAM_FILE)
 
-$(OBJECTS): $(GRAM_FILECHECK)
+$(OBJECTS) : $(OBJS_FILECHECK)
+$(OBJS_FILECHECK) : $(GRAM_FILECHECK)
 	$(ECHO) "building objects"
 	mkdir -p $(OBJSDIR)
 	mkdir -p $(OBJS_ANTLR)

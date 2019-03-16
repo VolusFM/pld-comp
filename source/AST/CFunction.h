@@ -15,13 +15,15 @@ class CFunction {
 public:
   string to_asm() const;
   
-  void fill_tos();
-  
   string name;
   
   vector<string> tos;
   map<string, CType> tosType;
   
-  vector<CInstruction*> instructions;
+  CInstructions bloc;
+  
+  void fill_tos();
+private:
+  void fill_tos(CInstructions& bloc);
 };
 

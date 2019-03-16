@@ -3,9 +3,7 @@
 #include <string>
 using std::string;
 
-#include "CInstruction.h"
-
-class CExpression : public CInstruction {
+class CExpression {
 public:
   virtual string to_asm() const = 0;
 };

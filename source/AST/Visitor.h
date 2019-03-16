@@ -13,6 +13,7 @@ using std::vector;
 #include "CExpression.h"
 #include "CInstrReturn.h"
 #include "CInstrVariable.h"
+#include "CInstrExpression.h"
 
 class Visitor : public CodeCBaseVisitor {
 public:
@@ -30,7 +31,7 @@ public:
   virtual antlrcpp::Any visitFunction(CodeCParser::FunctionContext *ctx) override {
     CFunction func;
     func.name = *( (string*) visit(ctx->functionheader()) );
-    func.instructions = *( (vector<CInstruction*>*) visit(ctx->instructionsbloc()) );
+    func.bloc = *( (CInstructions*) visit(ctx->instructionsbloc()) );
     func.fill_tos();
     return new CFunction(func);
   }
@@ -40,7 +41,9 @@ public:
   }
   
   virtual antlrcpp::Any visitInstructionsbloc(CodeCParser::InstructionsblocContext *ctx) override {
-    return visit(ctx->instructions());
+    CInstructions* bloc = new CInstructions();
+    bloc->instructions = *( (vector<CInstruction*>*) visit(ctx->instructions()) );
+    return bloc;
   }
   virtual antlrcpp::Any visitInstructions(CodeCParser::InstructionsContext *ctx) override {
     vector<CInstruction*> instructions;
@@ -82,7 +85,10 @@ public:
   }
   
   virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx) override {
-    return (CInstruction*) ((CExpression*) visit(ctx->expression()));
+    CExpression* expr = (CExpression*) visit(ctx->expression());
+    CInstrExpression* instr = new CInstrExpression();
+    instr->expr = expr;
+    return (CInstruction*) instr;
   }
   
   virtual antlrcpp::Any visitVariable(CodeCParser::VariableContext *ctx) override {

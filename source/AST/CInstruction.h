@@ -9,3 +9,11 @@ public:
   
 };
 
+#include <vector>
+using std::vector;
+
+class CInstructions {
+public:
+  vector<CInstruction*> instructions;
+};
+
