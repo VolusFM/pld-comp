@@ -6,7 +6,7 @@ using std::string;
 using std::vector;
 
 #include "antlr4-runtime.h"
-#include "../code_antlr/CodeCBaseVisitor.h"
+#include "../antlr/CodeCBaseVisitor.h"
 
 #include "CProg.h"
 #include "CFunction.h"
@@ -16,7 +16,7 @@ using std::vector;
 
 class Visitor : public CodeCBaseVisitor {
 public:
-
+  
   virtual antlrcpp::Any visitProg(CodeCParser::ProgContext *ctx) override {
     CProg prog;
     
@@ -33,11 +33,11 @@ public:
     func.instructions = *( (vector<CInstruction*>*) visit(ctx->instructionsbloc()) );
     return new CFunction(func);
   }
-
+  
   virtual antlrcpp::Any visitFunctionheader(CodeCParser::FunctionheaderContext *ctx) override {
     return new string(ctx->IDENT()->getText());
   }
-
+  
   virtual antlrcpp::Any visitInstructionsbloc(CodeCParser::InstructionsblocContext *ctx) override {
     return visit(ctx->instructions());
   }
@@ -50,7 +50,7 @@ public:
     
     return new vector<CInstruction*>(instructions);
   }
-
+  
   virtual antlrcpp::Any visitReturn(CodeCParser::ReturnContext *ctx) override {
     return (CInstruction*) ((CInstrReturn*) visit(ctx->instrreturn()));
   }
@@ -62,7 +62,7 @@ public:
   virtual antlrcpp::Any visitReturn_void(CodeCParser::Return_voidContext *ctx) override {
     return new CInstrReturn();
   }
-
+  
   virtual antlrcpp::Any visitInstr_def(CodeCParser::Instr_defContext *ctx) override {
     return (CInstruction*) ((CInstrVarDefinition*) visit(ctx->vardefinition()));
   }
@@ -79,11 +79,11 @@ public:
     var->expr = (CExpression*) visit(ctx->expression());
     return var;
   }
-
+  
   virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx) override {
     return (CInstruction*) ((CExpression*) visit(ctx->expression()));
   }
-
+  
   virtual antlrcpp::Any visitVariable(CodeCParser::VariableContext *ctx) override {
     CExpressionVar* expr = new CExpressionVar();
     expr->variable = ctx->IDENT()->getText();
@@ -111,9 +111,10 @@ public:
   virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override {
     return visitChildren(ctx);
   }
-
+  
   virtual antlrcpp::Any visitParameters(CodeCParser::ParametersContext *ctx) override {
     return visitChildren(ctx);
   }
-
+  
 };
+

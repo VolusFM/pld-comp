@@ -1,12 +1,13 @@
 *.o
-*.asm
 
-antlr/
-bac_a_sable/
-code_antlr/
-*.dSYM
+ANTLR/
+source/antlr/
+objects/
 
 yottacompilatron9001
+
+sandbox/
+*.dSYM
 
 # General
 .DS_Store

@@ -6,12 +6,12 @@ using std::endl;
 using std::ifstream;
 
 #include "antlr4-runtime.h"
-#include "code_antlr/CodeCLexer.h"
-#include "code_antlr/CodeCParser.h"
-#include "code_antlr/CodeCVisitor.h"
+#include "antlr/CodeCLexer.h"
+#include "antlr/CodeCParser.h"
+#include "antlr/CodeCVisitor.h"
 
-#include "code_visitors/Visitor.h"
-#include "code_visitors/CProg.h"
+#include "AST/Visitor.h"
+#include "AST/CProg.h"
 
 using namespace antlr4;
 

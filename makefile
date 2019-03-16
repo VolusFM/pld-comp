@@ -1,34 +1,44 @@
-#Télécharger Clang!!! (brew install llvm)
+
+# commands
 
 GRAM = grammar
 EXE = compil
-BINARY = yottacompilatron9001
 CLEAN = clean
-OUTPUT_FOLDERS = output_folders
-TARGET_FOLDER = code_visitors
-ANTLR_TARGET_FOLDER = code_antlr
-OUTPUT = output
-FILE_CHECKED = $(ANTLR_TARGET_FOLDER)/CodeCBaseVisitor.h
+OBJECTS = objects
 
-JAVA=/usr/bin/java
-INT = CodeC.g4
-FIC = $(INT:.g4=Lexer.h) $(INT:.g4=Parser.h) $(INT:.g4=Visitor.h) $(INT:.g4=BaseVisitor.h)
+# directories
+
+SOURCEDIR = source
+SOURCE_AST = source/AST
+SOURCE_ANTLR = source/antlr
+
+OBJSDIR = objects
+OBJS_AST = objects/AST
+OBJS_ANTLR = objects/antlr
+
+BINARY = yottacompilatron9001
+
+# tools and paths
+
+JAVA = /usr/bin/java
+
+GRAM_FILE = CodeC.g4
+GRAM_FILECHECK = $(SOURCE_ANTLR)/CodeCBaseVisitor.h
+FIC = $(GRAM_FILE:.g4=Lexer.h) $(GRAM_FILE:.g4=Parser.h) $(GRAM_FILE:.g4=Visitor.h) $(GRAM_FILE:.g4=BaseVisitor.h)
 
 RM = rm
-RMFLAGS = -f
+RMFLAGS = -rf
 ECHO = echo
 GRAMFLAGS = -visitor -no-listener -Dlanguage=Cpp
 COMPFLAGS = -DTRACE -g -std=c++11 -I $(ANTLRRUNTIME)
 CPPC = clang++
 
 OSNAME = LINUX
-
 ifeq ($(OS),Windows_NT)
-	#Windows
+	OSNAME = WINDOWS
 else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Darwin)
-		#Mac
 		OSNAME = MAC
 	endif
 endif
@@ -38,37 +48,39 @@ ANTLR = $(ANTLRDIR)/bin/antlr4
 ANTLRRUNTIME = $(ANTLRDIR)/antlr4-runtime
 ANTLRLIBRUNTIME = $(ANTLRDIR)/lib/libantlr4-runtime.a
 
-#make USE="g++"
-#pour compiler sur les ordis du départ n'ayant pas clang++
+# make USE="g++"
+# to compile on IF computers without clang++
 ifeq ($(USE),g++)
 CPPC = g++-6 -Wno-attributes
 ANTLRRUNTIME = /shares/public/tp/antlr/antlr4-runtime
 ANTLRLIBRUNTIME = /shares/public/tp/antlr/lib/libantlr4-runtime.a
 endif
 
-.PHONY : $(CLEAN) $(OUTPUT_FOLDERS)
+.PHONY : $(GRAM) $(OBJECTS) $(EXE) $(CLEAN)
 
-all : $(OUTPUT_FOLDERS) $(GRAM) $(EXE)
+all : $(GRAM) $(OBJECTS) $(EXE)
 
-$(GRAM) : $(FILE_CHECKED)
+$(GRAM) : $(GRAM_FILECHECK)
 
-$(FILE_CHECKED) : $(INT)
-	$(ECHO) "ANLTR4"
-	$(ANTLR) $(GRAMFLAGS) -o $(ANTLR_TARGET_FOLDER) $(INT)
-	$(CPPC) $(COMPFLAGS) $(ANTLR_TARGET_FOLDER)/*.cpp -c
-	mv *.o $(OUTPUT)
+$(GRAM_FILECHECK) : $(GRAM_FILE)
+	$(ECHO) "building grammar"
+	mkdir -p $(SOURCE_ANTLR)
+	$(ANTLR) $(GRAMFLAGS) -o $(SOURCE_ANTLR) $(GRAM_FILE)
+
+$(OBJECTS): $(GRAM_FILECHECK)
+	$(ECHO) "building objects"
+	mkdir -p $(OBJSDIR)
+	mkdir -p $(OBJS_ANTLR)
+	$(CPPC) $(COMPFLAGS) $(SOURCE_ANTLR)/*.cpp -c
+	mv *.o $(OBJS_ANTLR)
 
 $(EXE):
-	$(CPPC) $(COMPFLAGS) $(TARGET_FOLDER)/*.cpp $(OUTPUT)/*.o *.cpp $(ANTLRLIBRUNTIME) -o $(BINARY)
-
-$(OUTPUT_FOLDERS):
-	$(ECHO) "Making directory"
-	mkdir -p $(ANTLR_TARGET_FOLDER)
-	mkdir -p $(OUTPUT)
+	$(ECHO) "building binary"
+	$(CPPC) $(COMPFLAGS) $(SOURCEDIR)/*.cpp $(SOURCE_AST)/*.cpp $(OBJS_ANTLR)/*.o $(ANTLRLIBRUNTIME) -o $(BINARY)
 
 $(CLEAN) :
-	$(ECHO) "Effacement"
-	$(RM) $(RMFLAGS) -r $(ANTLR_TARGET_FOLDER)
-	$(RM) $(RMFLAGS) -r $(OUTPUT)
+	$(ECHO) "cleaning"
+	$(RM) $(RMFLAGS) $(SOURCE_ANTLR)
+	$(RM) $(RMFLAGS) $(OBJSDIR)
 	$(RM) $(RMFLAGS) $(BINARY)
 
