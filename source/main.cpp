@@ -27,13 +27,17 @@ int main(int argc, const char* argv[]) {
   ANTLRInputStream input(stream);
   CodeCLexer lexer(&input);
   CommonTokenStream tokens(&lexer);
-  
   CodeCParser parser(&tokens);
   tree::ParseTree* tree = parser.prog();
   
+  if (parser.getNumberOfSyntaxErrors() > 0) {
+    cerr << "Error: incorrect syntax in the input file." << endl;
+    exit(EXIT_FAILURE);
+  }
+  
   Visitor visitor;
-  CProg* resultat = visitor.visit(tree);
-  cout << resultat->to_asm() << endl;
+  CProg* result = visitor.visit(tree);
+  cout << result->to_asm() << endl;
   
   return 0;
 }
