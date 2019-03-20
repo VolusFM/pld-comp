@@ -35,21 +35,17 @@ void CFunction::fill_tos() {
 void CFunction::fill_tos(CInstructions& bloc) {
   for (auto it = bloc.instructions.begin(); it != bloc.instructions.end(); ++it) {
     const CInstruction* i = *it;
-    const CInstrVariable* instrvar = dynamic_cast<const CInstrVariable*>(i);
-    if (instrvar != nullptr) {
-      string variable = instrvar->name;
+    const CInstrVariable* instrVar = dynamic_cast<const CInstrVariable*>(i);
+    if (instrVar != nullptr) {
+      string variable = instrVar->name;
       tos.push_back(variable);
       tosType[variable] = "int";
       
-      CExpressionCompose* affectation = new CExpressionCompose();
-      CExpressionVar* exprvar = new CExpressionVar();
-      exprvar->variable = variable;
-      affectation->lhs = exprvar;
-      affectation->op = '=';
-      affectation->rhs = instrvar->expr;
-      CInstrExpression* instrexpr = new CInstrExpression();
-      instrexpr->expr = affectation;
-      *it = instrexpr;
+      CExpressionVar * exprVar = new CExpressionVar(variable);
+      CExpressionComposed * affectation = new CExpressionComposed(exprVar, '=', instrVar->expr);
+      CInstrExpression* instrExpr = new CInstrExpression();
+      instrExpr->expr = affectation;
+      *it = instrExpr;
     }
   }
 }
