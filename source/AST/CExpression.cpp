@@ -67,11 +67,13 @@ pair<string,string> CExpressionComposed::to_asm(CFunction* f) const {
         variable = lhsvar;
     } else {
         variable = f->tos_addr(f->tos_add_temp("int"));
+        string dest = variable; variable = "%eax"; // begin bricolage
         code += "  movl " + rhsvar + ", " + variable + "\n";
         if (op == "*") code += "  imul " + variable + ", " + lhsvar + "\n";
         if (op == "/") code += "# idiv " + variable + ", " + lhsvar + "\n";
         if (op == "+") code += "  add  " + variable + ", " + lhsvar + "\n";
         if (op == "-") code += "  sub  " + variable + ", " + lhsvar + "\n";
+        variable = dest; // end bricolage
     }
     return pair<string,string>(code,variable);
 }
