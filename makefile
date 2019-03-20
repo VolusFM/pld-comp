@@ -80,6 +80,8 @@ $(EXE):
 
 $(CLEAN) :
 	$(ECHO) "cleaning"
+	$(RM) $(RMFLAGS) *.o
+	$(RM) $(RMFLAGS) vgcore.*
 	$(RM) $(RMFLAGS) $(SOURCE_ANTLR)
 	$(RM) $(RMFLAGS) $(OBJSDIR)
 	$(RM) $(RMFLAGS) $(BINARY)

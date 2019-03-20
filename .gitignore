@@ -1,11 +1,12 @@
-*.o
-
-vgcore.*
 .antlr/
-antlr/
 source/antlr/
 objects/
+*.o
+
+# old stuff
+antlr/
 code_antlr/
+code_visitors/
 
 yottacompilatron9001
 
@@ -15,9 +16,9 @@ sandbox/
 # Eclipse
 .metadata/
 .project
-vgcore*
 
-# Valgrind test script
+# valgrind stuff
+vgcore*
 testValgrind.sh
 
 # General
