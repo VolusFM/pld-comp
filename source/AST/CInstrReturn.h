@@ -6,11 +6,13 @@ using std::string;
 #include "CInstruction.h"
 #include "CExpression.h"
 
-class CInstrReturn : public CInstruction {
+class CInstrReturn: public CInstruction {
 public:
-  CInstrReturn();
-  string to_asm(const CFunction * f) const;
-  
-  CExpression* expr;
+    CInstrReturn();
+    CInstrReturn(CExpression * expr);
+    ~CInstrReturn();
+    string to_asm(const CFunction * f) const;
+    
+    CExpression* expr;
 };
 

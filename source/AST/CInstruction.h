@@ -7,15 +7,18 @@ class CFunction;
 
 class CInstruction {
 public:
-  virtual string to_asm(const CFunction* f) const = 0;
-  
+    virtual ~CInstruction();
+    virtual string to_asm(const CFunction* f) const = 0;
 };
 
 #include <vector>
 using std::vector;
 
+/**
+ * Wrapper for a vector of instructions
+ */
 class CInstructions {
 public:
-  vector<CInstruction*> instructions;
+    vector<CInstruction *> instructions;
 };
 

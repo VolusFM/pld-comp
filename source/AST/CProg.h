@@ -9,10 +9,8 @@ using std::vector;
 
 class CProg {
 public:
-  string to_asm() const;
-  
+    string to_asm() const;
 
-
-  vector<CFunction> functions;
+    vector<CFunction> functions;
 };
 

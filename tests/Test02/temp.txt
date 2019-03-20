@@ -1,0 +1,12 @@
+.text
+.global main
+main:
+  ## prologue
+  pushq %rbp # save %rbp on the stack
+  movq %rsp, %rbp # define %rbp for the current function
+  ## contenu
+  # (a=((((2*3)+(4/(2-1)))+(3/3))-4))
+  ## epilogue
+  popq %rbp # restore %rbp from the stack
+  ret
+

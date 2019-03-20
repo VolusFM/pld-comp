@@ -6,9 +6,15 @@
 
 using std::to_string;
 
-CFunction::CFunction() {
+CFunction::CFunction(string name, CInstructions * blockToMove) :
+        name(name) {
     temp_id = 0;
     tosOffset = 0;
+    block = std::move(*blockToMove);
+}
+
+CFunction::~CFunction() {
+    // Nothing to do.
 }
 
 string CFunction::to_asm() const {
@@ -21,7 +27,7 @@ string CFunction::to_asm() const {
 
     code += "  ## contenu\n";
 
-    for (const CInstruction* i : bloc.instructions) {
+    for (const CInstruction* i : block.instructions) {
         code += i->to_asm(this);
     }
 
@@ -33,8 +39,8 @@ string CFunction::to_asm() const {
 }
 
 void CFunction::fill_tos() {
-    fill_tos(bloc);
-	
+    fill_tos(block);
+
     for (const string& i : tos) {
         //code += "  # variable " + tosType.at(i) + " " + i + "\n";
         //une fois qu'on aura d'autres tailles de variables, faudra changer ça
@@ -62,8 +68,8 @@ string CFunction::tos_add_temp(CType type) {
     return name;
 }
 
-void CFunction::fill_tos(CInstructions& bloc) {
-    for (auto it = bloc.instructions.begin(); it != bloc.instructions.end();
+void CFunction::fill_tos(CInstructions& block) {
+    for (auto it = block.instructions.begin(); it != block.instructions.end();
             ++it) {
         const CInstruction* i = *it;
         const CInstrVariable* instrVar = dynamic_cast<const CInstrVariable*>(i);
@@ -75,8 +81,7 @@ void CFunction::fill_tos(CInstructions& bloc) {
             CExpressionVar * exprVar = new CExpressionVar(variable);
             CExpressionComposed * affectation = new CExpressionComposed(exprVar,
                     "=", instrVar->expr);
-            CInstrExpression* instrExpr = new CInstrExpression();
-            instrExpr->expr = affectation;
+            CInstrExpression * instrExpr = new CInstrExpression(affectation);
             *it = instrExpr;
         }
     }

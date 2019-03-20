@@ -16,9 +16,12 @@ instruction: instrreturn ';' #return
 vardefinition: type IDENT #def_var
 	| type IDENT '=' expression #def_var_with_expr;
 
-expression: INTVAL #const
-	| IDENT #variable
-	| (IDENT '=' INTVAL) #affectation;
+expression: expression OPMULT expression #mult_expr
+	| expression OPADD expression #add_expr
+	| IDENT OPAFF expression #affect_expr
+	| '('expression')' #parenth_expr
+	| INTVAL #const
+	| IDENT #variable;
 
 instrreturn: 'return' expression #return_expr
 	| 'return' #return_void;
@@ -27,8 +30,13 @@ type: 'int';
 
 parameters: '(' ')' ;
 
+
 INTVAL : [0-9]+;
 IDENT : [a-zA-Z][a-zA-Z0-9]*;
+
+OPMULT : [*/];
+OPADD : [+-];
+OPAFF : [=];
 
 WS: [ \n\t\r] -> skip; 
 
