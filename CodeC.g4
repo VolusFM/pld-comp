@@ -16,9 +16,9 @@ instruction: instrreturn ';' #return
 vardefinition: type IDENT #def_var
 	| type IDENT '=' expression #def_var_with_expr;
 
-expression: '-' expression #neg_expr
-	| expression OPMULT expression #mult_expr
+expression: expression OPMULT expression #mult_expr
 	| expression OPADD expression #add_expr
+	//| '-' expression #neg_expr
 	| IDENT OPAFF expression #affect_expr
 	| '('expression')' #parenth_expr
 	| INTVAL #const

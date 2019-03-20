@@ -185,7 +185,7 @@ public:
         return (CExpression*) expr;
     }
 
-  virtual antlrcpp::Any visitNeg_expr(CodeCParser::Neg_exprContext *ctx) override
+  /*  virtual antlrcpp::Any visitNeg_expr(CodeCParser::Neg_exprContext *ctx) override
   {
     CExpression *rhs = (CExpression *)visit(ctx->expression());
     CExpression *lhs = new CExpressionInt(0);
@@ -193,5 +193,5 @@ public:
     CExpressionComposed *expr = new CExpressionComposed(
         (CExpression *)lhs, "-", (CExpression *)rhs);
     return (CExpression *)expr;
-  }
+  }*/
 };
