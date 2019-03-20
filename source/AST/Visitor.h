@@ -97,10 +97,9 @@ public:
 
     virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx)
             override {
-        CExpression* expr = (CExpression*) visit(ctx->expression());
-        CInstrExpression* instr = new CInstrExpression();
-        instr->expr = expr;
-        return (CInstruction*) instr;
+        CExpression * expr = (CExpression*) visit(ctx->expression());
+        CInstrExpression * instr = new CInstrExpression(expr);
+        return (CInstruction *) instr;
     }
 
     virtual antlrcpp::Any visitVariable(CodeCParser::VariableContext *ctx)

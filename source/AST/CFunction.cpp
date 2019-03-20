@@ -4,7 +4,8 @@
 #include "CInstrExpression.h"
 #include "CExpression.h"
 
-CFunction::CFunction(string name, CInstructions * blockToMove):name(name) {
+CFunction::CFunction(string name, CInstructions * blockToMove) :
+        name(name) {
     block = std::move(*blockToMove);
 }
 
@@ -63,8 +64,7 @@ void CFunction::fill_tos(CInstructions& block) {
             CExpressionVar * exprVar = new CExpressionVar(variable);
             CExpressionComposed * affectation = new CExpressionComposed(exprVar,
                     '=', instrVar->expr);
-            CInstrExpression* instrExpr = new CInstrExpression();
-            instrExpr->expr = affectation;
+            CInstrExpression * instrExpr = new CInstrExpression(affectation);
             *it = instrExpr;
         }
     }
