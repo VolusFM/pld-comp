@@ -63,16 +63,17 @@ pair<string,string> CExpressionComposed::to_asm(CFunction* f) const {
     string rhsvar = resrhs.second;
     
     if (op == "=") {
-        code += "  movl " + rhsvar + ", " + lhsvar + "\n";
+        code += "  movl  " + rhsvar + ", %eax\n";
+        code += "  movl  %eax, " + lhsvar + "\n";
         variable = lhsvar;
     } else {
         variable = f->tos_addr(f->tos_add_temp("int"));
         string dest = variable; variable = "%eax"; // begin bricolage
-        code += "  movl " + rhsvar + ", " + variable + "\n";
-        if (op == "*") code += "  imul " + variable + ", " + lhsvar + "\n";
-        if (op == "/") code += "# idiv " + variable + ", " + lhsvar + "\n";
-        if (op == "+") code += "  add  " + variable + ", " + lhsvar + "\n";
-        if (op == "-") code += "  sub  " + variable + ", " + lhsvar + "\n";
+        code += "  movl  " + rhsvar + ", " + variable + "\n";
+        if (op == "*") code += "  imull " + variable + ", " + lhsvar + "\n";
+        if (op == "/") code += "# idivl " + variable + ", " + lhsvar + "\n";
+        if (op == "+") code += "  addl  " + variable + ", " + lhsvar + "\n";
+        if (op == "-") code += "  subl  " + variable + ", " + lhsvar + "\n";
         variable = dest; // end bricolage
     }
     return pair<string,string>(code,variable);
