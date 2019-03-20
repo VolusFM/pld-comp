@@ -6,13 +6,12 @@
 
 using std::to_string;
 
-CFunction::CFunction(string name, CInstructions * blockToMove) :
-        name(name) {
+CFunction::CFunction(string name, CInstructions& block_)
+: name(name) {
     temp_id = 0;
     tosOffset = 0;
-    block = std::move(*blockToMove);
-    // The pointer becomes useless here, so we delete it to avoid memory leaks.
-    //delete blockToMove; //FIXME could be incorrect
+    
+    block = std::move(block_);
 }
 
 CFunction::~CFunction() {

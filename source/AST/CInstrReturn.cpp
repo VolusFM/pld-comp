@@ -12,7 +12,7 @@ CInstrReturn::CInstrReturn() :
 
 }
 
-CInstrReturn::CInstrReturn(CExpression * expr) :
+CInstrReturn::CInstrReturn(CExpression* expr) :
         expr(expr) {
 }
 
@@ -28,8 +28,7 @@ string CInstrReturn::to_asm(const CFunction* f) const
   
   if (expr != nullptr)
   {
-    CFunction* fm = const_cast<CFunction*>(f);
-    pair<string,string> res = expr->to_asm(fm);
+    pair<string,string> res = expr->to_asm(f);
     code += res.first;
     code += "  movl " + res.second + ", %eax\n";
   }

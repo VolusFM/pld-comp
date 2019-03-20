@@ -12,6 +12,7 @@ class CExpression {
 public:
     virtual ~CExpression();
     virtual pair<string,string> to_asm(CFunction* f) const = 0;
+    pair<string,string> to_asm(const CFunction* f) const;
 };
 
 class CExpressionInt: public CExpression {

@@ -18,13 +18,16 @@ using std::vector;
 class Visitor : public CodeCBaseVisitor
 {
 public:
+    
     virtual antlrcpp::Any visitProg(CodeCParser::ProgContext *ctx) override
     {
         CProg prog;
         
         for (auto ctx_func : ctx->function())
         {
-            prog.functions.push_back(*((CFunction *)visit(ctx_func)));
+            CFunction* func = (CFunction *) visit(ctx_func);
+            prog.functions.push_back(std::move(*func));
+            delete func;
         }
         
         return new CProg(prog);
@@ -33,44 +36,38 @@ public:
     virtual antlrcpp::Any visitFunction(CodeCParser::FunctionContext *ctx)
             override {
         string name = visit(ctx->functionheader());
-        CInstructions * block = (CInstructions *) visit(
+        CInstructions* block = (CInstructions*) visit(
                 ctx->instructionsbloc());
-        CFunction * func = new CFunction(name, block);
+        CFunction* func = new CFunction(name, *block);
         func->fill_tos();
+        delete block;
         return func;
     }
-
+    
     virtual antlrcpp::Any visitFunctionheader(
             CodeCParser::FunctionheaderContext *ctx) override {
         string s(ctx->IDENT()->getText());
-        // Return directly as a string to avoid memory leaks.
         return s;
     }
-
+    
     virtual antlrcpp::Any visitInstructionsbloc(
             CodeCParser::InstructionsblocContext *ctx) override {
-        vector<CInstruction*> * instructions = (vector<CInstruction*>*) visit(
+        vector<CInstruction*>* instructions = (vector<CInstruction*>*) visit(
                 ctx->instructions());
         CInstructions* block = new CInstructions(*instructions);
-        // This pointer has been used, we may delete it to avoid memory leaks.
-        // delete instructions;
-        // bloc->instructions = (vector<CInstruction*>)
-        //                      visit(ctx->instructions()));
+        delete instructions;
         return block;
     }
 
     virtual antlrcpp::Any visitInstructions(
             CodeCParser::InstructionsContext *ctx) override {
         vector<CInstruction*> instructions;
-
+        
         for (auto ctx_instr : ctx->instruction()) {
             instructions.push_back((CInstruction*) visit(ctx_instr));
         }
-
-        //vector<CInstruction *> answer(instructions);
-
+        
         return new vector<CInstruction*>(instructions);
-        //return answer;
     }
 
     virtual antlrcpp::Any visitReturn(CodeCParser::ReturnContext *ctx)
@@ -80,59 +77,57 @@ public:
 
     virtual antlrcpp::Any visitReturn_expr(CodeCParser::Return_exprContext *ctx)
             override {
-        CInstrReturn * instr = new CInstrReturn();
-        instr->expr = (CExpression*) visit(ctx->expression());
+        CExpression* expr = (CExpression*) visit(ctx->expression());
+        CInstrReturn* instr = new CInstrReturn(expr);
         return instr;
     }
-
+    
     virtual antlrcpp::Any visitReturn_void(CodeCParser::Return_voidContext *ctx)
             override {
         return new CInstrReturn();
     }
-
+    
     virtual antlrcpp::Any visitInstr_def(CodeCParser::Instr_defContext *ctx)
             override {
         return (CInstruction*) ((CInstrVariable*) visit(ctx->vardefinition()));
     }
-
-  virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx)
-      override {
+    
+    virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx) override {
         string name = ctx->IDENT()->getText();
-        CInstrVariable * var = new CInstrVariable("int", name);
+        CInstrVariable* var = new CInstrVariable("int", name);
         return var;
-  }
-
+    }
+    
   virtual antlrcpp::Any visitDef_var_with_expr(
       CodeCParser::Def_var_with_exprContext *ctx) override {
         string name = ctx->IDENT()->getText();
-        CExpression * expr = (CExpression*) visit(ctx->expression());
-        CInstrVariable * var = new CInstrVariable("int", name, expr);
-
+        CExpression* expr = (CExpression*) visit(ctx->expression());
+        CInstrVariable* var = new CInstrVariable("int", name, expr);
         return var;
   }
-
+  
   virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx)
       override
   {
-    CExpression *expr = (CExpression *)visit(ctx->expression());
-    CInstrExpression *instr = new CInstrExpression(expr);
-    return (CInstruction *)instr;
+    CExpression* expr = (CExpression*) visit(ctx->expression());
+    CInstrExpression* instr = new CInstrExpression(expr);
+    return (CInstruction*) instr;
   }
 
   virtual antlrcpp::Any visitVariable(CodeCParser::VariableContext *ctx)
       override
   {
-    CExpressionVar *expr = new CExpressionVar(ctx->IDENT()->getText());
-    return (CExpression *)expr;
+    CExpressionVar* expr = new CExpressionVar(ctx->IDENT()->getText());
+    return (CExpression*) expr;
   }
-
+  
   virtual antlrcpp::Any visitConst(CodeCParser::ConstContext *ctx) override
   {
-    CExpressionInt *expr = new CExpressionInt(
-        (int)stoi(ctx->INTVAL()->getText()));
-    return (CExpression *)expr;
+    int val = (int) stoi(ctx->INTVAL()->getText());
+    CExpressionInt* expr = new CExpressionInt(val);
+    return (CExpression*) expr;
   }
-
+  
   virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override
   {
     return visitChildren(ctx);
@@ -146,56 +141,49 @@ public:
 
   virtual antlrcpp::Any visitAffect_expr(CodeCParser::Affect_exprContext *ctx) 
   override {
+        CExpression* lhs = new CExpressionVar(ctx->IDENT()->getText());
         CExpression* rhs = (CExpression*) visit(ctx->expression());
-
-        CExpressionVar* lhs = new CExpressionVar(ctx->IDENT()->getText());
-        lhs->variable = ctx->IDENT()->getText();
-
-        CExpressionComposed * expr = new CExpressionComposed(
-                (CExpression *) lhs, ctx->OPAFF()->getText(),
-                (CExpression *) rhs);
+        
+        string op = ctx->OPAFF()->getText();
+        CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
         return (CExpression*) expr;
   }
-
-  virtual antlrcpp::Any visitParenth_expr(CodeCParser::Parenth_exprContext *ctx) override
-  {
-    CExpression *rhs = (CExpression *)visit(ctx->expression());
-
-        return rhs;
+  
+    virtual antlrcpp::Any visitParenth_expr(CodeCParser::Parenth_exprContext *ctx) override
+    {
+        return visit(ctx->expression());
     }
-
+    
     virtual antlrcpp::Any visitAdd_expr(CodeCParser::Add_exprContext *ctx)
             override {
-        CExpression* rhs = (CExpression*) visit(ctx->expression()[1]);
         CExpression* lhs = (CExpression*) visit(ctx->expression()[0]);
-
-        CExpressionComposed * expr = new CExpressionComposed(
-                (CExpression *) lhs, ctx->OPADD()->getText(),
-                (CExpression *) rhs);
+        CExpression* rhs = (CExpression*) visit(ctx->expression()[1]);
+        
+        string op = ctx->OPADD()->getText();
+        CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
         return (CExpression*) expr;
     }
 
     virtual antlrcpp::Any visitMult_expr(CodeCParser::Mult_exprContext *ctx)
             override {
-        CExpression* rhs = (CExpression*) visit(ctx->expression()[1]);
         CExpression* lhs = (CExpression*) visit(ctx->expression()[0]);
-
-        CExpressionComposed * expr = new CExpressionComposed(
-                (CExpression *) lhs, ctx->OPMULT()->getText(),
-                (CExpression *) rhs);
+        CExpression* rhs = (CExpression*) visit(ctx->expression()[1]);
+        
+        string op = ctx->OPMULT()->getText();
+        CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
         return (CExpression*) expr;
     }
-
-  /*
+    
+    /*
     virtual antlrcpp::Any visitNeg_expr(CodeCParser::Neg_exprContext *ctx) override
     {
-        CExpression *rhs = (CExpression *)visit(ctx->expression());
+        CExpression *rhs = (CExpression*) visit(ctx->expression());
         CExpression *lhs = new CExpressionInt(0);
         
-        CExpressionComposed *expr = new CExpressionComposed(
-            (CExpression *)lhs, "-", (CExpression *)rhs);
-        return (CExpression *)expr;
+        CExpressionComposed *expr = new CExpressionComposed(lhs, "-", rhs);
+        return (CExpression*) expr;
     }
-  */
+    */
+    
 };
 

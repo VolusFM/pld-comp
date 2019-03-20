@@ -6,7 +6,10 @@ using std::to_string;
 #include "CFunction.h"
 
 CExpression::~CExpression() {
-    //FIXME : could be removed
+}
+
+pair<string,string> CExpression::to_asm(const CFunction* f) const {
+    return this->to_asm(const_cast<CFunction*>(f));
 }
 
 // ----------------- CExpressionInt -----------------
@@ -43,10 +46,9 @@ CExpressionVar::~CExpressionVar() {
 
 // -------------- CExpressionComposed ---------------
 
-CExpressionComposed::CExpressionComposed(CExpression * lhs, string op,
-        CExpression * rhs) :
+CExpressionComposed::CExpressionComposed(CExpression* lhs, string op,
+        CExpression* rhs) :
         lhs(lhs), op(op), rhs(rhs) {
-
 }
 
 pair<string,string> CExpressionComposed::to_asm(CFunction* f) const {

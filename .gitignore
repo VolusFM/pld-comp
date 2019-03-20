@@ -1,6 +1,8 @@
 *.o
 
-ANTLR/
+vgcore.*
+.antlr/
+antlr/
 source/antlr/
 objects/
 code_antlr/

@@ -13,18 +13,18 @@ typedef string CType;
 
 class CFunction {
 public:
-    CFunction(string name, CInstructions * blockToMove);
+    CFunction(string name, CInstructions& block);
     ~CFunction();
-
+    
     string to_asm() const;
-
+    
     string name;
-
+    
     vector<string> tos;
     map<string, CType> tosType;
     map<string, int> tosAddress;
     int tosOffset;
-
+    
     CInstructions block;
     
     int temp_id;
@@ -33,6 +33,6 @@ public:
     
     void fill_tos();
 private:
-    void fill_tos(CInstructions & block);
+    void fill_tos(CInstructions& block);
 };
 
