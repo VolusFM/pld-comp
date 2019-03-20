@@ -17,6 +17,9 @@ sandbox/
 .metadata/
 .project
 
+# VS Code
+.vscode/
+
 # valgrind stuff
 vgcore*
 testValgrind.sh
