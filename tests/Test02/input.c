@@ -1,4 +1,7 @@
 
 int main() {
-    int a = 2*3+4/(2-1)+3/3-4;
+    int a = 4;
+    int b = -a;
+    int c = -4;
+    int d = -b;
 }
