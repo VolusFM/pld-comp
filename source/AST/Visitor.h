@@ -30,11 +30,11 @@ public:
 
     virtual antlrcpp::Any visitFunction(CodeCParser::FunctionContext *ctx)
             override {
-        CFunction func;
-        func.name = *((string*) visit(ctx->functionheader()));
-        func.bloc = *((CInstructions*) visit(ctx->instructionsbloc()));
-        func.fill_tos();
-        return new CFunction(func);
+        string name = *((string*) visit(ctx->functionheader()));
+        CInstructions * block = (CInstructions *) visit(ctx->instructionsbloc());
+        CFunction * func = new CFunction(name, block);
+        func->fill_tos();
+        return func;
     }
 
     virtual antlrcpp::Any visitFunctionheader(

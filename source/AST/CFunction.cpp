@@ -4,6 +4,14 @@
 #include "CInstrExpression.h"
 #include "CExpression.h"
 
+CFunction::CFunction(string name, CInstructions * blockToMove):name(name) {
+    block = std::move(*blockToMove);
+}
+
+CFunction::~CFunction() {
+    // Nothing to do.
+}
+
 string CFunction::to_asm() const {
     string code;
     code += name + ":\n";
@@ -14,7 +22,7 @@ string CFunction::to_asm() const {
 
     code += "  ## contenu\n";
 
-    for (const CInstruction* i : bloc.instructions) {
+    for (const CInstruction* i : block.instructions) {
         code += i->to_asm();
     }
 
@@ -26,7 +34,7 @@ string CFunction::to_asm() const {
 }
 
 void CFunction::fill_tos() {
-    fill_tos(bloc);
+    fill_tos(block);
 
     int offset = 0;
 
@@ -42,8 +50,8 @@ void CFunction::fill_tos() {
     // pour obtenir un multiple de 16, pour appel de fonction
 }
 
-void CFunction::fill_tos(CInstructions& bloc) {
-    for (auto it = bloc.instructions.begin(); it != bloc.instructions.end();
+void CFunction::fill_tos(CInstructions& block) {
+    for (auto it = block.instructions.begin(); it != block.instructions.end();
             ++it) {
         const CInstruction* i = *it;
         const CInstrVariable* instrVar = dynamic_cast<const CInstrVariable*>(i);
