@@ -19,6 +19,7 @@ public:
   
   vector<string> tos;
   map<string, CType> tosType;
+  map<string, int> tosAddress;
   
   CInstructions bloc;
   
