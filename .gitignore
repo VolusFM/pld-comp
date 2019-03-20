@@ -9,10 +9,16 @@ yottacompilatron9001
 sandbox/
 *.dSYM
 
+#Eclipse
+.metadata/
+.project
+vgcore*
+
 # General
 .DS_Store
 .AppleDouble
 .LSOverride
+bac_a_sable/
 
 # Icon must end with two \r
 Icon
