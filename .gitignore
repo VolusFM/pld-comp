@@ -10,10 +10,13 @@ yottacompilatron9001
 sandbox/
 *.dSYM
 
-#Eclipse
+# Eclipse
 .metadata/
 .project
 vgcore*
+
+# Valgrind test script
+testValgrind.sh
 
 # General
 .DS_Store
