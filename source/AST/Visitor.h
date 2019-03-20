@@ -49,6 +49,7 @@ public:
                 ctx->instructions()));
         return bloc;
     }
+
     virtual antlrcpp::Any visitInstructions(
             CodeCParser::InstructionsContext *ctx) override {
         vector<CInstruction*> instructions;
@@ -64,12 +65,14 @@ public:
             override {
         return (CInstruction*) ((CInstrReturn*) visit(ctx->instrreturn()));
     }
+
     virtual antlrcpp::Any visitReturn_expr(CodeCParser::Return_exprContext *ctx)
             override {
-        CInstrReturn* instr = new CInstrReturn();
+        CInstrReturn * instr = new CInstrReturn();
         instr->expr = (CExpression*) visit(ctx->expression());
         return instr;
     }
+
     virtual antlrcpp::Any visitReturn_void(CodeCParser::Return_voidContext *ctx)
             override {
         return new CInstrReturn();
@@ -79,6 +82,7 @@ public:
             override {
         return (CInstruction*) ((CInstrVariable*) visit(ctx->vardefinition()));
     }
+
     virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx)
             override {
         CInstrVariable* var = new CInstrVariable();
@@ -86,6 +90,7 @@ public:
         var->name = ctx->IDENT()->getText();
         return var;
     }
+
     virtual antlrcpp::Any visitDef_var_with_expr(
             CodeCParser::Def_var_with_exprContext *ctx) override {
         CInstrVariable* var = new CInstrVariable();
