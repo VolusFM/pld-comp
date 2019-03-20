@@ -11,8 +11,8 @@ public:
     CInstrReturn();
     CInstrReturn(CExpression * expr);
     ~CInstrReturn();
-    string to_asm() const;
-
-    CExpression * expr;
+    string to_asm(const CFunction * f) const;
+    
+    CExpression* expr;
 };
 

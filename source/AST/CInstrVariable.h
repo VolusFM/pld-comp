@@ -12,10 +12,10 @@ public:
     CInstrVariable(CType type, string name);
     CInstrVariable(CType type, string name, CExpression * expr);
     ~CInstrVariable();
-    string to_asm() const;
-
+    string to_asm(const CFunction * f) const;
+    
     CType type;
     string name;
-    CExpression * expr;
+    CExpression* expr;
 };
 

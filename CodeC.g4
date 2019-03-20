@@ -18,6 +18,7 @@ vardefinition: type IDENT #def_var
 
 expression: expression OPMULT expression #mult_expr
 	| expression OPADD expression #add_expr
+	//| '-' expression #neg_expr
 	| IDENT OPAFF expression #affect_expr
 	| '('expression')' #parenth_expr
 	| INTVAL #const

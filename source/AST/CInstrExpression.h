@@ -8,10 +8,10 @@ using std::string;
 
 class CInstrExpression: public CInstruction {
 public:
-    CInstrExpression(CExpression * expr);
+    CInstrExpression(CExpression* expr);
     ~CInstrExpression();
-    string to_asm() const;
+    string to_asm(const CFunction* f) const;
 
-    CExpression * expr;
+    CExpression* expr;
 };
 

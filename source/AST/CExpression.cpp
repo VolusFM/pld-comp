@@ -3,6 +3,8 @@
 #include <string>
 using std::to_string;
 
+#include "CFunction.h"
+
 CExpression::~CExpression() {
     //FIXME : could be removed
 }
@@ -13,10 +15,11 @@ CExpressionInt::CExpressionInt(int value) :
         value(value) {
 }
 
-string CExpressionInt::to_asm() const {
-    string code;
-    code = to_string(value);
-    return code;
+pair<string,string> CExpressionInt::to_asm(CFunction* f) const {
+    string variable = f->tos_add_temp("int");
+    string varaddr = f->tos_addr(variable);
+    string code = "  movl $" + to_string(value) + ", " + varaddr + "\n";
+    return pair<string,string>(code,varaddr);
 }
 
 CExpressionInt::~CExpressionInt() {
@@ -25,15 +28,13 @@ CExpressionInt::~CExpressionInt() {
 
 // ----------------- CExpressionVar -----------------
 
-CExpressionVar::CExpressionVar(const string variable) :
+CExpressionVar::CExpressionVar(string variable) :
         variable(variable) {
 
 }
 
-string CExpressionVar::to_asm() const {
-    string code;
-    code = variable;
-    return code;
+pair<string,string> CExpressionVar::to_asm(CFunction* f) const {
+    return pair<string,string>("",f->tos_addr(variable));
 }
 
 CExpressionVar::~CExpressionVar() {
@@ -48,10 +49,34 @@ CExpressionComposed::CExpressionComposed(CExpression * lhs, string op,
 
 }
 
-string CExpressionComposed::to_asm() const {
+pair<string,string> CExpressionComposed::to_asm(CFunction* f) const {
     string code;
-    code = "(" + lhs->to_asm() + op + rhs->to_asm() + ")";
-    return code;
+    string variable;
+    
+    auto reslhs = lhs->to_asm(f);
+    auto resrhs = rhs->to_asm(f);
+    
+    code += reslhs.first;
+    code += resrhs.first;
+    
+    string lhsvar = reslhs.second;
+    string rhsvar = resrhs.second;
+    
+    if (op == "=") {
+        code += "  movl  " + rhsvar + ", %eax\n";
+        code += "  movl  %eax, " + lhsvar + "\n";
+        variable = lhsvar;
+    } else {
+        variable = f->tos_addr(f->tos_add_temp("int"));
+        string dest = variable; variable = "%eax"; // begin bricolage
+        code += "  movl  " + rhsvar + ", " + variable + "\n";
+        if (op == "*") code += "  imull " + variable + ", " + lhsvar + "\n";
+        if (op == "/") code += "# idivl " + variable + ", " + lhsvar + "\n";
+        if (op == "+") code += "  addl  " + variable + ", " + lhsvar + "\n";
+        if (op == "-") code += "  subl  " + variable + ", " + lhsvar + "\n";
+        variable = dest; // end bricolage
+    }
+    return pair<string,string>(code,variable);
 }
 
 CExpressionComposed::~CExpressionComposed() {

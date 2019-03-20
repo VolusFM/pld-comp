@@ -4,8 +4,12 @@
 #include "CInstrExpression.h"
 #include "CExpression.h"
 
+using std::to_string;
+
 CFunction::CFunction(string name, CInstructions * blockToMove) :
         name(name) {
+    temp_id = 0;
+    tosOffset = 0;
     block = std::move(*blockToMove);
     // The pointer becomes useless here, so we delete it to avoid memory leaks.
     //delete blockToMove; //FIXME could be incorrect
@@ -26,7 +30,7 @@ string CFunction::to_asm() const {
     code += "  ## contenu\n";
 
     for (const CInstruction* i : block.instructions) {
-        code += i->to_asm();
+        code += i->to_asm(this);
     }
 
     code += "  ## epilogue\n";
@@ -39,18 +43,31 @@ string CFunction::to_asm() const {
 void CFunction::fill_tos() {
     fill_tos(block);
 
-    int offset = 0;
-
     for (const string& i : tos) {
         //code += "  # variable " + tosType.at(i) + " " + i + "\n";
         //une fois qu'on aura d'autres tailles de variables, faudra changer ça
-        offset -= 4;
-        tosAddress[i] = offset;
+        tosOffset -= 4;
+        tosAddress[i] = tosOffset;
     }
-
+	
     // code += "sub rsp, "
     // arrondi supérieur ou égal de offset
     // pour obtenir un multiple de 16, pour appel de fonction
+}
+
+string CFunction::tos_addr(string variable) const {
+    int addr = tosAddress.at(variable);
+    return to_string(addr)+"(%rbp)";
+}
+
+string CFunction::tos_add_temp(CType type) {
+    temp_id++;
+    string name = "temp" + to_string(temp_id);
+    tos.push_back(name);
+    tosType[name] = type;
+    tosOffset -= 4;
+    tosAddress[name] = tosOffset;
+    return name;
 }
 
 void CFunction::fill_tos(CInstructions& block) {
