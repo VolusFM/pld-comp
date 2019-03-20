@@ -17,7 +17,9 @@ CInstrReturn::CInstrReturn(CExpression * expr) :
 }
 
 CInstrReturn::~CInstrReturn() {
-    delete expr;
+    if (expr != nullptr) {
+        delete expr;
+    }
 }
 
 string CInstrReturn::to_asm() const {

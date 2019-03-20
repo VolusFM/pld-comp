@@ -8,7 +8,9 @@ CInstrExpression::CInstrExpression(CExpression * expr) :
 }
 
 CInstrExpression::~CInstrExpression() {
-    delete expr;
+    if (expr != nullptr) {
+        delete expr;
+    }
 }
 
 string CInstrExpression::to_asm() const {

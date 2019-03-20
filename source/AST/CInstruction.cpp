@@ -9,3 +9,17 @@ string CInstruction::to_asm() const {
     return code;
 }
 
+CInstructions::CInstructions() {
+
+}
+
+CInstructions::CInstructions(vector<CInstruction *> instructions) :
+        instructions(instructions) {
+}
+
+CInstructions::~CInstructions() {
+    for (auto it = instructions.begin(); it != instructions.end();
+                ++it) {
+        delete *it;
+    }
+}

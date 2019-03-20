@@ -41,20 +41,20 @@ public:
     virtual antlrcpp::Any visitFunctionheader(
             CodeCParser::FunctionheaderContext *ctx) override {
         string s(ctx->IDENT()->getText());
-        // Return directly as a string to avoid memory leaks
+        // Return directly as a string to avoid memory leaks.
         return s;
     }
 
     virtual antlrcpp::Any visitInstructionsbloc(
             CodeCParser::InstructionsblocContext *ctx) override {
-        CInstructions* bloc = new CInstructions();
         vector<CInstruction*> * instructions = (vector<CInstruction*>*) visit(
                 ctx->instructions());
-        bloc->instructions = *instructions;
-        delete instructions;
+        CInstructions* block = new CInstructions(*instructions);
+        // This pointer has been used, we may delete it to avoid memory leaks.
+        // delete instructions;
         /*bloc->instructions = (vector<CInstruction*>) visit(
                         ctx->instructions()));*/
-        return bloc;
+        return block;
     }
 
     virtual antlrcpp::Any visitInstructions(
@@ -104,7 +104,8 @@ public:
             CodeCParser::Def_var_with_exprContext *ctx) override {
         string name = ctx->IDENT()->getText();
         CExpression * expr = (CExpression*) visit(ctx->expression());
-        CInstrVariable* var = new CInstrVariable("int", name, expr);
+        CInstrVariable * var = new CInstrVariable("int", name, expr);
+
         return var;
     }
 

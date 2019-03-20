@@ -8,7 +8,7 @@ CFunction::CFunction(string name, CInstructions * blockToMove) :
         name(name) {
     block = std::move(*blockToMove);
     // The pointer becomes useless here, so we delete it to avoid memory leaks.
-    delete blockToMove; //FIXME could be incorrect
+    //delete blockToMove; //FIXME could be incorrect
 }
 
 CFunction::~CFunction() {

@@ -17,6 +17,10 @@ using std::vector;
  */
 class CInstructions {
 public:
+    CInstructions();
+    CInstructions(vector<CInstruction *> instructions);
+    ~CInstructions();
+
     vector<CInstruction *> instructions;
 };
 

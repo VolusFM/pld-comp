@@ -55,7 +55,9 @@ string CExpressionComposed::to_asm() const {
 }
 
 CExpressionComposed::~CExpressionComposed() {
-    delete lhs;
-    delete rhs;
+    //if (lhs != nullptr) { delete lhs; }
+    //if (rhs != nullptr) { delete rhs; }
+    //delete lhs;
+    //delete rhs;
 }
 
