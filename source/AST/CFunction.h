@@ -34,5 +34,9 @@ public:
     void fill_tos();
 private:
     void fill_tos(CInstructions& block);
+    
+public: // enable move semantics
+    CFunction(CFunction&&) = default;
+    CFunction& operator=(CFunction&&) = default;
 };
 

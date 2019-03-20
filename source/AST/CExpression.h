@@ -42,5 +42,9 @@ public:
     CExpression* lhs;
     string op;
     CExpression* rhs;
+
+private: // no copy wanted
+    CExpressionComposed(const CExpressionComposed&); // no implementation
+    CExpressionComposed& operator=(const CExpressionComposed&); // no implementation
 };
 

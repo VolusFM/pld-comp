@@ -12,6 +12,7 @@ CFunction::CFunction(string name, CInstructions& block_)
     tosOffset = 0;
     
     block = std::move(block_);
+    block_.instructions.clear();
 }
 
 CFunction::~CFunction() {
@@ -70,20 +71,13 @@ string CFunction::tos_add_temp(CType type) {
 }
 
 void CFunction::fill_tos(CInstructions& block) {
-    for (auto it = block.instructions.begin(); it != block.instructions.end();
-            ++it) {
+    for (auto it = block.instructions.begin(); it != block.instructions.end(); ++it) {
         const CInstruction* i = *it;
         const CInstrVariable* instrVar = dynamic_cast<const CInstrVariable*>(i);
         if (instrVar != nullptr) {
             string variable = instrVar->name;
             tos.push_back(variable);
             tosType[variable] = "int";
-
-            CExpressionVar * exprVar = new CExpressionVar(variable);
-            CExpressionComposed * affectation = new CExpressionComposed(exprVar,
-                    "=", instrVar->expr);
-            CInstrExpression * instrExpr = new CInstrExpression(affectation);
-            *it = instrExpr;
         }
     }
 }

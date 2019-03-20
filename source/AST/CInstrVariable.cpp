@@ -4,8 +4,10 @@ CInstrVariable::CInstrVariable(CType type, string name) :
         type(type), name(name), expr(nullptr) {
 }
 
-CInstrVariable::CInstrVariable(CType type, string name, CExpression* expr) :
-        type(type), name(name), expr(expr) {
+CInstrVariable::CInstrVariable(CType type, string name, CExpression* expr_) :
+        type(type), name(name) {
+    CExpressionVar* exprVar = new CExpressionVar(name);
+    expr = new CExpressionComposed(exprVar, "=", expr_);
 }
 
 CInstrVariable::~CInstrVariable() {

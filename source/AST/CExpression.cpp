@@ -82,9 +82,7 @@ pair<string,string> CExpressionComposed::to_asm(CFunction* f) const {
 }
 
 CExpressionComposed::~CExpressionComposed() {
-    //if (lhs != nullptr) { delete lhs; }
-    //if (rhs != nullptr) { delete rhs; }
-    //delete lhs;
-    //delete rhs;
+    delete lhs;
+    delete rhs;
 }
 

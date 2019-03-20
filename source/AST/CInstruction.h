@@ -24,5 +24,12 @@ public:
     ~CInstructions();
 
     vector<CInstruction*> instructions;
+    
+public: // enable move semantics
+    CInstructions(CInstructions&&) = default;
+    CInstructions& operator=(CInstructions&&) = default;
+private: // no copy wanted
+    CInstructions(const CInstructions&); // no implementation
+    CInstructions& operator=(const CInstructions&); // no implementation
 };
 

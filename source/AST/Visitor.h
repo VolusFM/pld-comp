@@ -21,16 +21,16 @@ public:
     
     virtual antlrcpp::Any visitProg(CodeCParser::ProgContext *ctx) override
     {
-        CProg prog;
+        CProg* prog = new CProg();
         
         for (auto ctx_func : ctx->function())
         {
-            CFunction* func = (CFunction *) visit(ctx_func);
-            prog.functions.push_back(std::move(*func));
+            CFunction* func = (CFunction*) visit(ctx_func);
+            prog->functions.push_back(std::move(*func));
             delete func;
         }
         
-        return new CProg(prog);
+        return prog;
     }
     
     virtual antlrcpp::Any visitFunction(CodeCParser::FunctionContext *ctx)
