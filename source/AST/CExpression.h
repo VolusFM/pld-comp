@@ -27,7 +27,7 @@ public:
   string to_asm() const;
   
   CExpression* lhs;
-  char op;
+  string op;
   CExpression* rhs;
 };
 
