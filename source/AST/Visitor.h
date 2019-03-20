@@ -135,8 +135,8 @@ public:
         lhs->variable = ctx->IDENT()->getText();
 
         CExpressionComposed * expr = new CExpressionComposed(
-                (CExpression *) rhs, ctx->OPAFF()->getText(),
-                (CExpression *) lhs);
+                (CExpression *) lhs, ctx->OPAFF()->getText(),
+                (CExpression *) rhs);
         return (CExpression*) expr;
     }
 
@@ -153,8 +153,8 @@ public:
         CExpression* lhs = (CExpression*) visit(ctx->expression()[0]);
 
         CExpressionComposed * expr = new CExpressionComposed(
-                (CExpression *) rhs, ctx->OPADD()->getText(),
-                (CExpression *) lhs);
+                (CExpression *) lhs, ctx->OPADD()->getText(),
+                (CExpression *) rhs);
         return (CExpression*) expr;
     }
 
@@ -164,8 +164,8 @@ public:
         CExpression* lhs = (CExpression*) visit(ctx->expression()[0]);
 
         CExpressionComposed * expr = new CExpressionComposed(
-                (CExpression *) rhs, ctx->OPMULT()->getText(),
-                (CExpression *) lhs);
+                (CExpression *) lhs, ctx->OPMULT()->getText(),
+                (CExpression *) rhs);
         return (CExpression*) expr;
     }
 
