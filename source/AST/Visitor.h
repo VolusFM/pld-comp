@@ -30,7 +30,7 @@ public:
 
     virtual antlrcpp::Any visitFunction(CodeCParser::FunctionContext *ctx)
             override {
-        string name = *((string*) visit(ctx->functionheader()));
+        string name = visit(ctx->functionheader());
         CInstructions * block = (CInstructions *) visit(
                 ctx->instructionsbloc());
         CFunction * func = new CFunction(name, block);
@@ -40,14 +40,20 @@ public:
 
     virtual antlrcpp::Any visitFunctionheader(
             CodeCParser::FunctionheaderContext *ctx) override {
-        return new string(ctx->IDENT()->getText());
+        string s(ctx->IDENT()->getText());
+        // Return directly as a string to avoid memory leaks
+        return s;
     }
 
     virtual antlrcpp::Any visitInstructionsbloc(
             CodeCParser::InstructionsblocContext *ctx) override {
         CInstructions* bloc = new CInstructions();
-        bloc->instructions = *((vector<CInstruction*>*) visit(
-                ctx->instructions()));
+        vector<CInstruction*> * instructions = (vector<CInstruction*>*) visit(
+                ctx->instructions());
+        bloc->instructions = *instructions;
+        delete instructions;
+        /*bloc->instructions = (vector<CInstruction*>) visit(
+                        ctx->instructions()));*/
         return bloc;
     }
 
@@ -59,7 +65,10 @@ public:
             instructions.push_back((CInstruction*) visit(ctx_instr));
         }
 
+        //vector<CInstruction *> answer(instructions);
+
         return new vector<CInstruction*>(instructions);
+        //return answer;
     }
 
     virtual antlrcpp::Any visitReturn(CodeCParser::ReturnContext *ctx)
