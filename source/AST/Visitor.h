@@ -119,18 +119,6 @@ public:
         return (CExpression *) expr;
     }
 
-    virtual antlrcpp::Any visitAffectation(CodeCParser::AffectationContext *ctx)
-            override {
-        CExpressionInt * rhs = new CExpressionInt(
-                (int) stoi(ctx->INTVAL()->getText()));
-        CExpressionVar * lhs = new CExpressionVar(ctx->IDENT()->getText());
-
-        CExpressionComposed * expr = new CExpressionComposed(
-                (CExpression *) rhs, '=', (CExpression *) lhs);
-
-        return (CExpression *) expr;
-    }
-
     virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override {
         return visitChildren(ctx);
     }
@@ -139,5 +127,40 @@ public:
             override {
         return visitChildren(ctx);
     }
+
+    virtual antlrcpp::Any visitAffect_expr(CodeCParser::Affect_exprContext *ctx) override {
+    CExpression* rhs = (CExpression*) visit(ctx->expression());
+    
+    CExpressionVar* lhs = new CExpressionVar(ctx->IDENT()->getText());
+    lhs->variable = ctx->IDENT()->getText();
+
+    CExpressionComposed * expr = new CExpressionComposed(
+                (CExpression *) rhs, ctx->OPAFF()->getText(), (CExpression *) lhs);
+    return (CExpression*) expr;
+  }
+
+  virtual antlrcpp::Any visitParenth_expr(CodeCParser::Parenth_exprContext *ctx) override {
+    CExpression* rhs = (CExpression*) visit(ctx->expression());
+
+    return rhs;
+  }
+
+  virtual antlrcpp::Any visitAdd_expr(CodeCParser::Add_exprContext *ctx) override {
+    CExpression* rhs = (CExpression*) visit(ctx->expression()[1]);
+    CExpression* lhs = (CExpression*) visit(ctx->expression()[0]);
+
+    CExpressionComposed * expr = new CExpressionComposed(
+                (CExpression *) rhs, ctx->OPADD()->getText(), (CExpression *) lhs);
+    return (CExpression*) expr;
+  }
+
+   virtual antlrcpp::Any visitMult_expr(CodeCParser::Mult_exprContext *ctx) override {
+    CExpression* rhs = (CExpression*) visit(ctx->expression()[1]);
+    CExpression* lhs = (CExpression*) visit(ctx->expression()[0]);
+
+    CExpressionComposed * expr = new CExpressionComposed(
+                (CExpression *) rhs, ctx->OPMULT()->getText(), (CExpression *) lhs);
+    return (CExpression*) expr;
+  }
 
 };

@@ -29,12 +29,12 @@ public:
 
 class CExpressionComposed: public CExpression {
 public:
-    CExpressionComposed(CExpression * lhs, char op, CExpression * rhs);
+    CExpressionComposed(CExpression * lhs, string op, CExpression * rhs);
     ~CExpressionComposed();
     string to_asm() const;
 
     CExpression * lhs;
-    char op;
+    string op;
     CExpression * rhs;
 };
 

@@ -42,7 +42,7 @@ CExpressionVar::~CExpressionVar() {
 
 // -------------- CExpressionComposed ---------------
 
-CExpressionComposed::CExpressionComposed(CExpression * lhs, char op,
+CExpressionComposed::CExpressionComposed(CExpression * lhs, string op,
         CExpression * rhs) :
         lhs(lhs), op(op), rhs(rhs) {
 

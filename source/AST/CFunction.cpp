@@ -63,7 +63,7 @@ void CFunction::fill_tos(CInstructions& block) {
 
             CExpressionVar * exprVar = new CExpressionVar(variable);
             CExpressionComposed * affectation = new CExpressionComposed(exprVar,
-                    '=', instrVar->expr);
+                    "=", instrVar->expr);
             CInstrExpression * instrExpr = new CInstrExpression(affectation);
             *it = instrExpr;
         }
