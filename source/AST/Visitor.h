@@ -114,18 +114,6 @@ public:
         return (CExpression *) expr;
     }
 
-    virtual antlrcpp::Any visitAffectation(CodeCParser::AffectationContext *ctx)
-            override {
-        CExpressionInt * rhs = new CExpressionInt(
-                (int) stoi(ctx->INTVAL()->getText()));
-        CExpressionVar * lhs = new CExpressionVar(ctx->IDENT()->getText());
-
-        CExpressionComposed * expr = new CExpressionComposed(
-                (CExpression *) rhs, '=', (CExpression *) lhs);
-
-        return (CExpression *) expr;
-    }
-
     virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override {
         return visitChildren(ctx);
     }
