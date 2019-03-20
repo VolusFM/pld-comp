@@ -12,9 +12,17 @@ string CFunction::to_asm() const {
   code += "  pushq %rbp # save %rbp on the stack\n";
   code += "  movq %rsp, %rbp # define %rbp for the current function\n";
   
+  int offset = 0;
+  
   for (const string& i : tos) {
-    code += "  # variable " + tosType.at(i) + " " + i + "\n";
+    //code += "  # variable " + tosType.at(i) + " " + i + "\n";
+    //une fois qu'on aura d'autres tailles de variables, faudra changer ça
+    offset-=4;
+    tosAddress[i]=offset;
   }
+  
+  // code += "sub rsp, " // arrondi supérieur ou égal de offset
+  					// pour obtenir un multiple de 16, pour appel de fonction
   
   code += "  ## contenu\n";
   
