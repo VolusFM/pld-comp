@@ -7,19 +7,19 @@ CInstrReturn::CInstrReturn() :
         expr(nullptr) {
 }
 
-string CInstrReturn::to_asm() const {
-    string code;
-
-    int* returnValue = nullptr;
-    if (dynamic_cast<CExpressionInt*>(expr) != nullptr) {
-        returnValue = &dynamic_cast<CExpressionInt*>(expr)->value;
-    }
-
-    if (returnValue != nullptr) {
-        code += "  movl $" + to_string(*returnValue) + ", %eax\n";
-    }
-    code += "  popq %rbp\n";
-    code += "  ret\n";
-    return code;
+string CInstrReturn::to_asm(const CFunction * f) const
+{
+  string code;
+  
+  if (expr != nullptr)
+  {
+    CFunction* fm = const_cast<CFunction*>(f);
+    pair<string,string> res = expr->to_asm(fm);
+    code += res.first;
+    code += "  movl " + res.second + ", %eax\n";
+  }
+  code += "  popq %rbp\n";
+  code += "  ret\n";
+  return code;
 }
 

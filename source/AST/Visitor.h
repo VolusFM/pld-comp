@@ -122,7 +122,7 @@ public:
         CExpressionVar * lhs = new CExpressionVar(ctx->IDENT()->getText());
 
         CExpressionComposed * expr = new CExpressionComposed(
-                (CExpression *) rhs, '=', (CExpression *) lhs);
+                (CExpression *) rhs, "=", (CExpression *) lhs);
 
         return (CExpression *) expr;
     }

@@ -4,6 +4,13 @@
 #include "CInstrExpression.h"
 #include "CExpression.h"
 
+using std::to_string;
+
+CFunction::CFunction() {
+    temp_id = 0;
+    tosOffset = 0;
+}
+
 string CFunction::to_asm() const {
     string code;
     code += name + ":\n";
@@ -15,7 +22,7 @@ string CFunction::to_asm() const {
     code += "  ## contenu\n";
 
     for (const CInstruction* i : bloc.instructions) {
-        code += i->to_asm();
+        code += i->to_asm(this);
     }
 
     code += "  ## epilogue\n";
@@ -27,19 +34,32 @@ string CFunction::to_asm() const {
 
 void CFunction::fill_tos() {
     fill_tos(bloc);
-
-    int offset = 0;
-
+	
     for (const string& i : tos) {
         //code += "  # variable " + tosType.at(i) + " " + i + "\n";
         //une fois qu'on aura d'autres tailles de variables, faudra changer ça
-        offset -= 4;
-        tosAddress[i] = offset;
+        tosOffset -= 4;
+        tosAddress[i] = tosOffset;
     }
-
+	
     // code += "sub rsp, "
     // arrondi supérieur ou égal de offset
     // pour obtenir un multiple de 16, pour appel de fonction
+}
+
+string CFunction::tos_addr(string variable) const {
+    int addr = tosAddress.at(variable);
+    return to_string(addr)+"(%rbp)";
+}
+
+string CFunction::tos_add_temp(CType type) {
+    temp_id++;
+    string name = "temp" + to_string(temp_id);
+    tos.push_back(name);
+    tosType[name] = type;
+    tosOffset -= 4;
+    tosAddress[name] = tosOffset;
+    return name;
 }
 
 void CFunction::fill_tos(CInstructions& bloc) {
@@ -54,7 +74,7 @@ void CFunction::fill_tos(CInstructions& bloc) {
 
             CExpressionVar * exprVar = new CExpressionVar(variable);
             CExpressionComposed * affectation = new CExpressionComposed(exprVar,
-                    '=', instrVar->expr);
+                    "=", instrVar->expr);
             CInstrExpression* instrExpr = new CInstrExpression();
             instrExpr->expr = affectation;
             *it = instrExpr;

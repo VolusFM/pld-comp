@@ -3,9 +3,11 @@
 #include <string>
 using std::string;
 
+class CFunction;
+
 class CInstruction {
 public:
-  virtual string to_asm() const = 0;
+  virtual string to_asm(const CFunction* f) const = 0;
   
 };
 

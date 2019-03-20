@@ -3,38 +3,43 @@
 #include <string>
 using std::string;
 
+#include <utility>
+using std::pair;
+
+class CFunction;
+
 class CExpression {
 public:
     virtual ~CExpression();
-    virtual string to_asm() const = 0;
+    virtual pair<string,string> to_asm(CFunction* f) const = 0;
 };
 
 class CExpressionInt: public CExpression {
 public:
     CExpressionInt(int value);
     ~CExpressionInt();
-    string to_asm() const;
+    pair<string,string> to_asm(CFunction* f) const;
 
     int value;
 };
 
 class CExpressionVar: public CExpression {
 public:
-    CExpressionVar(const string variable);
+    CExpressionVar(string variable);
     ~CExpressionVar();
-    string to_asm() const;
+    pair<string,string> to_asm(CFunction* f) const;
 
     string variable;
 };
 
 class CExpressionComposed: public CExpression {
 public:
-    CExpressionComposed(CExpression * lhs, char op, CExpression * rhs);
+    CExpressionComposed(CExpression* lhs, string op, CExpression* rhs);
     ~CExpressionComposed();
-    string to_asm() const;
-
-    CExpression * lhs;
-    char op;
-    CExpression * rhs;
+    pair<string,string> to_asm(CFunction* f) const;
+    
+    CExpression* lhs;
+    string op;
+    CExpression* rhs;
 };
 

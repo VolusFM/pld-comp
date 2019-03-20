@@ -10,7 +10,7 @@ typedef string CType;
 class CInstrVariable: public CInstruction {
 public:
   CInstrVariable();
-  string to_asm() const;
+  string to_asm(const CFunction * f) const;
   
   CType type;
   string name;

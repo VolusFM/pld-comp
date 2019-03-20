@@ -8,10 +8,13 @@ CInstrExpression::CInstrExpression()
 {
 }
 
-string CInstrExpression::to_asm() const
+#include <iostream>
+using std::cout;
+using std::endl;
+
+string CInstrExpression::to_asm(const CFunction * f) const
 {
-  string code;
-  code = "  # " + expr->to_asm() + "\n";
-  return code;
+  CFunction* fm = const_cast<CFunction*>(f);
+  return expr->to_asm(fm).first;
 }
 

@@ -9,7 +9,7 @@ using std::string;
 class CInstrReturn : public CInstruction {
 public:
   CInstrReturn();
-  string to_asm() const;
+  string to_asm(const CFunction * f) const;
   
   CExpression* expr;
 };
