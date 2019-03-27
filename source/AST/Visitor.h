@@ -128,8 +128,28 @@ public:
   virtual antlrcpp::Any visitConst(CodeCParser::ConstContext *ctx) override
   {
     CExpressionInt *expr = new CExpressionInt(
-        (int)stoi(ctx->INTVAL()->getText()));
+        (int) (long) visit(ctx->intval()));
     return (CExpression *)expr;
+  }
+
+  virtual antlrcpp::Any visitIntval_dec(CodeCParser::Intval_decContext *ctx) override
+  {
+    return (long) (int) std::stoi(ctx->INTDEC()->getText());
+  }
+
+  virtual antlrcpp::Any visitIntval_hex(CodeCParser::Intval_hexContext *ctx) override
+  {
+    return (long) (int) std::stoi(ctx->INTHEX()->getText().c_str()+2,0,16);
+  }
+
+  virtual antlrcpp::Any visitIntval_bin(CodeCParser::Intval_binContext *ctx) override
+  {
+    return (long) (int) std::stoi(ctx->INTBIN()->getText().c_str()+2,0,2);
+  }
+
+  virtual antlrcpp::Any visitIntval_oct(CodeCParser::Intval_octContext *ctx) override
+  {
+    return (long) (int) std::stoi(ctx->INTOCT()->getText().c_str()+1,0,8);
   }
 
   virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override
