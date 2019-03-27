@@ -23,8 +23,13 @@ expression: expression OPMULT expression #mult_expr
 	//| '-' expression #neg_expr
 	| IDENT OPAFF expression #affect_expr
 	| '('expression')' #parenth_expr
-	| INTVAL #const
+	| intval #const
 	| IDENT #variable;
+
+intval : INTDEC #intval_dec
+        | INTHEX #intval_hex
+        | INTBIN #intval_bin
+        | INTOCT #intval_oct;
 
 instrreturn: 'return' expression #return_expr
 	| 'return' #return_void;
@@ -34,12 +39,21 @@ type: 'int';
 parameters: '(' ')' ;
 
 
-INTVAL : [0-9]+;
-IDENT : [a-zA-Z][a-zA-Z0-9]*;
+INTDEC : [1-9][0-9]*;
+INTHEX : '0x'[0-9A-F]+;
+INTBIN : '0b'[01]+;
+INTOCT :'0'[0-7]+;
+IDENT : [a-zA-Z][a-zA-Z0-9_]*;
 
 OPMULT : [*/];
 OPADD : [+-];
-OPAFF : [=];
+OPAFF : '=';
+
+COMMENTMULT : '/*' .* '*/' -> skip;
+COMMENT: '//' ~('\n')* '\n' -> skip;
 
 WS: [ \n\t\r] -> skip; 
+
+INCLUDE : '#' ~[\n]* -> skip;
+
 
