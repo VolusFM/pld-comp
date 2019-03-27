@@ -45,7 +45,10 @@ IDENT : [a-zA-Z][a-zA-Z0-9_]*;
 
 OPMULT : [*/];
 OPADD : [+-];
-OPAFF : [=];
+OPAFF : '=';
+
+COMMENTMULT : '/*' .* '*/' -> skip;
+COMMENT: '//' ~('\n')* '\n' -> skip;
 
 WS: [ \n\t\r] -> skip; 
 
