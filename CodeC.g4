@@ -49,3 +49,6 @@ OPAFF : [=];
 
 WS: [ \n\t\r] -> skip; 
 
+INCLUDE : '#' ~[\n]* -> skip;
+
+
