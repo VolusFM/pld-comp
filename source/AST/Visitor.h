@@ -13,6 +13,7 @@ using std::vector;
 #include "CExpression.h"
 #include "CInstrReturn.h"
 #include "CInstrVariable.h"
+#include "CInstrVariableMulti.h"
 #include "CInstrExpression.h"
 
 class Visitor : public CodeCBaseVisitor
@@ -89,23 +90,32 @@ public:
     
     virtual antlrcpp::Any visitInstr_def(CodeCParser::Instr_defContext *ctx)
             override {
-        return (CInstruction*) ((CInstrVariable*) visit(ctx->vardefinition()));
+        return (CInstruction*) ((CInstrVariableMulti*) visit(ctx->vardefinition()));
     }
-    
-    virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx) override {
+
+    virtual antlrcpp::Any visitVardefinition(CodeCParser::VardefinitionContext *ctx) override{
+        string type = ctx->type()->getText();
+        vector<CInstrVariable*> varDefs;
+
+        for (auto ctx_varDef : ctx->vardefinitionmult()){
+            varDefs.push_back((CInstrVariable*) visit(ctx_varDef));
+            varDefs.back()->setType(type);
+        }
+
+        return new CInstrVariableMulti(vector<CInstrVariable*>(varDefs));
+    }
+
+    virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx) override{
         string name = ctx->IDENT()->getText();
-        CInstrVariable* var = new CInstrVariable("int", name);
-        return var;
+        return new CInstrVariable(name);
     }
-    
-  virtual antlrcpp::Any visitDef_var_with_expr(
-      CodeCParser::Def_var_with_exprContext *ctx) override {
+
+    virtual antlrcpp::Any visitDef_var_with_expr(CodeCParser::Def_var_with_exprContext *ctx) override{
         string name = ctx->IDENT()->getText();
         CExpression* expr = (CExpression*) visit(ctx->expression());
-        CInstrVariable* var = new CInstrVariable("int", name, expr);
-        return var;
-  }
-  
+        return new CInstrVariable(name, expr);
+    }
+    
   virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx)
       override
   {

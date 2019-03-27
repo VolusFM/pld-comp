@@ -13,8 +13,10 @@ instruction: instrreturn ';' #return
 	| vardefinition ';' #instr_def
 	| expression ';' #instr_expr;
 
-vardefinition: type IDENT #def_var
-	| type IDENT '=' expression #def_var_with_expr;
+vardefinition: type vardefinitionmult (','vardefinitionmult)*;
+
+vardefinitionmult : IDENT #def_var
+    | IDENT '=' expression	#def_var_with_expr;
 
 expression: expression OPMULT expression #mult_expr
 	| expression OPADD expression #add_expr

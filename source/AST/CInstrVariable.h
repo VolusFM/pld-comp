@@ -9,10 +9,13 @@ typedef string CType;
 
 class CInstrVariable: public CInstruction {
 public:
-    CInstrVariable(CType type, string name);
-    CInstrVariable(CType type, string name, CExpression * expr);
+    CInstrVariable(string name);
+    CInstrVariable(string name, CExpression * expr);
     ~CInstrVariable();
     string to_asm(const CFunction * f) const;
+    string getType() const;
+    string getName() const;
+    void setType(string type);
     
     CType type;
     string name;

@@ -1,6 +1,7 @@
 #include "CFunction.h"
 
 #include "CInstrVariable.h"
+#include "CInstrVariableMulti.h"
 #include "CInstrExpression.h"
 #include "CExpression.h"
 
@@ -73,11 +74,13 @@ string CFunction::tos_add_temp(CType type) {
 void CFunction::fill_tos(CInstructions& block) {
     for (auto it = block.instructions.begin(); it != block.instructions.end(); ++it) {
         const CInstruction* i = *it;
-        const CInstrVariable* instrVar = dynamic_cast<const CInstrVariable*>(i);
-        if (instrVar != nullptr) {
-            string variable = instrVar->name;
-            tos.push_back(variable);
-            tosType[variable] = "int";
+        const CInstrVariableMulti* instrVars = dynamic_cast<const CInstrVariableMulti*>(i);
+        if (instrVars != nullptr) {
+            for (auto instrVar: instrVars->varDefs ){
+                string variable = instrVar->name;
+                tos.push_back(variable);
+                tosType[variable] = instrVar->type;
+            }
         }
     }
 }
