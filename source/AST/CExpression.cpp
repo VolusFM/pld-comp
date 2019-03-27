@@ -70,22 +70,19 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         variable = lhsvar;
     } else {
         variable = f->tos_addr(f->tos_add_temp("int"));
+        code += "  movl  " + lhsvar + ", %eax\n";
         if (op == "*") {
-            code += "  movl  " + rhsvar + ", %eax\n";
-            code += "  imull " + lhsvar + ", %eax\n";
+            code += "  imull " + rhsvar + ", %eax\n";
         }
         if (op == "/") {
-            code += "  movl  " + lhsvar + ", %eax\n";
             code += "  cltd\n"; // convert values to long double
             code += "  idivl " + rhsvar + "\n"; // do the division
         }
         if (op == "+") {
-            code += "  movl  " + rhsvar + ", %eax\n";
-            code += "  addl " + lhsvar + ", %eax \n";
+            code += "  addl " + rhsvar + ", %eax \n";
         }
         if (op == "-") {
-            code += "  movl  " + rhsvar + ", %eax\n";
-            code += "  subl  %eax, " + lhsvar + "\n";
+            code += "  subl  " + rhsvar + ", %eax\n";
         }
         code += "  movl %eax, " + variable + "\n";
     }
