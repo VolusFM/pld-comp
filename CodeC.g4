@@ -45,7 +45,7 @@ IDENT : [a-zA-Z][a-zA-Z0-9_]*;
 
 OPMULT : [*/];
 OPADD : [+-];
-OPAFF : [=];
+OPAFF : '=';
 
 WS: [ \n\t\r] -> skip; 
 
