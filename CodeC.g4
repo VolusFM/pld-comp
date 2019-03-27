@@ -39,5 +39,7 @@ OPMULT : [*/];
 OPADD : [+-];
 OPAFF : [=];
 
+COMMENT : '/*' .* '*/' -> skip;
+
 WS: [ \n\t\r] -> skip; 
 
