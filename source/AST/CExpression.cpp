@@ -87,7 +87,7 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
             code += "  movl  " + rhsvar + ", %eax\n";
             code += "  subl  %eax, " + lhsvar + "\n";
         }
-        code += "  movl %eax, " + variable;
+        code += "  movl %eax, " + variable + "\n";
     }
     return pair<string, string>(code, variable);
 }
