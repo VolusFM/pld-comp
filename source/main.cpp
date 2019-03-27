@@ -4,6 +4,9 @@ using std::cerr;
 using std::endl;
 #include <fstream>
 using std::ifstream;
+using std::ofstream;
+
+#include <cstring>
 
 #include "antlr4-runtime.h"
 #include "antlr/CodeCLexer.h"
@@ -15,20 +18,61 @@ using std::ifstream;
 
 using namespace antlr4;
 
+bool staticAnalysis = false;
+bool simplifyProgram = false;
+
+bool incorrectSyntax(int argc, const char* argv[]) {
+    return (argc < 3 || strcmp(argv[argc - 1], "-o") == 0
+            || strcmp(argv[argc - 1], "-a") == 0);
+}
+
 int main(int argc, const char* argv[]) {
 
-    if (argc < 2) {
-        cerr << "Error: missing input file parameter." << endl;
+    if (incorrectSyntax(argc, argv)) {
+        cerr
+                << "Syntax: yottacompilatron9001 <c_file> [-o -a] <destination_file>"
+                << endl;
         exit (EXIT_FAILURE);
     }
 
-    ifstream stream(argv[1]);
+    int i = 2;
 
-    ANTLRInputStream input(stream);
+    while (i < argc) { // Check if there are options
+        if (strcmp(argv[i], "-o") == 0) {
+            cout << "Detected -o option (will be implemented later!)" << endl;
+            simplifyProgram = true;
+        }
+        if (strcmp(argv[i], "-a") == 0) {
+            cout << "Detected -a option (will be implemented later!)" << endl;
+            staticAnalysis = true;
+        }
+        i++;
+    }
+
+    ifstream ifs(argv[1]);
+
+    if (!ifs.is_open()) {
+        cerr
+                << "Error: input file cannot be opened (did you check the file exists and you have the permission to read it ?)."
+                << endl;
+        exit (EXIT_FAILURE);
+    }
+
+    ofstream ofs(argv[argc - 1]);
+
+    if (!ofs.is_open()) {
+        cerr
+                << "Error: output file cannot be opened (did you check you have the permission to write there ?)."
+                << endl;
+        exit (EXIT_FAILURE);
+    }
+
+    ANTLRInputStream input(ifs);
     CodeCLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
     CodeCParser parser(&tokens);
     tree::ParseTree* tree = parser.prog();
+    ifs.close();
 
     if (parser.getNumberOfSyntaxErrors() > 0) {
         cerr << "Error: incorrect syntax in the input file." << endl;
@@ -37,8 +81,9 @@ int main(int argc, const char* argv[]) {
 
     Visitor visitor;
     CProg* result = visitor.visit(tree);
-    cout << result->to_asm() << endl;
+    ofs << result->to_asm() << endl;
     delete result;
+    ofs.close();
 
     return 0;
 }
