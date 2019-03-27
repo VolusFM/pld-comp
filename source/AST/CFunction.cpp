@@ -6,11 +6,11 @@
 
 using std::to_string;
 
-CFunction::CFunction(string name, CInstructions& block_)
-: name(name) {
+CFunction::CFunction(string name, CInstructions& block_) :
+        name(name) {
     temp_id = 0;
     tosOffset = 0;
-    
+
     block = std::move(block_);
     block_.instructions.clear();
 }
@@ -49,7 +49,7 @@ void CFunction::fill_tos() {
         tosOffset -= 4;
         tosAddress[i] = tosOffset;
     }
-	
+
     // code += "sub rsp, "
     // arrondi supérieur ou égal de offset
     // pour obtenir un multiple de 16, pour appel de fonction
@@ -57,7 +57,7 @@ void CFunction::fill_tos() {
 
 string CFunction::tos_addr(string variable) const {
     int addr = tosAddress.at(variable);
-    return to_string(addr)+"(%rbp)";
+    return to_string(addr) + "(%rbp)";
 }
 
 string CFunction::tos_add_temp(CType type) {
@@ -71,7 +71,8 @@ string CFunction::tos_add_temp(CType type) {
 }
 
 void CFunction::fill_tos(CInstructions& block) {
-    for (auto it = block.instructions.begin(); it != block.instructions.end(); ++it) {
+    for (auto it = block.instructions.begin(); it != block.instructions.end();
+            ++it) {
         const CInstruction* i = *it;
         const CInstrVariable* instrVar = dynamic_cast<const CInstrVariable*>(i);
         if (instrVar != nullptr) {
