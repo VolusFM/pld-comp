@@ -70,28 +70,25 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         variable = lhsvar;
     } else {
         variable = f->tos_addr(f->tos_add_temp("int"));
-        string dest = variable;
-        variable = "%eax"; // begin bricolage
         if (op == "*") {
-            code += "  movl  " + rhsvar + ", " + variable + "\n";
-            code += "  imull " + lhsvar + ", " + variable + "\n";
+            code += "  movl  " + rhsvar + ", %eax\n";
+            code += "  imull " + lhsvar + ", %eax\n";
         }
         if (op == "/") {
-            // this move needs to be done the other way around
-            code += "  movl  " + lhsvar + ", " + variable + "\n";
+            code += "  movl  " + lhsvar + ", %eax\n";
             code += "  cltd\n"; // convert values to long double
             code += "  idivl " + rhsvar + "\n"; // do the division
             code += "  movl %eax, " + dest + "\n"; // put result in dest
         }
         if (op == "+") {
-            code += "  movl  " + rhsvar + ", " + variable + "\n";
-            code += "  addl  " + variable + ", " + lhsvar + "\n";
+            code += "  movl  " + rhsvar + ", %eax\n";
+            code += "  addl  %eax, " + lhsvar + "\n";
         }
         if (op == "-") {
-            code += "  movl  " + rhsvar + ", " + variable + "\n";
-            code += "  subl  " + variable + ", " + lhsvar + "\n";
+            code += "  movl  " + rhsvar + ", %eax\n";
+            code += "  subl  %eax, " + lhsvar + "\n";
         }
-        variable = dest; // end bricolage
+        code += "  movl %eax, " + variable;
     }
     return pair<string, string>(code, variable);
 }
