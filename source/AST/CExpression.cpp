@@ -81,7 +81,7 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         }
         if (op == "+") {
             code += "  movl  " + rhsvar + ", %eax\n";
-            code += "  addl  %eax, " + lhsvar + "\n";
+            code += "  addl " + lhsvar + ", %eax \n";
         }
         if (op == "-") {
             code += "  movl  " + rhsvar + ", %eax\n";
