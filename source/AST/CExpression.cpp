@@ -78,7 +78,6 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
             code += "  movl  " + lhsvar + ", %eax\n";
             code += "  cltd\n"; // convert values to long double
             code += "  idivl " + rhsvar + "\n"; // do the division
-            code += "  movl %eax, " + dest + "\n"; // put result in dest
         }
         if (op == "+") {
             code += "  movl  " + rhsvar + ", %eax\n";
