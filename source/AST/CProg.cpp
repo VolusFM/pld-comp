@@ -4,8 +4,12 @@ string CProg::to_asm() const {
     string code;
     code += ".text\n";
     code += ".global main\n";
-    for (const CFunction & f : functions) {
-        code += f.to_asm();
+    try{
+        for (const CFunction & f : functions) {
+            code += f.to_asm();
+        }
+    }catch(std::exception const& e){
+        cerr << "ERROR : couldn't generate assembly code"<< endl;
     }
     return code;
 }
