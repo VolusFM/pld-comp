@@ -146,10 +146,12 @@ public:
     return (long) (int) std::stoi(ctx->INTOCT()->getText().c_str()+1,0,8);
   }
 
-    virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override
-    {
-        return visitChildren(ctx);
-    }
+  
+
+  virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override
+	{
+		return visitChildren(ctx);
+	}
 
     virtual antlrcpp::Any visitParameters(CodeCParser::ParametersContext *ctx)
             override
