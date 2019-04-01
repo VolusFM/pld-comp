@@ -1,17 +1,18 @@
 grammar CodeC;
 
+
 prog: function*;
 
 function: functionheader instructionsblock;
 
 functionheader: type IDENT parameters;
 
-anyinstruction: instructionsblock
-	| instruction
-	| ';'; // Empty instruction
+
+anyinstruction: instructionsblock // some instructions
+	| instruction // one instruction
+	| ';'; // no instructions
 
 instructionsblock: '{' instruction* '}';
-// instructions: instruction*; TODO: why is this here?
 
 instruction: instrreturn ';' #return
 	| vardefinition ';' #instr_def
@@ -19,12 +20,12 @@ instruction: instrreturn ';' #return
 	| ifblock #if_block
 	| whileblock #while_block;
 
-ifblock: 'if' '(' expression ')' anyinstruction elseblock?;
 
-elseblock: 'else' anyinstruction #else_block;
-// No need to handle else if blocks as the first rule already does it
+ifblock: 'if' '(' expression ')' anyinstruction elseblock?;
+elseblock: 'else' anyinstruction;
 
 whileblock: 'while' '(' expression ')' anyinstruction;
+
 
 vardefinition: type vardefinitionmult (','vardefinitionmult)*;
 
@@ -85,6 +86,7 @@ OPBINARYOR : '|';
 OPAND : '&&';
 OPOR : '||';
 OPAFF : '=';
+
 
 COMMENTMULT : '/*' .*? '*/' -> skip;
 COMMENT: '//' ~('\n')* -> skip;
