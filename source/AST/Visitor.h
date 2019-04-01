@@ -35,7 +35,7 @@ public:
     virtual antlrcpp::Any visitFunction(CodeCParser::FunctionContext *ctx)
             override {
         string name = visit(ctx->functionheader());
-        CInstructions* block = (CInstructions*) visit(ctx->instructionsbloc());
+        CInstructions* block = (CInstructions*) visit(ctx->instructionsblock());
         CFunction* func = new CFunction(name, *block);
         func->fill_tos();
         delete block;
@@ -48,8 +48,8 @@ public:
         return s;
     }
 
-    virtual antlrcpp::Any visitInstructionsbloc(
-            CodeCParser::InstructionsblocContext *ctx) override {
+    virtual antlrcpp::Any visitInstructionsblock(
+            CodeCParser::InstructionsblockContext *ctx) override {
         vector<CInstruction*>* instructions = (vector<CInstruction*>*) visit(
                 ctx->instructions());
         CInstructions* block = new CInstructions(*instructions);
@@ -87,14 +87,16 @@ public:
 
     virtual antlrcpp::Any visitInstr_def(CodeCParser::Instr_defContext *ctx)
             override {
-        return (CInstruction*) ((CInstrVariableMulti*) visit(ctx->vardefinition()));
+        return (CInstruction*) ((CInstrVariableMulti*) visit(
+                ctx->vardefinition()));
     }
 
-    virtual antlrcpp::Any visitVardefinition(CodeCParser::VardefinitionContext *ctx) override{
+    virtual antlrcpp::Any visitVardefinition(
+            CodeCParser::VardefinitionContext *ctx) override {
         string type = ctx->type()->getText();
         vector<CInstrVariable*> varDefs;
 
-        for (auto ctx_varDef : ctx->vardefinitionmult()){
+        for (auto ctx_varDef : ctx->vardefinitionmult()) {
             varDefs.push_back((CInstrVariable*) visit(ctx_varDef));
             varDefs.back()->setType(type);
         }
@@ -107,7 +109,8 @@ public:
         return new CInstrVariable(name);
     }
 
-    virtual antlrcpp::Any visitDef_var_with_expr(CodeCParser::Def_var_with_exprContext *ctx) override{
+    virtual antlrcpp::Any visitDef_var_with_expr(
+            CodeCParser::Def_var_with_exprContext *ctx) override {
         string name = ctx->IDENT()->getText();
         CExpression* expr = (CExpression*) visit(ctx->expression());
         return new CInstrVariable(name, expr);
@@ -128,31 +131,38 @@ public:
     }
 
     virtual antlrcpp::Any visitConst(CodeCParser::ConstContext *ctx) override
-  {
-    CExpressionInt *expr = new CExpressionInt(
-        (int) (long) visit(ctx->intval()));
-    return (CExpression *)expr;
-  }
+    {
+        CExpressionInt *expr = new CExpressionInt(
+                (int) (long) visit(ctx->intval()));
+        return (CExpression *) expr;
+    }
 
-  virtual antlrcpp::Any visitIntval_dec(CodeCParser::Intval_decContext *ctx) override
-  {
-    return (long) (int) std::stoi(ctx->INTDEC()->getText());
-  }
+    virtual antlrcpp::Any visitIntval_dec(CodeCParser::Intval_decContext *ctx)
+            override
+            {
+        return (long) (int) std::stoi(ctx->INTDEC()->getText());
+    }
 
-  virtual antlrcpp::Any visitIntval_hex(CodeCParser::Intval_hexContext *ctx) override
-  {
-    return (long) (int) std::stoi(ctx->INTHEX()->getText().c_str()+2,0,16);
-  }
+    virtual antlrcpp::Any visitIntval_hex(CodeCParser::Intval_hexContext *ctx)
+            override
+            {
+        return (long) (int) std::stoi(ctx->INTHEX()->getText().c_str() + 2, 0,
+                16);
+    }
 
-  virtual antlrcpp::Any visitIntval_bin(CodeCParser::Intval_binContext *ctx) override
-  {
-    return (long) (int) std::stoi(ctx->INTBIN()->getText().c_str()+2,0,2);
-  }
+    virtual antlrcpp::Any visitIntval_bin(CodeCParser::Intval_binContext *ctx)
+            override
+            {
+        return (long) (int) std::stoi(ctx->INTBIN()->getText().c_str() + 2, 0,
+                2);
+    }
 
-  virtual antlrcpp::Any visitIntval_oct(CodeCParser::Intval_octContext *ctx) override
-  {
-    return (long) (int) std::stoi(ctx->INTOCT()->getText().c_str()+1,0,8);
-  }
+    virtual antlrcpp::Any visitIntval_oct(CodeCParser::Intval_octContext *ctx)
+            override
+            {
+        return (long) (int) std::stoi(ctx->INTOCT()->getText().c_str() + 1, 0,
+                8);
+    }
 
     virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override
     {

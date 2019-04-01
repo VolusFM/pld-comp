@@ -8,7 +8,10 @@ antlr/
 code_antlr/
 code_visitors/
 
+# output
 yottacompilatron9001
+exe
+*.s
 
 sandbox/
 *.dSYM
