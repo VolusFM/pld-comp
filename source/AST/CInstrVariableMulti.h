@@ -17,5 +17,7 @@ public:
     vector <CInstrVariable*> varDefs;
     
 private: // no copy wanted
+    CInstrVariableMulti(const CInstrVariableMulti&); // no implementation
+    CInstrVariableMulti& operator=(const CInstrVariableMulti&); // no implementation
 };
 
