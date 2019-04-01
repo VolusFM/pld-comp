@@ -8,8 +8,7 @@ using std::vector;
 using std::map;
 
 #include "CInstruction.h"
-
-typedef string CType;
+#include "CType.h"
 
 class CFunction {
 public:

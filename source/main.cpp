@@ -15,6 +15,7 @@ using std::ofstream;
 
 #include "AST/Visitor.h"
 #include "AST/CProg.h"
+#include "IR/IR.h"
 
 using namespace antlr4;
 

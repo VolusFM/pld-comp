@@ -5,7 +5,7 @@ using std::string;
 
 #include "CInstruction.h"
 #include "CExpression.h"
-typedef string CType;
+#include "CType.h"
 
 class CInstrVariable: public CInstruction {
 public:
