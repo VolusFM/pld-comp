@@ -11,9 +11,11 @@ using std::ostream;
 // declarations from the parser
 #include "../AST/CType.h"
 // #include "../symbole.h"
+class CFunction;
+
+class IRInstr;
 class BasicBlock;
 class CFG;
-class DefFonction;
 
 // class for one 3-address instruction
 class IRInstr {
@@ -90,9 +92,9 @@ protected:
 // class for the control flow graph, also includes the symbol table
 class CFG {
 public:
-    CFG(DefFonction* ast);
+    CFG(CFunction* ast);
     
-    DefFonction* ast; /**< The AST this CFG comes from */
+    CFunction* ast; /**< The AST this CFG comes from */
     
     void add_bb(BasicBlock* bb); 
     
