@@ -50,22 +50,15 @@ public:
 
     virtual antlrcpp::Any visitInstructionsblock(
             CodeCParser::InstructionsblockContext *ctx) override {
-        vector<CInstruction*>* instructions = (vector<CInstruction*>*) visit(
-                ctx->instructions());
-        CInstructions* block = new CInstructions(*instructions);
-        delete instructions;
-        return block;
-    }
-
-    virtual antlrcpp::Any visitInstructions(
-            CodeCParser::InstructionsContext *ctx) override {
-        vector<CInstruction*> instructions;
+        vector<CInstruction*> instructionsBlock;
 
         for (auto ctx_instr : ctx->instruction()) {
-            instructions.push_back((CInstruction*) visit(ctx_instr));
+            instructionsBlock.push_back((CInstruction*) visit(ctx_instr));
         }
 
-        return new vector<CInstruction*>(instructions);
+        CInstructions* block = new CInstructions(instructionsBlock);
+
+        return block;
     }
 
     virtual antlrcpp::Any visitReturn(CodeCParser::ReturnContext *ctx)
