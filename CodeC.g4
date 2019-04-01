@@ -84,10 +84,7 @@ OPOR : '||';
 OPAFF : '=';
 
 COMMENTMULT : '/*' .*? '*/' -> skip;
-COMMENT: '//' ~('\n')* '\n' -> skip;
+COMMENT: '//' ~('\n')* -> skip;
+INCLUDE : '#' ~('\n')* -> skip;
 
 WS: [ \n\t\r] -> skip; 
-
-INCLUDE : '#' ~[\n]* -> skip;
-
-
