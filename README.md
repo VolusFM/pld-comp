@@ -1,5 +1,11 @@
 # yottacompilatron9001
-Ce projet a pour but de développer en C++ un compilateur sur une version restreinte du langage C.
+**yottacompilatron9001** is a compiler for a subset of C.
 
-## Utilisation
-Syntaxe : `yottacompilatron9001 <input.c> [-a] [-o] <output.s>`
+## Usage
+Syntax: `yottacompilatron9001 <input.c> [-a] [-o] [-c [<output.s>]]`
+
+The command line arguments are:
+  * `-a` : enables static analysis
+  * `-o` : enables (basic) optimizations
+  * `-c` : produces assembly code output
+
