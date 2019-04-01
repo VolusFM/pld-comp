@@ -92,7 +92,8 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         if (op == "-") {
             code += "  subl  " + rhsvar + ", %eax\n";
         }
-        if (op == "<" || op == "<=" || op == ">" || op == ">=") {
+        if (op == "<" || op == "<=" || op == ">" || op == ">=" || op == "=="
+                || op == "!=") {
             code += "  cmpl  " + rhsvar + ", %eax\n";
             if (op == "<") {
                 code += "  setl";
@@ -105,6 +106,12 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
             }
             if (op == ">=") {
                 code += "  setge";
+            }
+            if (op == "==") {
+                code += "  sete";
+            }
+            if (op == "!=") {
+                code += "  setne";
             }
             code += "  %al\n";
             code += "  movzbl  %al, %eax\n";
