@@ -16,7 +16,7 @@ public:
     ~CFunction();
 
     string to_asm() const;
-
+    
     string name;
 
     vector<string> tos;

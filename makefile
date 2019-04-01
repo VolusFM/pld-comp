@@ -18,6 +18,11 @@ OBJS_ANTLR = objects/antlr
 
 BINARY = yottacompilatron9001
 
+#files
+
+SRC = CExpression.cpp CFunction.cpp CInstrExpression.cpp CInstrReturn.cpp CInstruction.cpp CInstrVariable.cpp CInstrVariableMulti.cpp CProg.cpp
+OBJ = $(addprefix $(OBJS_AST)/,$(SRC:.cpp=.o))
+
 # tools and paths
 
 JAVA = /usr/bin/java
@@ -63,6 +68,24 @@ endif
 
 all : $(GRAM) $(OBJECTS) $(EXE)
 
+$(OBJS_AST)/CExpression.o : $(SOURCE_AST)/CExpression.h $(SOURCE_AST)/CFunction.h
+$(OBJS_AST)/CFunction.o : $(SOURCE_AST)/CFunction.h $(SOURCE_AST)/CInstrVariableMulti.h
+$(OBJS_AST)/CInstrExpression.o : $(SOURCE_AST)/CInstrExpression.h
+$(OBJS_AST)/CInstrReturn.o : $(SOURCE_AST)/CInstrReturn.h
+$(OBJS_AST)/CInstruction.o : $(SOURCE_AST)/CInstruction.h
+$(OBJS_AST)/CInstrVariable.o : $(SOURCE_AST)/CInstrVariable.h
+$(OBJS_AST)/CInstrVariableMulti.o : $(SOURCE_AST)/CInstrVariableMulti.h
+$(OBJS_AST)/CProg.o : $(SOURCE_AST)/CProg.h
+
+$(OBJS_AST):
+	mkdir -p $(OBJS_AST)
+
+$(OBJS_AST)/%.o : $(SOURCE_AST)/%.cpp
+	mkdir -p $(OBJS_AST)
+	$(ECHO) "making $*.o"
+	$(CPPC) $(COMPFLAGS) $< -c
+	mv *.o $(OBJS_AST)
+
 $(GRAM) : $(GRAM_FILECHECK)
 $(GRAM_FILECHECK) : $(GRAM_FILE)
 	$(ECHO) "building grammar"
@@ -77,9 +100,9 @@ $(OBJS_FILECHECK) : $(GRAM_FILECHECK)
 	$(CPPC) $(COMPFLAGS) $(SOURCE_ANTLR)/*.cpp -c
 	mv *.o $(OBJS_ANTLR)
 
-$(EXE):
+$(EXE): $(OBJ)
 	$(ECHO) "building binary"
-	$(CPPC) $(COMPFLAGS) $(SOURCEDIR)/*.cpp $(SOURCE_AST)/*.cpp $(OBJS_ANTLR)/*.o $(ANTLRLIBRUNTIME) -o $(BINARY)
+	$(CPPC) $(COMPFLAGS) $(SOURCEDIR)/*.cpp $(OBJS_AST)/*.o $(OBJS_ANTLR)/*.o $(ANTLRLIBRUNTIME) -o $(BINARY)
 	$(STRIP)
 
 $(CLEAN) :

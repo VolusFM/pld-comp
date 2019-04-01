@@ -1,1 +1,3 @@
-../../yottacompilatron9001 input.c -o sortie.txt
+../../yottacompilatron9001 input.c -o sortie.s
+gcc sortie.s
+echo $?
