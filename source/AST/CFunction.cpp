@@ -4,8 +4,8 @@
 
 using std::to_string;
 
-CFunction::CFunction(string name, CInstructions& block_) :
-        name(name) {
+CFunction::CFunction(string name, vector<CParameter> parameters, CInstructions& block_) :
+        name(name), parameters(parameters){
     temp_id = 0;
     tosOffset = 0;
 
@@ -40,6 +40,7 @@ string CFunction::to_asm() const {
 
 void CFunction::fill_tos() {
     fill_tos(block);
+    fill_tos(parameters);
 
     for (const string& i : tos) {
         //code += "  # variable " + tosType.at(i) + " " + i + "\n";
@@ -68,18 +69,34 @@ string CFunction::tos_add_temp(CType type) {
     return name;
 }
 
+void CFunction::tos_add(string name, CType type) {
+    tos.push_back(name);
+    tosType[name] = type;
+}
+
 void CFunction::fill_tos(CInstructions& block) {
+
     for (auto it = block.instructions.begin(); it != block.instructions.end();
             ++it) {
         const CInstruction* i = *it;
         const CInstrVariableMulti* instrVars = dynamic_cast<const CInstrVariableMulti*>(i);
         if (instrVars != nullptr) {
             for (auto instrVar: instrVars->varDefs ){
-                string variable = instrVar->name;
-                tos.push_back(variable);
-                tosType[variable] = instrVar->type;
+                tos_add(instrVar->name, instrVar->type);
             }
         }
     }
 }
+
+void CFunction::fill_tos(vector<CParameter>& parameters) {
+    for(auto it = parameters.begin(); it!= parameters.end(); ++it) {
+        const CParameter& param = *it;
+        tos_add(param.name, param.type);
+    }    
+}
+
+
+
+
+
 

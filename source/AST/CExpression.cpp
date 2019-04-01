@@ -39,10 +39,10 @@ CExpressionVar::CExpressionVar(string variable) :
 
 pair<string, string> CExpressionVar::to_asm(CFunction* f) const {
     string ret;
-    try{
+    try {
         ret = f->tos_addr(variable);
-    }catch(std::exception const& e){
-        cerr << "ERROR : reference to undeclared variable " + variable <<endl;
+    } catch (std::exception const& e) {
+        cerr << "ERROR : reference to undeclared variable " + variable << endl;
         throw e;
     }
     return pair<string, string>("", ret);
@@ -82,7 +82,7 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         if (op == "*") {
             code += "  imull " + rhsvar + ", %eax\n";
         }
-        if (op == "/") {
+        if (op == "/" || op == "%") {
             code += "  cltd\n"; // convert values to long double
             code += "  idivl " + rhsvar + "\n"; // do the division
         }
@@ -92,7 +92,46 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         if (op == "-") {
             code += "  subl  " + rhsvar + ", %eax\n";
         }
-        code += "  movl  %eax, " + variable + "\n";
+        if (op == "<" || op == "<=" || op == ">" || op == ">=" || op == "=="
+                || op == "!=") {
+            code += "  cmpl  " + rhsvar + ", %eax\n";
+            if (op == "<") {
+                code += "  setl";
+            }
+            if (op == "<=") {
+                code += "  setle";
+            }
+            if (op == ">") {
+                code += "  setg";
+            }
+            if (op == ">=") {
+                code += "  setge";
+            }
+            if (op == "==") {
+                code += "  sete";
+            }
+            if (op == "!=") {
+                code += "  setne";
+            }
+            code += "  %al\n";
+            code += "  movzbl  %al, %eax\n";
+        }
+        if (op == "&") {
+            code += "  andl  " + rhsvar + ", %eax\n";
+        }
+        if (op == "|") {
+            code += "  orl  " + rhsvar + ", %eax\n";
+        }
+        if (op == "^") {
+            code += "  xorl  " + rhsvar + ", %eax\n";
+        }
+
+        if (op == "%") {
+            code += "  movl  %edx, ";
+        } else {
+            code += "  movl  %eax, ";
+        }
+        code += variable + "\n";
     }
     return pair<string, string>(code, variable);
 }

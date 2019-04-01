@@ -32,7 +32,7 @@ vardefinitionmult : IDENT #def_var
     | IDENT '=' expression	#def_var_with_expr;
 
 expression: (OPADD|OPSUB) expression #unary_expr
-	| expression (OPMULT|OPDIV) expression #mult_expr
+	| expression (OPMULT|OPDIV|OPMOD) expression #mult_expr
 	| expression (OPADD|OPSUB) expression #add_expr
 	// In C, boolean type doesn't exist and we use integers instead
 	| expression (OPRELATIONINF|OPRELATIONINFEQUAL|OPRELATIONSUP|OPRELATIONSUPEQUAL) expression #relational_expr
@@ -57,7 +57,9 @@ instrreturn: 'return' expression #return_expr
 
 type: 'int' | 'char' ;
 
-parameters: '(' ')' ;
+parameters: '(' (singleparameter (',' singleparameter)*)? ')';
+
+singleparameter : type IDENT;
 
 
 INTDEC : [1-9][0-9]*;
@@ -68,6 +70,7 @@ IDENT : [a-zA-Z][a-zA-Z0-9_]*;
 
 OPMULT : '*';
 OPDIV : '/';
+OPMOD : '%';
 OPADD : '+';
 OPSUB : '-';
 OPRELATIONINF : '<';
