@@ -36,7 +36,9 @@ instrreturn: 'return' expression #return_expr
 
 type: 'int' | 'char' ;
 
-parameters: '(' ')' ;
+parameters: '(' (singleparameter (',' singleparameter)*)? ')';
+
+singleparameter : type IDENT;
 
 
 INTDEC : [1-9][0-9]*;
