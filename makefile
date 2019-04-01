@@ -33,6 +33,8 @@ GRAMFLAGS = -visitor -no-listener -Dlanguage=Cpp
 COMPFLAGS = -DTRACE -g -std=c++11 -I $(ANTLRRUNTIME)
 CPPC = clang++
 
+STRIP = strip $(BINARY)
+
 OSNAME = LINUX
 ifeq ($(OS),Windows_NT)
 	OSNAME = WINDOWS
@@ -40,6 +42,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Darwin)
 		OSNAME = MAC
+		STRIP = 
 	endif
 endif
 
@@ -51,9 +54,9 @@ ANTLRLIBRUNTIME = $(ANTLRDIR)/lib/libantlr4-runtime.a
 # make USE="g++"
 # to compile on IF computers without clang++
 ifeq ($(USE),g++)
-CPPC = g++-6 -Wno-attributes
-ANTLRRUNTIME = /shares/public/tp/antlr/antlr4-runtime
-ANTLRLIBRUNTIME = /shares/public/tp/antlr/lib/libantlr4-runtime.a
+	CPPC = g++-6 -Wno-attributes
+	ANTLRRUNTIME = /shares/public/tp/antlr/antlr4-runtime
+	ANTLRLIBRUNTIME = /shares/public/tp/antlr/lib/libantlr4-runtime.a
 endif
 
 .PHONY : $(GRAM) $(OBJECTS) $(EXE) $(CLEAN)
@@ -77,7 +80,7 @@ $(OBJS_FILECHECK) : $(GRAM_FILECHECK)
 $(EXE):
 	$(ECHO) "building binary"
 	$(CPPC) $(COMPFLAGS) $(SOURCEDIR)/*.cpp $(SOURCE_AST)/*.cpp $(OBJS_ANTLR)/*.o $(ANTLRLIBRUNTIME) -o $(BINARY)
-	strip $(BINARY)
+	$(STRIP)
 
 $(CLEAN) :
 	$(ECHO) "cleaning"

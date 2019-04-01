@@ -1,0 +1,1 @@
+Detected -o option (will be implemented later!)
