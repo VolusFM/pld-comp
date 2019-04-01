@@ -1,16 +1,21 @@
 #pragma once
 
 #include <vector>
+using std::vector;
 #include <string>
+using std::string;
 #include <iostream>
-#include <initializer_list>
+using std::ostream;
+// #include <initializer_list>
 
 // declarations from the parser
-#include "../CType.h"
-#include "symbole.h"
+#include "../AST/CType.h"
+// #include "../symbole.h"
+class CFunction;
+
+class IRInstr;
 class BasicBlock;
 class CFG;
-class DefFonction;
 
 // class for one 3-address instruction
 class IRInstr {
@@ -30,7 +35,7 @@ public:
     } Operation;
     
     /* constructor */
-    IRInstr(BasicBlock* bb_, Operation op, Type t, vector<string> params);
+    IRInstr(BasicBlock* bb_, Operation op, CType t, vector<string> params);
     
     /* code generation */
     void gen_asm_x86(ostream &o); /* x86 assembly code generation for this IR instruction */
@@ -38,7 +43,7 @@ public:
 private:
     BasicBlock* bb; /* the BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
     Operation op;
-    Type t;
+    CType t;
     
     vector<string> params;
     /*
@@ -67,7 +72,7 @@ public:
     BasicBlock(CFG* cfg, string entry_label);
     void gen_asm_x86(ostream &o); /* x86 assembly code generation for this basic block */
     
-    void add_IRInstr(IRInstr::Operation op, Type t, vector<string> params);
+    void add_IRInstr(IRInstr::Operation op, CType t, vector<string> params);
     
     BasicBlock* exit_true;  /* pointer to the next basic block, true branch. If nullptr, return from procedure */ 
     BasicBlock* exit_false; /* pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
@@ -87,9 +92,9 @@ protected:
 // class for the control flow graph, also includes the symbol table
 class CFG {
 public:
-    CFG(DefFonction* ast);
+    CFG(CFunction* ast);
     
-    DefFonction* ast; /**< The AST this CFG comes from */
+    CFunction* ast; /**< The AST this CFG comes from */
     
     void add_bb(BasicBlock* bb); 
     
@@ -100,17 +105,17 @@ public:
     void gen_asm_x86_epilogue(ostream& o);
     
     // symbol table methods
-    void add_to_symbol_table(string name, Type t);
-    string create_new_tempvar(Type t);
+    void add_to_symbol_table(string name, CType t);
+    string create_new_tempvar(CType t);
     int get_var_index(string name);
-    Type get_var_type(string name);
+    CType get_var_type(string name);
     
     // basic block management
     string new_BB_name();
     BasicBlock* current_bb;
     
 protected:
-    map<string, Type> SymbolType; /* part of the symbol table */
+    map<string, CType> SymbolType; /* part of the symbol table */
     map<string, int> SymbolIndex; /* part of the symbol table */
     int nextFreeSymbolIndex; /* to allocate new symbols in the symbol table */
     int nextBBnumber; /* just for naming */

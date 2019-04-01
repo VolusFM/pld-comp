@@ -22,7 +22,7 @@ CExpressionInt::CExpressionInt(int value) :
 pair<string, string> CExpressionInt::to_asm(CFunction* f) const {
     string variable = f->tos_add_temp("int");
     string varaddr = f->tos_addr(variable);
-    string code = "  movl $" + to_string(value) + ", " + varaddr + "\n";
+    string code = "  movl  $" + to_string(value) + ", " + varaddr + "\n";
     return pair<string, string>(code, varaddr);
 }
 
@@ -92,7 +92,7 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         if (op == "-") {
             code += "  subl  " + rhsvar + ", %eax\n";
         }
-        code += "  movl %eax, " + variable + "\n";
+        code += "  movl  %eax, " + variable + "\n";
     }
     return pair<string, string>(code, variable);
 }
