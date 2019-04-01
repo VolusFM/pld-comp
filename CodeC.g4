@@ -2,11 +2,11 @@ grammar CodeC;
 
 prog: function*;
 
-function: functionheader instructionsbloc;
+function: functionheader instructionsblock;
 
 functionheader: type IDENT parameters;
 
-instructionsbloc: '{' instructions '}';
+instructionsblock: '{' instructions '}';
 instructions: instruction*;
 
 instruction: instrreturn ';' #return
@@ -34,7 +34,7 @@ intval : INTDEC #intval_dec
 instrreturn: 'return' expression #return_expr
 	| 'return' #return_void;
 
-type: 'int';
+type: 'int' | 'char' ;
 
 parameters: '(' ')' ;
 
