@@ -2,9 +2,9 @@
 # commands
 
 GRAM = grammar
-EXE = compil
-CLEAN = clean
 OBJECTS = objs
+EXE = compile
+CLEAN = clean
 
 # directories
 
