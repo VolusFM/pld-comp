@@ -1,7 +1,6 @@
 .antlr/
 source/antlr/
 objects/
-*.o
 
 # old stuff
 antlr/
@@ -10,8 +9,11 @@ code_visitors/
 
 # output
 yottacompilatron9001
+output.s
 exe
-*.s
+*.d
+*.o
+*.gch
 
 sandbox/
 *.dSYM
