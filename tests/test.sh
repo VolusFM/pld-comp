@@ -135,7 +135,7 @@ then
         resultFiles=0
         resultGlobal=0
       fi  
-      rm $fileName
+      #rm $fileName
     else  
       echo "                                       File #$number     : FAILED"
       resultFiles=0
