@@ -77,6 +77,7 @@ $(OBJS_FILECHECK) : $(GRAM_FILECHECK)
 $(EXE):
 	$(ECHO) "building binary"
 	$(CPPC) $(COMPFLAGS) $(SOURCEDIR)/*.cpp $(SOURCE_AST)/*.cpp $(OBJS_ANTLR)/*.o $(ANTLRLIBRUNTIME) -o $(BINARY)
+	strip $(BINARY)
 
 $(CLEAN) :
 	$(ECHO) "cleaning"

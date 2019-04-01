@@ -9,8 +9,7 @@ using std::map;
 
 #include "CInstruction.h"
 #include "CFunctionHeader.h"
-
-typedef string CType;
+#include "CType.h"
 
 class CFunction {
 public:

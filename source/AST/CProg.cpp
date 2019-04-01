@@ -1,5 +1,9 @@
 #include "CProg.h"
 
+#include <iostream>
+using std::cerr;
+using std::endl;
+
 string CProg::to_asm() const {
     string code;
     code += ".text\n";
