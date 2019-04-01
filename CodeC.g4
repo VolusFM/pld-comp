@@ -31,12 +31,12 @@ vardefinition: type vardefinitionmult (','vardefinitionmult)*;
 vardefinitionmult : IDENT #def_var
     | IDENT '=' expression	#def_var_with_expr;
 
-expression: expression OPMULT expression #mult_expr
-	| expression OPADD expression #add_expr
-	//| '-' expression #neg_expr
+expression: (OPADD|OPSUB) expression #unary_expr
+	| expression (OPMULT|OPDIV) expression #mult_expr
+	| expression (OPADD|OPSUB) expression #add_expr
 	// In C, boolean type doesn't exist and we use integers instead
-	| expression OPRELATION expression #relational_expr
-	| expression OPEQUALITY expression #equality_expr
+	| expression (OPRELATIONINF|OPRELATIONINFEQUAL|OPRELATIONSUP|OPRELATIONSUPEQUAL) expression #relational_expr
+	| expression (OPEQUALITY|OPINEQUALITY) expression #equality_expr
 	| expression OPBINARYAND expression #binary_and_expr
 	| expression OPBINARYEXCLUSIVEOR expression #binary_exclusive_or_expr
 	| expression OPBINARYOR expression #binary_or_expr 
@@ -66,10 +66,16 @@ INTBIN : '0b'[01]+;
 INTOCT :'0'[0-7]+;
 IDENT : [a-zA-Z][a-zA-Z0-9_]*;
 
-OPMULT : [*/];
-OPADD : [+-];
-OPRELATION : [<>]'='?;
-OPEQUALITY : [!=]'=';
+OPMULT : '*';
+OPDIV : '/';
+OPADD : '+';
+OPSUB : '-';
+OPRELATIONINF : '<';
+OPRELATIONINFEQUAL : '<=';
+OPRELATIONSUP : '>';
+OPRELATIONSUPEQUAL : '>=';
+OPEQUALITY : '==';
+OPINEQUALITY : '!=';
 OPBINARYAND : '&';
 OPBINARYEXCLUSIVEOR : '^';
 OPBINARYOR : '|';

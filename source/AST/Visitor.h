@@ -188,8 +188,13 @@ public:
             override {
         CExpression* lhs = (CExpression*) visit(ctx->expression()[0]);
         CExpression* rhs = (CExpression*) visit(ctx->expression()[1]);
+        string op;
 
-        string op = ctx->OPADD()->getText();
+        if(ctx->OPADD()!=nullptr)
+            op = '+';
+        else if (ctx->OPSUB()!=nullptr)
+            op = '-';
+
         CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
         return (CExpression*) expr;
     }
@@ -198,22 +203,31 @@ public:
             override {
         CExpression* lhs = (CExpression*) visit(ctx->expression()[0]);
         CExpression* rhs = (CExpression*) visit(ctx->expression()[1]);
+        string op;
+        
+        if(ctx->OPMULT()!=nullptr)
+            op = '*';
+        else if (ctx->OPDIV()!=nullptr)
+            op = '/';
 
-        string op = ctx->OPMULT()->getText();
         CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
         return (CExpression*) expr;
     }
 
-    /*
-     virtual antlrcpp::Any visitNeg_expr(CodeCParser::Neg_exprContext *ctx) override
-     {
-     CExpression *rhs = (CExpression*) visit(ctx->expression());
-     CExpression *lhs = new CExpressionInt(0);
+     virtual antlrcpp::Any visitUnary_expr(CodeCParser::Unary_exprContext *ctx)
+            override {
+        CExpression *rhs = (CExpression*) visit(ctx->expression());
+        CExpression *lhs = new CExpressionInt(0);
+        string op;
 
-     CExpressionComposed *expr = new CExpressionComposed(lhs, "-", rhs);
-     return (CExpression*) expr;
+        if(ctx->OPADD()!=nullptr)
+            op = '+';
+        else if (ctx->OPSUB()!=nullptr)
+            op = '-';
+
+        CExpressionComposed *expr = new CExpressionComposed(lhs, op, rhs);
+        return (CExpression*) expr;
      }
-     */
 
 };
 
