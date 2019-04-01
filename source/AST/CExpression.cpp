@@ -42,7 +42,7 @@ pair<string, string> CExpressionVar::to_asm(CFunction* f) const {
     try{
         ret = f->tos_addr(variable);
     }catch(std::exception const& e){
-        cerr << "ERROR : reference to undeclared variable " + variable <<endl;
+        cerr << "ERROR : reference to undeclared variable " << variable << endl;
         throw e;
     }
     return pair<string, string>("", ret);

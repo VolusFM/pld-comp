@@ -1,11 +1,15 @@
 #include "CFunction.h"
 
+#include <iostream>
+
 #include "CInstrVariable.h"
 #include "CInstrVariableMulti.h"
 #include "CInstrExpression.h"
 #include "CExpression.h"
 
 using std::to_string;
+using std::cerr;
+using std::endl;
 
 CFunction::CFunction(string name, vector<CParameter> parameters, CInstructions& block_) :
         name(name), parameters(parameters){
@@ -28,6 +32,12 @@ string CFunction::to_asm() const {
     code += "  pushq %rbp # save %rbp on the stack\n";
     code += "  movq %rsp, %rbp # define %rbp for the current function\n";
 
+    int index = 0;
+    for (auto it = parameters.begin() ; it!= parameters.end() ; ++it) {
+        code += it->to_asm(this, index);
+        index++;
+    }
+
     code += "  ## contenu\n";
 
     for (const CInstruction* i : block.instructions) {
@@ -42,9 +52,9 @@ string CFunction::to_asm() const {
 }
 
 void CFunction::fill_tos() {
-    fill_tos(block);
     fill_tos(parameters);
-
+    fill_tos(block);
+    
     for (const string& i : tos) {
         //code += "  # variable " + tosType.at(i) + " " + i + "\n";
         //une fois qu'on aura d'autres tailles de variables, faudra changer ça
@@ -73,6 +83,12 @@ string CFunction::tos_add_temp(CType type) {
 }
 
 void CFunction::tos_add(string name, CType type) {
+    map<string,CType>::iterator it = tosType.find(name);
+    if(it!=tosType.end()){
+        cerr << "ERROR : already declared variable " << name << endl;
+        throw;
+    }
+    
     tos.push_back(name);
     tosType[name] = type;
 }
