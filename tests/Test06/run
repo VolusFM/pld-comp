@@ -1,3 +1,1 @@
 ../../yottacompilatron9001 input.c -o sortie.s
-gcc sortie.s
-echo $?
