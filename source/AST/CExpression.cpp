@@ -116,6 +116,16 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
             code += "  %al\n";
             code += "  movzbl  %al, %eax\n";
         }
+        if (op == "&") {
+            code += "  andl  " + rhsvar + ", %eax\n";
+        }
+        if (op == "|") {
+            code += "  orl  " + rhsvar + ", %eax\n";
+        }
+        if (op == "^") {
+            code += "  xorl  " + rhsvar + ", %eax\n";
+        }
+
         code += "  movl  %eax, " + variable + "\n";
     }
     return pair<string, string>(code, variable);
