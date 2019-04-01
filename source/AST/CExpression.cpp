@@ -39,10 +39,10 @@ CExpressionVar::CExpressionVar(string variable) :
 
 pair<string, string> CExpressionVar::to_asm(CFunction* f) const {
     string ret;
-    try{
+    try {
         ret = f->tos_addr(variable);
-    }catch(std::exception const& e){
-        cerr << "ERROR : reference to undeclared variable " + variable <<endl;
+    } catch (std::exception const& e) {
+        cerr << "ERROR : reference to undeclared variable " + variable << endl;
         throw e;
     }
     return pair<string, string>("", ret);
@@ -91,6 +91,23 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         }
         if (op == "-") {
             code += "  subl  " + rhsvar + ", %eax\n";
+        }
+        if (op == "<" || op == "<=" || op == ">" || op == ">=") {
+            code += "  cmpl  " + rhsvar + ", %eax\n";
+            if (op == "<") {
+                code += "  setl";
+            }
+            if (op == "<=") {
+                code += "  setle";
+            }
+            if (op == ">") {
+                code += "  setg";
+            }
+            if (op == ">=") {
+                code += "  setge";
+            }
+            code += "  %al\n";
+            code += "  movzbl  %al, %eax\n";
         }
         code += "  movl  %eax, " + variable + "\n";
     }
