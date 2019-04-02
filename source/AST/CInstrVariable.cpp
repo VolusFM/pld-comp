@@ -24,15 +24,3 @@ string CInstrVariable::to_asm(const CFunction* f) const {
     }
 }
 
-string CInstrVariable::getType() const{
-    return type;
-}
-
-string CInstrVariable::getName() const{
-    return name;
-}
-
-void CInstrVariable::setType(string type) {
-    this->type = type;
-}
-

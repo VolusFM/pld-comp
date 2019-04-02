@@ -16,17 +16,18 @@ public:
     virtual string to_asm(const CFunction* f) const = 0;
 };
 
-/**
- * Wrapper for a vector of instructions
- */
-class CInstructions {
+// Wrapper for a vector of instructions
+class CInstructions : public CInstruction {
 public:
     CInstructions();
     CInstructions(vector<CInstruction*>& instructions);
     ~CInstructions();
-
+    
+    void to_IR(CFG* cfg) const;
+    string to_asm(const CFunction* f) const;
+    
     vector<CInstruction*> instructions;
-
+    
 public:
     // enable move semantics
     CInstructions(CInstructions&&) = default;

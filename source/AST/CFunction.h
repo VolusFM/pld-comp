@@ -34,12 +34,12 @@ public:
     int temp_id;
     string tos_add_temp(CType type);
     string tos_addr(string variable) const;
-    void fill_tos(vector<CParameter>& parameters);
     void tos_add(CType type, string name);
     
     void fill_tos();
 private:
-    void fill_tos(CInstructions& block);
+    void fill_tos(const CInstructions& block);
+    void fill_tos(const vector<CParameter>& parameters);
     
 public:
     // enable move semantics

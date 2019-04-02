@@ -159,7 +159,7 @@ int main(int argc, const char* argv[]) {
         if (!args.fo.empty())
             ofs.close();
     }
-    if (!args.tmp) delete ast; /* temporary */
+    if (!args.tmp) delete ast; else /* temporary */
     delete ir;
     
     return 0;

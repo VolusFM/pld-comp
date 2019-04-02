@@ -14,7 +14,6 @@ using std::vector;
 #include "CExpression.h"
 #include "CInstrReturn.h"
 #include "CInstrVariable.h"
-#include "CInstrVariableMulti.h"
 #include "CInstrExpression.h"
 
 class Visitor: public CodeCBaseVisitor {
@@ -39,8 +38,9 @@ public:
         CInstructions* block = (CInstructions*) visit(ctx->instructionsblock());
         CFunction* func = new CFunction(functionHeader->name,
                 functionHeader->parameters, *block);
-        func->fill_tos();
+        delete functionHeader;
         delete block;
+        func->fill_tos();
         return func;
     }
 
@@ -56,13 +56,13 @@ public:
 
     virtual antlrcpp::Any visitParameters(CodeCParser::ParametersContext *ctx)
             override {
-        vector<CParameter> parameters;
-
+        vector<CParameter>* parameters = new vector<CParameter>;
+        
         for (auto ctx_param : ctx->singleparameter()) {
-            parameters.push_back(*((CParameter*) visit(ctx_param)));
+            parameters->push_back(*((CParameter*) visit(ctx_param)));
         }
-
-        return new vector<CParameter>(parameters);
+        
+        return parameters;
     }
 
     virtual antlrcpp::Any visitSingleparameter(
@@ -75,13 +75,13 @@ public:
     virtual antlrcpp::Any visitInstructionsblock(
             CodeCParser::InstructionsblockContext *ctx) override {
         vector<CInstruction*> instructionsBlock;
-
+        
         for (auto ctx_instr : ctx->instruction()) {
             instructionsBlock.push_back((CInstruction*) visit(ctx_instr));
         }
-
+        
         CInstructions* block = new CInstructions(instructionsBlock);
-
+        
         return block;
     }
 
@@ -104,21 +104,22 @@ public:
 
     virtual antlrcpp::Any visitInstr_def(CodeCParser::Instr_defContext *ctx)
             override {
-        return (CInstruction*) ((CInstrVariableMulti*) visit(
+        return (CInstruction*) ((CInstructions*) visit(
                 ctx->vardefinition()));
     }
 
     virtual antlrcpp::Any visitVardefinition(
             CodeCParser::VardefinitionContext *ctx) override {
         string type = ctx->type()->getText();
-        vector<CInstrVariable*> varDefs;
-
+        vector<CInstruction*> instructionsVariables;
+        
         for (auto ctx_varDef : ctx->vardefinitionmult()) {
-            varDefs.push_back((CInstrVariable*) visit(ctx_varDef));
-            varDefs.back()->setType(type);
+            CInstrVariable* instrvar = (CInstrVariable*) visit(ctx_varDef);
+            instrvar->type = type;
+            instructionsVariables.push_back(instrvar);
         }
-
-        return new CInstrVariableMulti(vector<CInstrVariable*>(varDefs));
+        
+        return new CInstructions(instructionsVariables);
     }
     virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx)
             override {

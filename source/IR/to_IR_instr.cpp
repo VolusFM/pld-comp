@@ -5,13 +5,13 @@ using std::ostream;
 using std::cerr;
 using std::endl;
 
+#include "../AST/CInstruction.h"
 #include "../AST/CInstrExpression.h"
 #include "../AST/CInstrVariable.h"
-#include "../AST/CInstrVariableMulti.h"
 #include "../AST/CInstrReturn.h"
 
-void CInstrVariableMulti::to_IR(CFG* cfg) const {
-    for (auto it = varDefs.begin(); it != varDefs.end(); ++it) {
+void CInstructions::to_IR(CFG* cfg) const {
+    for (auto it = instructions.begin(); it != instructions.end(); ++it) {
         (*it)->to_IR(cfg);
     }
 }
