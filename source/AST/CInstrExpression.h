@@ -10,6 +10,8 @@ class CInstrExpression: public CInstruction {
 public:
     CInstrExpression(CExpression* expr);
     ~CInstrExpression();
+    
+    void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;
     
     CExpression* expr;

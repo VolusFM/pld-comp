@@ -16,11 +16,14 @@ using std::ofstream;
 #include "AST/Visitor.h"
 #include "AST/CProg.h"
 #include "IR/IR.h"
+#include "IR/IProg.h"
 
 using namespace antlr4;
 
 
 typedef struct {
+    bool tmp; /* temporary */
+    
     bool opta; // static analysis
     bool opto; // optimize
     bool optc; // assembly generation
@@ -34,6 +37,8 @@ inline bool strequal(const char* str1, const char* str2) {
 
 bool argsparse(int argc, const char* argv[], arguments& args)
 {
+    args.tmp = false; /* temporary */
+    
     args.fi.clear();
     args.fo.clear();
     args.opta = false;
@@ -53,6 +58,11 @@ bool argsparse(int argc, const char* argv[], arguments& args)
                 args.opto = true;
             else if (strequal(arg, "c"))
                 args.optc = true;
+            
+            /* temporary */
+            else if (strequal(arg, "dev"))
+                args.tmp = true;
+            
             else {
                 cerr << "ERROR: unknown argument : '" << arg << "'" << endl;
                 return false;
@@ -138,14 +148,19 @@ int main(int argc, const char* argv[]) {
     
     Visitor visitor;
     CProg* ast = visitor.visit(tree);
-    string result = ast->to_asm();
-    delete ast;
+    IProg* ir; if (args.tmp) /* temporary */ ir = ast->to_IR();
+    if (args.tmp) delete ast; /* temporary */
     
     if (args.optc) {
-        *os << result << endl;
+        if (args.tmp) /* temporary */
+        ir->gen_asm_x86(*os);
+        else *os << ast->to_asm(); /* temporary */
+        *os << endl;
         if (!args.fo.empty())
             ofs.close();
     }
+    if (!args.tmp) delete ast; /* temporary */
+    delete ir;
     
     return 0;
 }

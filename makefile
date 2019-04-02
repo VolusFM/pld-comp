@@ -52,7 +52,10 @@ endif
 
 POSTTREATMENT=@strip $(BINARY)
 ifeq ($(OSNAME),MAC)
-    POSTTREATMENT=
+POSTTREATMENT:=
+endif
+ifeq ($(FOR),dev)
+POSTTREATMENT:=
 endif
 
 ANTLRDIR=ANTLR/$(OSNAME)-CPP

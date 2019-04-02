@@ -1,49 +1,50 @@
 #pragma once
 
+#include <map>
+using std::map;
 #include <vector>
 using std::vector;
 #include <string>
 using std::string;
 #include <iostream>
 using std::ostream;
-// #include <initializer_list>
+#include <initializer_list>
 
-// declarations from the parser
 #include "../AST/CType.h"
-// #include "../symbole.h"
 class CFunction;
 
 class IRInstr;
 class BasicBlock;
 class CFG;
 
+/* the instructions themselves */
+typedef enum {
+    op_ldconst,
+    op_add,
+    op_sub,
+    op_mul,
+    op_rmem,
+    op_wmem,
+    op_call, 
+    op_cmp_eq,
+    op_cmp_lt,
+    op_cmp_le
+} Operation;
+
 // class for one 3-address instruction
 class IRInstr {
 public:
-    /* the instructions themselves */
-    typedef enum {
-        ldconst,
-        add,
-        sub,
-        mul,
-        rmem,
-        wmem,
-        call, 
-        cmp_eq,
-        cmp_lt,
-        cmp_le
-    } Operation;
-    
     /* constructor */
-    IRInstr(BasicBlock* bb_, Operation op, CType t, vector<string> params);
+    IRInstr(BasicBlock* bb, Operation op, CType type, vector<string> params);
+    ~IRInstr() = default;
     
     /* code generation */
-    void gen_asm_x86(ostream &o); /* x86 assembly code generation for this IR instruction */
+    void gen_asm_x86(ostream &o) const; /* x86 assembly code generation for this IR instruction */
     
 private:
     BasicBlock* bb; /* the BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
     Operation op;
-    CType t;
+    CType type;
     
     vector<string> params;
     /*
@@ -70,9 +71,10 @@ private:
 class BasicBlock {
 public:
     BasicBlock(CFG* cfg, string entry_label);
-    void gen_asm_x86(ostream &o); /* x86 assembly code generation for this basic block */
+    ~BasicBlock();
+    void gen_asm_x86(ostream &o) const; /* x86 assembly code generation for this basic block */
     
-    void add_IRInstr(IRInstr::Operation op, CType t, vector<string> params);
+    void add_IRInstr(Operation op, CType type, vector<string> params);
     
     BasicBlock* exit_true;  /* pointer to the next basic block, true branch. If nullptr, return from procedure */ 
     BasicBlock* exit_false; /* pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
@@ -92,34 +94,39 @@ protected:
 // class for the control flow graph, also includes the symbol table
 class CFG {
 public:
-    CFG(CFunction* ast);
+    CFG(const CFunction* ast, string name);
+    ~CFG();
     
-    CFunction* ast; /**< The AST this CFG comes from */
+    const CFunction* ast; /**< The AST this CFG comes from */
     
     void add_bb(BasicBlock* bb); 
     
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
-    void gen_asm_x86(ostream& o);
-    string IR_reg_to_asm_x86(string reg); /* helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
-    void gen_asm_x86_prologue(ostream& o);
-    void gen_asm_x86_epilogue(ostream& o);
+    void gen_asm_x86(ostream& o) const;
+    string tos_get_asm_x86(string reg) const; /* helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
+    void gen_asm_x86_prologue(ostream& o) const;
+    void gen_asm_x86_epilogue(ostream& o) const;
     
     // symbol table methods
-    void add_to_symbol_table(string name, CType t);
-    string create_new_tempvar(CType t);
-    int get_var_index(string name);
-    CType get_var_type(string name);
+    void tos_add(string name, CType t);
+    string tos_add_temp(CType t);
+    int tos_get_index(string name) const;
+    CType tos_get_type(string name) const;
     
     // basic block management
     string new_BB_name();
     BasicBlock* current_bb;
     
-protected:
-    map<string, CType> SymbolType; /* part of the symbol table */
-    map<string, int> SymbolIndex; /* part of the symbol table */
-    int nextFreeSymbolIndex; /* to allocate new symbols in the symbol table */
-    int nextBBnumber; /* just for naming */
+public: // to fix, should be protected
+    string name;
     
-    vector <BasicBlock*> bbs; /* all the basic blocks of this CFG */
+    vector<string> tos; /* part of the symbol table */
+    map<string, CType> tosType; /* part of the symbol table */
+    map<string, int> tosIndex; /* part of the symbol table */
+    int tosIndexNext; /* to allocate new symbols in the symbol table */
+    int tosTempNext;
+    
+    vector<BasicBlock*> bbs; /* all the basic blocks of this CFG */
+    int bbNumberNext; /* just for naming */
 };
 

@@ -12,6 +12,7 @@ public:
     CInstrVariable(string name);
     CInstrVariable(string name, CExpression * expr);
     ~CInstrVariable();
+    void to_IR(CFG* cfg) const;
     string to_asm(const CFunction * f) const;
     string getType() const;
     string getName() const;

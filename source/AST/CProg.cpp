@@ -13,7 +13,7 @@ string CProg::to_asm() const {
             code += f.to_asm();
         }
     }catch(std::exception const& e){
-        cerr << "ERROR : couldn't generate assembly code"<< endl;
+        cerr << "ERROR : couldn't generate assembly code" << endl;
     }
     return code;
 }

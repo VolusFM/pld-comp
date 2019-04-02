@@ -75,7 +75,6 @@ void CFunction::tos_add(string name, CType type) {
 }
 
 void CFunction::fill_tos(CInstructions& block) {
-
     for (auto it = block.instructions.begin(); it != block.instructions.end();
             ++it) {
         const CInstruction* i = *it;
@@ -94,9 +93,4 @@ void CFunction::fill_tos(vector<CParameter>& parameters) {
         tos_add(param.name, param.type);
     }    
 }
-
-
-
-
-
 
