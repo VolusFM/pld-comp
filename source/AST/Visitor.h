@@ -60,7 +60,9 @@ public:
         vector<CParameter>* parameters = new vector<CParameter>;
         
         for (auto ctx_param : ctx->singleparameter()) {
-            parameters->push_back(*((CParameter*) visit(ctx_param)));
+            CParameter* param = visit(ctx_param);
+            parameters->push_back(std::move(*param));
+            delete param;
         }
         
         return parameters;
@@ -93,7 +95,7 @@ public:
 
     virtual antlrcpp::Any visitReturn_expr(CodeCParser::Return_exprContext *ctx)
             override {
-        CExpression* expr = (CExpression*) visit(ctx->rvalue());
+        CExpression* expr = (CExpression*) visit(ctx->expression());
         CInstrReturn* instr = new CInstrReturn(expr);
         return instr;
     }
@@ -131,13 +133,13 @@ public:
     virtual antlrcpp::Any visitDef_var_with_expr(
             CodeCParser::Def_var_with_exprContext *ctx) override {
         string name = ctx->IDENT()->getText();
-        CExpression* expr = (CExpression*) visit(ctx->rvalue());
+        CExpression* expr = (CExpression*) visit(ctx->expression());
         return new CInstrVariable(name, expr);
     }
     virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx)
             override
             {
-        CExpression* expr = (CExpression*) visit(ctx->rvalue());
+        CExpression* expr = (CExpression*) visit(ctx->expression());
         CInstrExpression* instr = new CInstrExpression(expr);
         return (CInstruction*) instr;
     }
@@ -189,7 +191,7 @@ public:
 
     virtual antlrcpp::Any visitAffect_expr(CodeCParser::Affect_exprContext *ctx)
             override {
-        CExpression* lhs = (CExpressionVar*) visit(ctx->lvalue());
+        CExpression* lhs = (CExpression*) visit(ctx->lvalue());
         CExpression* rhs = (CExpression*) visit(ctx->rvalue());
 
         string op = ctx->OPAFF()->getText();
@@ -211,9 +213,14 @@ public:
         for (auto ctx_param : ctx->parametercall()) {
             parameters->push_back(((CExpression*) visit(ctx_param)));
         }
-        CFunctionCall* function = new CFunctionCall(functionName, *parameters);
-        return (CExpression*) function;
         
+        CFunctionCall* function = new CFunctionCall(functionName, *parameters);
+        delete parameters;
+        return (CExpression*) function;
+    }
+
+    virtual antlrcpp::Any visitExpression(CodeCParser::ExpressionContext *ctx) override {
+        return (CExpression*) visit(ctx->rvalue());
     }
 
     virtual antlrcpp::Any visitAdd_expr(CodeCParser::Add_exprContext *ctx)

@@ -16,21 +16,23 @@ instructionsblock: '{' instruction* '}';
 
 instruction: instrreturn ';' #return
 	| vardefinition ';' #instr_def
-	| rvalue ';' #instr_expr
+	| expression ';' #instr_expr
 	| ifblock #if_block
 	| whileblock #while_block;
 
 
-ifblock: 'if' '(' rvalue ')' anyinstruction elseblock?;
+ifblock: 'if' '(' expression ')' anyinstruction elseblock?;
 elseblock: 'else' anyinstruction;
 
-whileblock: 'while' '(' rvalue ')' anyinstruction;
+whileblock: 'while' '(' expression ')' anyinstruction;
 
 
 vardefinition: type vardefinitionmult (','vardefinitionmult)*;
 
 vardefinitionmult : IDENT #def_var
-    | IDENT '=' rvalue	#def_var_with_expr;
+    | IDENT '=' expression	#def_var_with_expr;
+
+expression: rvalue;
 
 rvalue: (OPADD|OPSUB) rvalue #unary_expr
 	| rvalue (OPMULT|OPDIV|OPMOD) rvalue #mult_expr
@@ -56,14 +58,14 @@ intval : INTDEC #intval_dec
         | INTBIN #intval_bin
         | INTOCT #intval_oct;
 
-instrreturn: 'return' rvalue #return_expr
+instrreturn: 'return' expression #return_expr
 	| 'return' #return_void;
 
 type: 'int' | 'char' ;
 
 parameters: '(' (singleparameter (',' singleparameter)*)? ')';
 singleparameter : type IDENT;
-parametercall : rvalue;
+parametercall : expression;
 
 
 INTDEC : [1-9][0-9]*;
