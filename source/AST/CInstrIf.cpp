@@ -6,10 +6,6 @@ CInstrIf::CInstrIf(CExpression* condition, CInstructions* blockTrue,
 
 }
 
-void CInstrIf::to_IR(CFG* cfg) const {
-
-}
-
 string CInstrIf::to_asm(const CFunction* f) const {
     return "on verra plus tard slt";
 }
