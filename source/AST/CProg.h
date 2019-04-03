@@ -5,7 +5,7 @@ using std::string;
 #include <vector>
 using std::vector;
 
-#include "CFunction.h"
+class CFunction;
 
 class IProg;
 

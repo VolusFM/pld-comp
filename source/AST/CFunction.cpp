@@ -6,6 +6,7 @@ using std::endl;
 #include <string>
 using std::to_string;
 
+#include "CFunctionHeader.h"
 #include "CInstrVariable.h"
 #include "CInstrExpression.h"
 #include "CExpression.h"
