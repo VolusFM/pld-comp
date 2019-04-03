@@ -20,11 +20,3 @@ CInstrVariable::~CInstrVariable() {
     }
 }
 
-string CInstrVariable::to_asm(const CFunction* f) const {
-    if (expr == nullptr) {
-        return "";
-    } else {
-        return expr->to_asm(f).first;
-    }
-}
-

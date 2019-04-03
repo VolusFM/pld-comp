@@ -13,54 +13,17 @@ using std::to_string;
 #include "CInstruction.h"
 
 
-CFunction::CFunction(string name, vector<CParameter> parameters, CInstructions& block_)
-: name(name), parameters(parameters)
+CFunction::CFunction(string name, vector<CParameter>& parameters_, CInstructions& block_)
+: name(name)
 {
     temp_id = 0;
     tosOffset = 0;
     
+    parameters = std::move(parameters_);
+    parameters_.clear();
+    
     block = std::move(block_);
     block_.instructions.clear();
-}
-
-string CFunction::to_asm() const {
-    string code;
-    code += name;
-    
-    /*
-        string params = "";
-        params += "(";
-        for(auto it = parameters.begin(); it != parameters.end(); ++it) {
-            if (!params.empty()) params += ", ";
-            params += it->type;
-        }
-        params += ")";
-        code += params;
-    } */
-    
-    code += ":\n";
-
-    code += "  ## prologue\n";
-    code += "  pushq %rbp # save %rbp on the stack\n";
-    code += "  movq %rsp, %rbp # define %rbp for the current function\n";
-
-    int index = 0;
-    for (auto it = parameters.begin() ; it!= parameters.end() ; ++it) {
-        code += it->to_asm(this, index);
-        index++;
-    }
-
-    code += "  ## contenu\n";
-
-    for (const CInstruction* i : block.instructions) {
-        code += i->to_asm(this);
-    }
-
-    code += "  ## epilogue\n";
-    code += "  popq %rbp # restore %rbp from the stack\n";
-    code += "  ret\n";
-
-    return code;
 }
 
 void CFunction::fill_tos() {
