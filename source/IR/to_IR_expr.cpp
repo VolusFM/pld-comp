@@ -1,5 +1,4 @@
 #include "IR.h"
-#include "../AST/CExpression.h"
 
 #include <iostream>
 using std::ostream;
@@ -8,6 +7,9 @@ using std::endl;
 #include <string>
 using std::string;
 using std::to_string;
+
+#include "../AST/CExpression.h"
+
 
 string CExpressionInt::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
@@ -37,8 +39,55 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         code += "  movl  " + rhsvar + ", %eax\n";
         code += "  movl  %eax, " + lhsvar + "\n";
         */
+        // to do
     } else {
         variable = cfg->tos_add_temp("int");
+        
+        vector<string> params = {variable, lhsvar, rhsvar};
+        CType type = "int"; // to fix
+        
+        if (op == "+") {
+            bb->add_IRInstr(op_add, type, params);
+        }
+        if (op == "-") {
+            bb->add_IRInstr(op_sub, type, params);
+        }
+        if (op == "*") {
+            bb->add_IRInstr(op_mul, type, params);
+        }
+        if (op == "/") {
+            bb->add_IRInstr(op_div, type, params);
+        }
+        if (op == "%") {
+            bb->add_IRInstr(op_mod, type, params);
+        }
+        
+        
+        //   code += "  cmpl  " + rhsvar + ", %eax\n";
+        if (op == "<") {
+            bb->add_IRInstr(op_cmp_lt, type, params);
+        }
+        if (op == "<=") {
+            bb->add_IRInstr(op_cmp_le, type, params);
+        }
+        if (op == ">") {
+            bb->add_IRInstr(op_cmp_gt, type, params);
+        }
+        if (op == ">=") {
+            bb->add_IRInstr(op_cmp_ge, type, params);
+        }
+        if (op == "==") {
+            bb->add_IRInstr(op_cmp_eq, type, params);
+        }
+        if (op == "!=") {
+            bb->add_IRInstr(op_cmp_ne, type, params);
+        }
+        //    code += "  %al\n";
+        //    code += "  movzbl  %al, %eax\n";
+        
+        
+        
+        
         /*
         code += "  movl  " + lhsvar + ", %eax\n";
         if (op == "*") {
@@ -48,35 +97,11 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             code += "  cltd\n"; // convert values to long double
             code += "  idivl " + rhsvar + "\n"; // do the division
         }
-        if (op == "+") {
-            code += "  addl " + rhsvar + ", %eax \n";
-        }
+        
         if (op == "-") {
             code += "  subl  " + rhsvar + ", %eax\n";
         }
-        if (op == "<" || op == "<=" || op == ">" || op == ">=" || op == "==" || op == "!=") {
-            code += "  cmpl  " + rhsvar + ", %eax\n";
-            if (op == "<") {
-                code += "  setl";
-            }
-            if (op == "<=") {
-                code += "  setle";
-            }
-            if (op == ">") {
-                code += "  setg";
-            }
-            if (op == ">=") {
-                code += "  setge";
-            }
-            if (op == "==") {
-                code += "  sete";
-            }
-            if (op == "!=") {
-                code += "  setne";
-            }
-            code += "  %al\n";
-            code += "  movzbl  %al, %eax\n";
-        }
+        
         if (op == "&") {
             code += "  andl  " + rhsvar + ", %eax\n";
         }
@@ -86,7 +111,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         if (op == "^") {
             code += "  xorl  " + rhsvar + ", %eax\n";
         }
-
+        
         if (op == "%") {
             code += "  movl  %edx, ";
         } else {

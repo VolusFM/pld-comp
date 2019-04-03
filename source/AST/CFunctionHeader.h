@@ -5,10 +5,9 @@ using std::string;
 #include <vector>
 using std::vector;
 
+#include "CType.h"
 class CFunction;
 class CParameter;
-
-typedef string CType;
 
 /**
  * FunctionHeader contains the name and the wrapper of parameters for a 
@@ -16,25 +15,22 @@ typedef string CType;
  */
 class CFunctionHeader {
 public:
-    // CFunctionHeader();
-    CFunctionHeader(string name, vector<CParameter>& parameters) 
-        : name(name), parameters(parameters){};
-    // ~CFunctionHeader();
+    CFunctionHeader(string name, vector<CParameter>& parameters);
+    ~CFunctionHeader() = default;
     string to_asm(const CFunction* f) const;
     
     string name;
     vector<CParameter> parameters;
-
-public:
-private:
 };
 
 class CParameter {
 public:
-    // CParameter();
-    CParameter(string name, CType type) 
-        : name(name), type(type){}; 
-    // ~CParameter();
-    CType type;
+    CParameter(string name, CType type);
+    ~CParameter() = default;
+    
+    string to_asm(const CFunction* f, int index) const;
+    
     string name;
+    CType type;
 };
+

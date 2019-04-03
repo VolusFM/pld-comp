@@ -23,12 +23,17 @@ typedef enum {
     op_add,
     op_sub,
     op_mul,
+    op_div,
+    op_mod,
     op_rmem,
     op_wmem,
     op_call, 
     op_cmp_eq,
+    op_cmp_ne,
     op_cmp_lt,
-    op_cmp_le
+    op_cmp_le,
+    op_cmp_gt,
+    op_cmp_ge
 } Operation;
 
 // class for one 3-address instruction

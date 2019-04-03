@@ -2,7 +2,6 @@
 
 #include <string>
 using std::string;
-
 #include <utility>
 using std::pair;
 
@@ -11,7 +10,7 @@ class CFG;
 
 class CExpression {
 public:
-    virtual ~CExpression();
+    virtual ~CExpression() = default;
     virtual string to_IR(CFG* cfg) const = 0;
     virtual pair<string, string> to_asm(CFunction* f) const = 0;
     pair<string, string> to_asm(const CFunction* f) const;
@@ -20,7 +19,7 @@ public:
 class CExpressionInt: public CExpression {
 public:
     CExpressionInt(int value);
-    ~CExpressionInt();
+    ~CExpressionInt() = default;
     string to_IR(CFG* cfg) const;
     pair<string, string> to_asm(CFunction* f) const;
     
@@ -30,7 +29,7 @@ public:
 class CExpressionVar: public CExpression {
 public:
     CExpressionVar(string variable);
-    ~CExpressionVar();
+    ~CExpressionVar() = default;
     string to_IR(CFG* cfg) const;
     pair<string, string> to_asm(CFunction* f) const;
 
