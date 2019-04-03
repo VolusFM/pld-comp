@@ -5,7 +5,7 @@ using std::string;
 #include <vector>
 using std::vector;
 
-class CFunction;
+//class CFunction;
 class CParameter;
 
 typedef string CType;

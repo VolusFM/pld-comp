@@ -1,4 +1,6 @@
+#include "CFunction.h"
 #include "CFunctionHeader.h"
+
 
 
 CFunctionHeader::CFunctionHeader(string name, vector<CParameter>& parameters) :
