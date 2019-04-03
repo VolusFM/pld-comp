@@ -8,7 +8,6 @@ using std::pair;
 #include <vector>
 using std::vector;
 
-
 #include "CExpression.h"
 
 class CFunction;
@@ -24,4 +23,9 @@ public:
 
     string functionName;
     vector<CExpression*> parameters;
+    
+private: // no copy wanted
+    CFunctionCall(const CFunctionCall&); // no implementation
+    CFunctionCall& operator=(const CFunctionCall&); // no implementation
 };
+

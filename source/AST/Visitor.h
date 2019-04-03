@@ -205,15 +205,14 @@ public:
 
     virtual antlrcpp::Any visitFunction_call(CodeCParser::Function_callContext *ctx)
             override {
-        /*WOOOOORK IN PROGRESSSEUH */
         string functionName = ctx->IDENT()->getText();
         vector<CExpression*>* parameters = new vector<CExpression*>;
         
         for (auto ctx_param : ctx->parametercall()) {
             parameters->push_back(((CExpression*) visit(ctx_param)));
         }
-        CFunctionCall *function = new CFunctionCall(functionName, *parameters);
-        return function;
+        CFunctionCall* function = new CFunctionCall(functionName, *parameters);
+        return (CExpression*) function;
         
     }
 
