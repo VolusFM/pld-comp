@@ -16,76 +16,152 @@ using std::ofstream;
 #include "AST/Visitor.h"
 #include "AST/CProg.h"
 #include "IR/IR.h"
+#include "IR/IProg.h"
 
 using namespace antlr4;
 
-bool staticAnalysis = false;
-bool simplifyProgram = false;
 
-bool incorrectSyntax(int argc, const char* argv[]) {
-    return (argc < 3 || strcmp(argv[argc - 1], "-o") == 0
-            || strcmp(argv[argc - 1], "-a") == 0);
+typedef struct {
+    bool tmp; /* temporary */
+    
+    bool opta; // static analysis
+    bool opto; // optimize
+    bool optc; // assembly generation
+    string fi; // input file
+    string fo; // output file
+} arguments;
+
+inline bool strequal(const char* str1, const char* str2) {
+    return strcmp(str1,str2) == 0;
 }
 
+bool argsparse(int argc, const char* argv[], arguments& args)
+{
+    args.tmp = false; /* temporary */
+    
+    args.fi.clear();
+    args.fo.clear();
+    args.opta = false;
+    args.opto = false;
+    args.optc = false;
+    
+    for(int i=1; i < argc; ++i) {
+        const char* arg = argv[i];
+        const char* val;
+        
+        if (*arg == '-') {
+            arg++;
+            
+            if (strequal(arg, "a"))
+                args.opta = true;
+            else if (strequal(arg, "o"))
+                args.opto = true;
+            else if (strequal(arg, "c"))
+                args.optc = true;
+            
+            /* temporary */
+            else if (strequal(arg, "dev"))
+                args.tmp = true;
+            
+            else {
+                cerr << "ERROR: unknown argument : '" << arg << "'" << endl;
+                return false;
+            }
+        } else {
+            if (args.fi.empty())
+                args.fi = arg;
+            else if (args.fo.empty())
+                args.fo = arg;
+            else {
+                cerr << "ERROR: too many arguments" << endl;
+                return false;
+            }
+        }
+    }
+    
+    if (args.fi.empty()) {
+        cerr << "ERROR: missing file input argument" << endl;
+        return false;
+    }
+    
+    if (!args.optc && !args.fo.empty()) {
+        cerr << "ERROR: too many arguments" << endl;
+        return false;
+    }
+    
+    return true;
+}
+
+
 int main(int argc, const char* argv[]) {
-
-    if (incorrectSyntax(argc, argv)) {
-        cerr
-                << "Syntax: yottacompilatron9001 <c_file> [-o -a] <destination_file>"
-                << endl;
-        exit (EXIT_FAILURE);
+    
+    // ANALYSE DES ARGUMENTS EN LIGNE DE COMMANDE
+    
+    arguments args;
+    
+    if (!argsparse(argc, argv, args)) {
+        cerr << "ERROR: incorrect arguments" << endl;
+        exit(EXIT_FAILURE);
     }
-
-    int i = 2;
-
-    while (i < argc) { // Check if there are options
-        if (strcmp(argv[i], "-o") == 0) {
-            cout << "Detected -o option (will be implemented later!)" << endl;
-            simplifyProgram = true;
-        }
-        if (strcmp(argv[i], "-a") == 0) {
-            cout << "Detected -a option (will be implemented later!)" << endl;
-            staticAnalysis = true;
-        }
-        i++;
-    }
-
-    ifstream ifs(argv[1]);
-
+    
+    // OUVERTURE DU FICHIER D'ENTREE
+    // ET ANALYSE DU CODE SOURCE
+    
+    ifstream ifs(args.fi);
+    
     if (!ifs.is_open()) {
-        cerr
-                << "Error: input file cannot be opened (did you check the file exists and you have the permission to read it ?)."
-                << endl;
-        exit (EXIT_FAILURE);
+        cerr << "ERROR: can't open input file in reading mode" << endl;
+        exit(EXIT_FAILURE);
     }
-
-    ofstream ofs(argv[argc - 1]);
-
-    if (!ofs.is_open()) {
-        cerr
-                << "Error: output file cannot be opened (did you check you have the permission to write there ?)."
-                << endl;
-        exit (EXIT_FAILURE);
-    }
-
+    
     ANTLRInputStream input(ifs);
     CodeCLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
     CodeCParser parser(&tokens);
     tree::ParseTree* tree = parser.prog();
-    ifs.close();
-
+    
     if (parser.getNumberOfSyntaxErrors() > 0) {
-        cerr << "Error: incorrect syntax in the input file." << endl;
-        exit (EXIT_FAILURE);
+        cerr << "ERROR: incorrect syntax in the input file" << endl;
+        exit(EXIT_FAILURE);
     }
-
+    
+    ifs.close();
+    
+    // OUVERTURE DU FICHIER DE DESTINATION
+    // ET COMPILATION DU CODE SOURCE
+    
+    ostream* os;
+    
+    ofstream ofs;
+    if (args.fo.empty()) {
+        os = &cout;
+    } else {
+        ofs.open(args.fo);
+        
+        if (!ofs.is_open()) {
+            cerr << "ERROR: can't open output file in writing mode" << endl;
+            exit(EXIT_FAILURE);
+        }
+    
+        os = &ofs;
+    }
+    
     Visitor visitor;
-    CProg* result = visitor.visit(tree);
-    ofs << result->to_asm() << endl;
-    delete result;
-    ofs.close();
-
+    CProg* ast = visitor.visit(tree);
+    IProg* ir; if (args.tmp) /* temporary */ ir = ast->to_IR();
+    if (args.tmp) delete ast; /* temporary */
+    
+    if (args.optc) {
+        if (args.tmp) /* temporary */
+        ir->gen_asm_x86(*os);
+        else *os << ast->to_asm(); /* temporary */
+        *os << endl;
+        if (!args.fo.empty())
+            ofs.close();
+    }
+    if (!args.tmp) delete ast; else /* temporary */
+    delete ir;
+    
     return 0;
 }
 

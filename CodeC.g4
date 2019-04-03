@@ -1,17 +1,18 @@
 grammar CodeC;
 
+
 prog: function*;
 
 function: functionheader instructionsblock;
 
 functionheader: type IDENT parameters;
 
-anyinstruction: instructionsblock
-	| instruction
-	| ';'; // Empty instruction
+
+anyinstruction: instructionsblock // some instructions
+	| instruction // one instruction
+	| ';'; // no instructions
 
 instructionsblock: '{' instruction* '}';
-// instructions: instruction*; TODO: why is this here?
 
 instruction: instrreturn ';' #return
 	| vardefinition ';' #instr_def
@@ -19,12 +20,12 @@ instruction: instrreturn ';' #return
 	| ifblock #if_block
 	| whileblock #while_block;
 
-ifblock: 'if' '(' expression ')' anyinstruction elseblock?;
 
-elseblock: 'else' anyinstruction #else_block;
-// No need to handle else if blocks as the first rule already does it
+ifblock: 'if' '(' expression ')' anyinstruction elseblock?;
+elseblock: 'else' anyinstruction;
 
 whileblock: 'while' '(' expression ')' anyinstruction;
+
 
 vardefinition: type vardefinitionmult (','vardefinitionmult)*;
 
@@ -32,7 +33,7 @@ vardefinitionmult : IDENT #def_var
     | IDENT '=' expression	#def_var_with_expr;
 
 expression: (OPADD|OPSUB) expression #unary_expr
-	| expression (OPMULT|OPDIV) expression #mult_expr
+	| expression (OPMULT|OPDIV|OPMOD) expression #mult_expr
 	| expression (OPADD|OPSUB) expression #add_expr
 	// In C, boolean type doesn't exist and we use integers instead
 	| expression (OPRELATIONINF|OPRELATIONINFEQUAL|OPRELATIONSUP|OPRELATIONSUPEQUAL) expression #relational_expr
@@ -70,6 +71,7 @@ IDENT : [a-zA-Z][a-zA-Z0-9_]*;
 
 OPMULT : '*';
 OPDIV : '/';
+OPMOD : '%';
 OPADD : '+';
 OPSUB : '-';
 OPRELATIONINF : '<';
@@ -84,6 +86,7 @@ OPBINARYOR : '|';
 OPAND : '&&';
 OPOR : '||';
 OPAFF : '=';
+
 
 COMMENTMULT : '/*' .*? '*/' -> skip;
 COMMENT: '//' ~('\n')* -> skip;

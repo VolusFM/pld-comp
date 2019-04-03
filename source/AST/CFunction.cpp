@@ -6,16 +6,21 @@
 #include "CInstrVariableMulti.h"
 #include "CInstrExpression.h"
 #include "CExpression.h"
+#include "CInstruction.h"
 
+#include <string>
 using std::to_string;
 using std::cerr;
 using std::endl;
 
-CFunction::CFunction(string name, vector<CParameter> parameters, CInstructions& block_) :
-        name(name), parameters(parameters){
+
+
+CFunction::CFunction(string name, vector<CParameter> parameters, CInstructions& block_)
+: name(name), parameters(parameters)
+{
     temp_id = 0;
     tosOffset = 0;
-
+    
     block = std::move(block_);
     block_.instructions.clear();
 }
@@ -68,8 +73,13 @@ void CFunction::fill_tos() {
 }
 
 string CFunction::tos_addr(string variable) const {
-    int addr = tosAddress.at(variable);
-    return to_string(addr) + "(%rbp)";
+    try {
+        int addr = tosAddress.at(variable);
+        return to_string(addr) + "(%rbp)";
+    } catch(...) {
+        cerr << "ERROR: reference to undeclared variable " + variable << endl;
+        throw;
+    }
 }
 
 string CFunction::tos_add_temp(CType type) {
@@ -93,29 +103,23 @@ void CFunction::tos_add(string name, CType type) {
     tosType[name] = type;
 }
 
-void CFunction::fill_tos(CInstructions& block) {
-
-    for (auto it = block.instructions.begin(); it != block.instructions.end();
-            ++it) {
+void CFunction::fill_tos(const CInstructions& block) {
+    for (auto it = block.instructions.begin();
+              it != block.instructions.end(); ++it) {
         const CInstruction* i = *it;
-        const CInstrVariableMulti* instrVars = dynamic_cast<const CInstrVariableMulti*>(i);
-        if (instrVars != nullptr) {
-            for (auto instrVar: instrVars->varDefs ){
-                tos_add(instrVar->name, instrVar->type);
-            }
-        }
+        
+        const CInstructions* instrlist = dynamic_cast<const CInstructions*>(i);
+        if (instrlist != nullptr) fill_tos(*instrlist);
+        
+        const CInstrVariable* instrvar = dynamic_cast<const CInstrVariable*>(i);
+        if (instrvar != nullptr) tos_add(instrvar->name, instrvar->type);
     }
 }
 
-void CFunction::fill_tos(vector<CParameter>& parameters) {
+void CFunction::fill_tos(const vector<CParameter>& parameters) {
     for(auto it = parameters.begin(); it!= parameters.end(); ++it) {
         const CParameter& param = *it;
         tos_add(param.name, param.type);
     }    
 }
-
-
-
-
-
 

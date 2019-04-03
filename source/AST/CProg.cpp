@@ -8,12 +8,12 @@ string CProg::to_asm() const {
     string code;
     code += ".text\n";
     code += ".global main\n";
-    try{
-        for (const CFunction & f : functions) {
+    try {
+        for (const CFunction& f : functions) {
             code += f.to_asm();
         }
-    }catch(std::exception const& e){
-        cerr << "ERROR : couldn't generate assembly code"<< endl;
+    } catch(...) {
+        cerr << "ERROR: couldn't generate assembly code" << endl;
     }
     return code;
 }

@@ -11,33 +11,36 @@ using std::map;
 #include "CFunctionHeader.h"
 #include "CType.h"
 
+class CFG;
+
 class CFunction {
 public:
     CFunction(string name, vector<CParameter> parameters, CInstructions& block);
     ~CFunction();
-
+    
+    CFG* to_IR() const;
     string to_asm() const;
-
+    
     string name;
-
+    
     vector<string> tos;
     map<string, CType> tosType;
     map<string, int> tosAddress;
     int tosOffset;
-
+    
     vector<CParameter> parameters;
     CInstructions block;
-
+    
     int temp_id;
     string tos_add_temp(CType type);
     string tos_addr(string variable) const;
-    void fill_tos(vector<CParameter>& parameters);
     void tos_add(CType type, string name);
-
+    
     void fill_tos();
 private:
-    void fill_tos(CInstructions& block);
-
+    void fill_tos(const CInstructions& block);
+    void fill_tos(const vector<CParameter>& parameters);
+    
 public:
     // enable move semantics
     CFunction(CFunction&&) = default;

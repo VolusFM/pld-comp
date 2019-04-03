@@ -18,3 +18,11 @@ CInstructions::~CInstructions() {
     }
 }
 
+string CInstructions::to_asm(const CFunction* f) const {
+    string code = "";
+    for (auto instruction : instructions){
+        code += instruction->to_asm(f);
+    }
+    return code;
+}
+

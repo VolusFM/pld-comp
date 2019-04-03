@@ -1,7 +1,6 @@
 #include "CExpression.h"
-#include <iostream>
+
 #include <string>
-using namespace std;
 using std::to_string;
 
 #include "CFunction.h"
@@ -82,7 +81,7 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         if (op == "*") {
             code += "  imull " + rhsvar + ", %eax\n";
         }
-        if (op == "/") {
+        if (op == "/" || op == "%") {
             code += "  cltd\n"; // convert values to long double
             code += "  idivl " + rhsvar + "\n"; // do the division
         }
@@ -92,7 +91,46 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         if (op == "-") {
             code += "  subl  " + rhsvar + ", %eax\n";
         }
-        code += "  movl  %eax, " + variable + "\n";
+        if (op == "<" || op == "<=" || op == ">" || op == ">=" || op == "=="
+                || op == "!=") {
+            code += "  cmpl  " + rhsvar + ", %eax\n";
+            if (op == "<") {
+                code += "  setl";
+            }
+            if (op == "<=") {
+                code += "  setle";
+            }
+            if (op == ">") {
+                code += "  setg";
+            }
+            if (op == ">=") {
+                code += "  setge";
+            }
+            if (op == "==") {
+                code += "  sete";
+            }
+            if (op == "!=") {
+                code += "  setne";
+            }
+            code += "  %al\n";
+            code += "  movzbl  %al, %eax\n";
+        }
+        if (op == "&") {
+            code += "  andl  " + rhsvar + ", %eax\n";
+        }
+        if (op == "|") {
+            code += "  orl  " + rhsvar + ", %eax\n";
+        }
+        if (op == "^") {
+            code += "  xorl  " + rhsvar + ", %eax\n";
+        }
+
+        if (op == "%") {
+            code += "  movl  %edx, ";
+        } else {
+            code += "  movl  %eax, ";
+        }
+        code += variable + "\n";
     }
     return pair<string, string>(code, variable);
 }
