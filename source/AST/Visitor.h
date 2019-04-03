@@ -15,6 +15,7 @@ using std::vector;
 #include "CInstrReturn.h"
 #include "CInstrVariable.h"
 #include "CInstrExpression.h"
+#include "CInstrIf.h"
 #include "CFunctionCall.h"
 
 class Visitor: public CodeCBaseVisitor {
@@ -58,11 +59,11 @@ public:
     virtual antlrcpp::Any visitParameters(CodeCParser::ParametersContext *ctx)
             override {
         vector<CParameter>* parameters = new vector<CParameter>;
-        
+
         for (auto ctx_param : ctx->singleparameter()) {
             parameters->push_back(*((CParameter*) visit(ctx_param)));
         }
-        
+
         return parameters;
     }
 
@@ -76,13 +77,13 @@ public:
     virtual antlrcpp::Any visitInstructionsblock(
             CodeCParser::InstructionsblockContext *ctx) override {
         vector<CInstruction*> instructionsBlock;
-        
+
         for (auto ctx_instr : ctx->instruction()) {
             instructionsBlock.push_back((CInstruction*) visit(ctx_instr));
         }
-        
+
         CInstructions* block = new CInstructions(instructionsBlock);
-        
+
         return block;
     }
 
@@ -105,27 +106,41 @@ public:
 
     virtual antlrcpp::Any visitInstr_def(CodeCParser::Instr_defContext *ctx)
             override {
-        return (CInstruction*) ((CInstructions*) visit(
-                ctx->vardefinition()));
+        return (CInstruction*) ((CInstructions*) visit(ctx->vardefinition()));
     }
 
     virtual antlrcpp::Any visitVardefinition(
             CodeCParser::VardefinitionContext *ctx) override {
         string type = ctx->type()->getText();
         vector<CInstruction*> instructionsVariables;
-        
+
         for (auto ctx_varDef : ctx->vardefinitionmult()) {
             CInstrVariable* instrvar = (CInstrVariable*) visit(ctx_varDef);
             instrvar->type = type;
             instructionsVariables.push_back(instrvar);
         }
-        
+
         return new CInstructions(instructionsVariables);
     }
     virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx)
             override {
         string name = ctx->IDENT()->getText();
         return new CInstrVariable(name);
+    }
+
+    //TODO : check and test it
+    virtual antlrcpp::Any visitIf_block(CodeCParser::If_blockContext *ctx)
+            override {
+
+        CExpression* condition = (CExpression*) visit(ctx->ifblock()->rvalue());
+        CInstructions* blockTrue = (CInstructions*) visit(
+                ctx->ifblock()->anyinstruction());
+        CodeCParser::ElseblockContext * ctxElse = ctx->ifblock()->elseblock();
+        CInstructions* blockFalse;
+        if (ctxElse != nullptr) {
+            blockFalse = (CInstructions*) visit(ctxElse->anyinstruction());
+        }
+        return new CInstrIf(condition, blockTrue, blockFalse);
     }
 
     virtual antlrcpp::Any visitDef_var_with_expr(
@@ -348,7 +363,8 @@ public:
         return (CExpression*) expr;
     }
 
-    virtual antlrcpp::Any visitLvalue(CodeCParser::LvalueContext *ctx) override {
+    virtual antlrcpp::Any visitLvalue(CodeCParser::LvalueContext *ctx)
+            override {
         CExpressionVar* expr = new CExpressionVar(ctx->IDENT()->getText());
         return (CExpression*) expr;
     }
