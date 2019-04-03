@@ -23,6 +23,7 @@ string CExpressionVar::to_IR(CFG* cfg) const {
     return variable;
 }
 
+
 string CExpressionComposed::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
     
@@ -39,6 +40,23 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         */
     } else {
         variable = cfg->tos_add_temp("int");
+
+        if (op == "+") {
+            bb->add_IRInstr(op_add, "int", {variable, lhsvar, rhsvar});
+        }
+        if (op == "-") {
+            bb->add_IRInstr(op_sub, "int", { variable, lhsvar, rhsvar });
+        }
+        if (op == "*") {
+            bb->add_IRInstr(op_mul, "int", { variable, lhsvar, rhsvar });
+        }
+        if (op == "/") {
+            bb->add_IRInstr(op_div, "int", { variable, lhsvar, rhsvar });
+        }
+        if (op == "%") {
+            bb->add_IRInstr(op_mod, "int", { variable, lhsvar, rhsvar });
+        }
+
         /*
         code += "  movl  " + lhsvar + ", %eax\n";
         if (op == "*") {
@@ -48,9 +66,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             code += "  cltd\n"; // convert values to long double
             code += "  idivl " + rhsvar + "\n"; // do the division
         }
-        if (op == "+") {
-            code += "  addl " + rhsvar + ", %eax \n";
-        }
+
         if (op == "-") {
             code += "  subl  " + rhsvar + ", %eax\n";
         }

@@ -3,11 +3,11 @@
 // currently not needed
 
 int main() {
-  int a = 36;
-  /*
+  int a = (33 % 8 + 3) * 2 - 10 / 5;
+ /*
     printf("a=%d", a);
   */
-  return 4*a+7*1-2;
+  return a;
 }
 
 int test() {
