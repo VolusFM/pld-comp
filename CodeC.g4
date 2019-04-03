@@ -46,6 +46,7 @@ rvalue: (OPADD|OPSUB) rvalue #unary_expr
 	| lvalue OPAFF rvalue #affect_expr
 	| lvalue #variable
 	| intval #const
+	| IDENT '(' (parametercall (',' parametercall)*)? ')' #function_call
 	| '('rvalue')' #parenth_expr;
 
 lvalue : IDENT;
@@ -61,8 +62,8 @@ instrreturn: 'return' rvalue #return_expr
 type: 'int' | 'char' ;
 
 parameters: '(' (singleparameter (',' singleparameter)*)? ')';
-
 singleparameter : type IDENT;
+parametercall : rvalue;
 
 
 INTDEC : [1-9][0-9]*;

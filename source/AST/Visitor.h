@@ -16,6 +16,7 @@ using std::vector;
 #include "CInstrVariable.h"
 #include "CInstrExpression.h"
 #include "CInstrIf.h"
+#include "CFunctionCall.h"
 
 class Visitor: public CodeCBaseVisitor {
 public:
@@ -215,6 +216,19 @@ public:
             CodeCParser::Parenth_exprContext *ctx) override
             {
         return visit(ctx->rvalue());
+    }
+
+    virtual antlrcpp::Any visitFunction_call(CodeCParser::Function_callContext *ctx)
+            override {
+        string functionName = ctx->IDENT()->getText();
+        vector<CExpression*>* parameters = new vector<CExpression*>;
+        
+        for (auto ctx_param : ctx->parametercall()) {
+            parameters->push_back(((CExpression*) visit(ctx_param)));
+        }
+        CFunctionCall* function = new CFunctionCall(functionName, *parameters);
+        return (CExpression*) function;
+        
     }
 
     virtual antlrcpp::Any visitAdd_expr(CodeCParser::Add_exprContext *ctx)
