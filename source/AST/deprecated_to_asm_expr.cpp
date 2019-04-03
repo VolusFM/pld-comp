@@ -31,6 +31,11 @@ pair<string, string> CExpressionVar::to_asm(CFunction* f) const {
     return pair<string, string>("", ret);
 }
 
+pair<string, string> CExpressionVarArray::to_asm(CFunction* f) const {
+    //to do
+    return pair<string,string>("todo","todo");
+}
+
 pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
     string code;
     string variable;

@@ -10,6 +10,7 @@ using std::endl;
 #include "../AST/CInstrExpression.h"
 #include "../AST/CInstrVariable.h"
 #include "../AST/CInstrReturn.h"
+#include "../AST/CInstrArray.h"
 
 void CInstructions::to_IR(CFG* cfg) const {
     for (auto it = instructions.begin(); it != instructions.end(); ++it) {
@@ -19,6 +20,10 @@ void CInstructions::to_IR(CFG* cfg) const {
 
 void CInstrExpression::to_IR(CFG* cfg) const {
     expr->to_IR(cfg);
+}
+
+void CInstrArray::to_IR(CFG* cfg) const {
+    //to do
 }
 
 void CInstrVariable::to_IR(CFG* cfg) const {

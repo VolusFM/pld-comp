@@ -26,6 +26,11 @@ string CExpressionVar::to_IR(CFG* cfg) const {
     return variable;
 }
 
+string CExpressionVarArray::to_IR(CFG* cfg) const {
+    //to do
+    return "todo";
+}
+
 string CExpressionComposed::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
     

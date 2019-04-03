@@ -107,18 +107,22 @@ public:
     virtual antlrcpp::Any visitInstr_def(CodeCParser::Instr_defContext *ctx)
             override {
         return (CInstruction*) ((CInstructions*) visit(
-                ctx->vardefinition()));
+                ctx->definition()));
     }
 
-    virtual antlrcpp::Any visitVardefinition(
-            CodeCParser::VardefinitionContext *ctx) override {
+    virtual antlrcpp::Any visitDefinition(CodeCParser::DefinitionContext *ctx)override {
         string type = ctx->type()->getText();
         vector<CInstruction*> instructionsVariables;
         
-        for (auto ctx_varDef : ctx->vardefinitionmult()) {
-            CInstrVariable* instrvar = (CInstrVariable*) visit(ctx_varDef);
-            instrvar->type = type;
-            instructionsVariables.push_back(instrvar);
+        for (auto ctx_varDef : ctx->vardefinition()) {
+            CInstrVariable* instrVar = (CInstrVariable*) visit(ctx_varDef);
+            instrVar->type = type;
+            instructionsVariables.push_back(instrVar);
+        }
+        for (auto ctx_arrayDef : ctx->arraydefinition()) {
+            CInstrArray* instrArray = (CInstrArray*) visit(ctx_arrayDef);
+            instrArray->type = type;
+            instructionsVariables.push_back(instrArray);
         }
         
         return new CInstructions(instructionsVariables);
@@ -146,7 +150,13 @@ public:
     virtual antlrcpp::Any visitDef_array_with_expr(CodeCParser::Def_array_with_exprContext *ctx) override {
         string name = ctx->IDENT()->getText();
         int size = (int) (long) visit(ctx->intval());
-        return new CInstrArray(name,size);
+        
+        list <CExpression *> exprs;
+        for(auto rvalueCtx : ctx->rvalue()){
+            exprs.push_back((CExpression*)visit(rvalueCtx));
+        }
+
+        return new CInstrArray(name,size,exprs);
     }
 
     virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx)
@@ -370,6 +380,7 @@ public:
 
     virtual antlrcpp::Any visitVariable_in_array(CodeCParser::Variable_in_arrayContext *ctx) override {
         CExpressionVarArray* expr = new CExpressionVarArray(ctx->IDENT()->getText(), (CExpression*) visit(ctx->rvalue()));
+        return (CExpression*) expr;
     }
 
 };

@@ -2,6 +2,7 @@
 #include "CInstrExpression.h"
 #include "CInstrReturn.h"
 #include "CInstrVariable.h"
+#include "CInstrArray.h"
 
 #include <string>
 using std::to_string;
@@ -22,6 +23,12 @@ string CInstrExpression::to_asm(const CFunction* f) const
 {
     CFunction* fm = const_cast<CFunction*>(f);
     return expr->to_asm(fm).first;
+}
+
+string CInstrArray::to_asm(const CFunction* f) const
+{
+    //to do
+    return "todo";
 }
 
 string CInstrVariable::to_asm(const CFunction* f) const {

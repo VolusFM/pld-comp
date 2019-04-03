@@ -15,7 +15,7 @@ anyinstruction: instructionsblock // some instructions
 instructionsblock: '{' instruction* '}';
 
 instruction: instrreturn ';' #return
-	| vardefinition ';' #instr_def
+	| definition ';' #instr_def
 	| rvalue ';' #instr_expr
 	| ifblock #if_block
 	| whileblock #while_block;
@@ -24,15 +24,16 @@ instruction: instrreturn ';' #return
 ifblock: 'if' '(' rvalue ')' anyinstruction elseblock?;
 elseblock: 'else' anyinstruction;
 
-whileblock: 'while' '(' rvalue ')' anyinstruction;
+whileblock: 'while' '(' ')' anyinstruction;
 
 
-vardefinition: type vardefinitionmult (','vardefinitionmult)*;
+definition: type (vardefinition|arraydefinition) (','(vardefinition|arraydefinition))*;
 
-vardefinitionmult : IDENT #def_var
-    | IDENT '=' rvalue	#def_var_with_expr
-	| IDENT'['intval']'	#def_array
-	| IDENT'['intval']' '=' '{''}' #def_array_with_expr;
+vardefinition : IDENT #def_var
+    | IDENT '=' rvalue	#def_var_with_expr;
+
+arraydefinition : IDENT'['intval']'	#def_array
+	| IDENT'['intval']' '=' '{'(rvalue (',' rvalue)*)?'}' #def_array_with_expr;
 
 rvalue: (OPADD|OPSUB) rvalue #unary_expr
 	| rvalue (OPMULT|OPDIV|OPMOD) rvalue #mult_expr
