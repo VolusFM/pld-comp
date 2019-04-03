@@ -57,6 +57,32 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             bb->add_IRInstr(op_mod, "int", { variable, lhsvar, rhsvar });
         }
 
+
+         //   code += "  cmpl  " + rhsvar + ", %eax\n";
+        if (op == "<") {
+            bb->add_IRInstr(op_cmp_lt, "int", { variable, lhsvar, rhsvar });
+        }
+        if (op == "<=") {
+            bb->add_IRInstr(op_cmp_le, "int", { variable, lhsvar, rhsvar });
+        }
+        if (op == ">") {
+            bb->add_IRInstr(op_cmp_gt, "int", { variable, lhsvar, rhsvar });
+        }
+        if (op == ">=") {
+            bb->add_IRInstr(op_cmp_ge, "int", { variable, lhsvar, rhsvar });
+        }
+        if (op == "==") {
+            bb->add_IRInstr(op_cmp_eq, "int", { variable, lhsvar, rhsvar });
+        }
+        if (op == "!=") {
+            bb->add_IRInstr(op_cmp_ne, "int", { variable, lhsvar, rhsvar });
+        }
+        //    code += "  %al\n";
+        //    code += "  movzbl  %al, %eax\n";
+
+
+
+
         /*
         code += "  movl  " + lhsvar + ", %eax\n";
         if (op == "*") {
@@ -70,29 +96,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         if (op == "-") {
             code += "  subl  " + rhsvar + ", %eax\n";
         }
-        if (op == "<" || op == "<=" || op == ">" || op == ">=" || op == "==" || op == "!=") {
-            code += "  cmpl  " + rhsvar + ", %eax\n";
-            if (op == "<") {
-                code += "  setl";
-            }
-            if (op == "<=") {
-                code += "  setle";
-            }
-            if (op == ">") {
-                code += "  setg";
-            }
-            if (op == ">=") {
-                code += "  setge";
-            }
-            if (op == "==") {
-                code += "  sete";
-            }
-            if (op == "!=") {
-                code += "  setne";
-            }
-            code += "  %al\n";
-            code += "  movzbl  %al, %eax\n";
-        }
+
         if (op == "&") {
             code += "  andl  " + rhsvar + ", %eax\n";
         }
