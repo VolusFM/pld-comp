@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "CInstrVariable.h"
-#include "CInstrVariableMulti.h"
+//#include "CInstrVariableMulti.h"
 #include "CInstrExpression.h"
 #include "CExpression.h"
 #include "CInstruction.h"
@@ -31,7 +31,19 @@ CFunction::~CFunction() {
 
 string CFunction::to_asm() const {
     string code;
-    code += name + ":\n";
+    code += name;
+    
+    if(parameters.begin() != parameters.end()){
+        code += "(";
+        auto itEnd = parameters.end();
+        itEnd--;
+        for(auto it = parameters.begin(); it != itEnd; ++it) {
+            code += it->type + ", "; 
+        } 
+        code += itEnd->type;
+        code += ")";
+    }
+    code += ":\n";
 
     code += "  ## prologue\n";
     code += "  pushq %rbp # save %rbp on the stack\n";
