@@ -16,44 +16,46 @@ instructionsblock: '{' instruction* '}';
 
 instruction: instrreturn ';' #return
 	| vardefinition ';' #instr_def
-	| expression ';' #instr_expr
+	| rvalue ';' #instr_expr
 	| ifblock #if_block
 	| whileblock #while_block;
 
 
-ifblock: 'if' '(' expression ')' anyinstruction elseblock?;
+ifblock: 'if' '(' rvalue ')' anyinstruction elseblock?;
 elseblock: 'else' anyinstruction;
 
-whileblock: 'while' '(' expression ')' anyinstruction;
+whileblock: 'while' '(' rvalue ')' anyinstruction;
 
 
 vardefinition: type vardefinitionmult (','vardefinitionmult)*;
 
 vardefinitionmult : IDENT #def_var
-    | IDENT '=' expression	#def_var_with_expr;
+    | IDENT '=' rvalue	#def_var_with_expr;
 
-expression: (OPADD|OPSUB) expression #unary_expr
-	| expression (OPMULT|OPDIV|OPMOD) expression #mult_expr
-	| expression (OPADD|OPSUB) expression #add_expr
+rvalue: (OPADD|OPSUB) rvalue #unary_expr
+	| rvalue (OPMULT|OPDIV|OPMOD) rvalue #mult_expr
+	| rvalue (OPADD|OPSUB) rvalue #add_expr
 	// In C, boolean type doesn't exist and we use integers instead
-	| expression (OPRELATIONINF|OPRELATIONINFEQUAL|OPRELATIONSUP|OPRELATIONSUPEQUAL) expression #relational_expr
-	| expression (OPEQUALITY|OPINEQUALITY) expression #equality_expr
-	| expression OPBINARYAND expression #binary_and_expr
-	| expression OPBINARYEXCLUSIVEOR expression #binary_exclusive_or_expr
-	| expression OPBINARYOR expression #binary_or_expr 
-	| expression OPAND expression #logical_and_expr
-	| expression OPOR expression #logical_or_expr
-	| IDENT OPAFF expression #affect_expr
-	| IDENT #variable
+	| rvalue (OPRELATIONINF|OPRELATIONINFEQUAL|OPRELATIONSUP|OPRELATIONSUPEQUAL) rvalue #relational_expr
+	| rvalue (OPEQUALITY|OPINEQUALITY) rvalue #equality_expr
+	| rvalue OPBINARYAND rvalue #binary_and_expr
+	| rvalue OPBINARYEXCLUSIVEOR rvalue #binary_exclusive_or_expr
+	| rvalue OPBINARYOR rvalue #binary_or_expr 
+	| rvalue OPAND rvalue #logical_and_expr
+	| rvalue OPOR rvalue #logical_or_expr
+	| lvalue OPAFF rvalue #affect_expr
+	| lvalue #variable
 	| intval #const
-	| '('expression')' #parenth_expr;
+	| '('rvalue')' #parenth_expr;
+
+lvalue : IDENT;
 
 intval : INTDEC #intval_dec
         | INTHEX #intval_hex
         | INTBIN #intval_bin
         | INTOCT #intval_oct;
 
-instrreturn: 'return' expression #return_expr
+instrreturn: 'return' rvalue #return_expr
 	| 'return' #return_void;
 
 type: 'int' | 'char' ;
