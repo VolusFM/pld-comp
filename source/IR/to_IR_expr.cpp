@@ -1,5 +1,6 @@
 #include "IR.h"
 #include "../AST/CExpression.h"
+#include "../AST/CFunctionCall.h"
 
 #include <iostream>
 using std::ostream;
@@ -96,6 +97,23 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         */
     }
     // to do
+    
+    return variable;
+}
+
+string CFunctionCall::to_IR(CFG* cfg) const{
+    BasicBlock* bb = cfg->current_bb;
+    
+    string variable = cfg->tos_add_temp("int");
+    
+    vector<string> results;
+    results.push_back(functionName);
+    results.push_back(variable);
+    for (auto it = parameters.begin(); it != parameters.end(); ++it) {
+        results.push_back((*it)->to_IR(cfg));
+    }
+    
+    bb->add_IRInstr(op_call, "int", results);
     
     return variable;
 }

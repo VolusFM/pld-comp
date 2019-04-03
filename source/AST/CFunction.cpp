@@ -1,6 +1,8 @@
 #include "CFunction.h"
 
 #include <iostream>
+using std::cerr;
+using std::endl;
 
 #include "CInstrVariable.h"
 //#include "CInstrVariableMulti.h"
@@ -10,9 +12,6 @@
 
 #include <string>
 using std::to_string;
-using std::cerr;
-using std::endl;
-
 
 
 CFunction::CFunction(string name, vector<CParameter> parameters, CInstructions& block_)

@@ -46,7 +46,8 @@ expression: (OPADD|OPSUB) expression #unary_expr
 	| IDENT OPAFF expression #affect_expr
 	| IDENT #variable
 	| intval #const
-	| '('expression')' #parenth_expr;
+	| '('expression')' #parenth_expr
+	| IDENT '(' (parametercall (',' parametercall)*)? ')' #function_call;
 
 intval : INTDEC #intval_dec
         | INTHEX #intval_hex
@@ -59,8 +60,8 @@ instrreturn: 'return' expression #return_expr
 type: 'int' | 'char' ;
 
 parameters: '(' (singleparameter (',' singleparameter)*)? ')';
-
 singleparameter : type IDENT;
+parametercall : expression;
 
 
 INTDEC : [1-9][0-9]*;
