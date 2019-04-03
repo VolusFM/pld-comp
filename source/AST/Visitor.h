@@ -14,6 +14,7 @@ using std::vector;
 #include "CExpression.h"
 #include "CInstrReturn.h"
 #include "CInstrVariable.h"
+#include "CInstrArray.h"
 #include "CInstrExpression.h"
 
 class Visitor: public CodeCBaseVisitor {
@@ -121,6 +122,7 @@ public:
         
         return new CInstructions(instructionsVariables);
     }
+
     virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx)
             override {
         string name = ctx->IDENT()->getText();
@@ -133,6 +135,19 @@ public:
         CExpression* expr = (CExpression*) visit(ctx->rvalue());
         return new CInstrVariable(name, expr);
     }
+
+    virtual antlrcpp::Any visitDef_array(CodeCParser::Def_arrayContext *ctx) override {
+        string name = ctx->IDENT()->getText();
+        int size = (int) (long) visit(ctx->intval());
+        return new CInstrArray(name,size);
+    }
+
+    virtual antlrcpp::Any visitDef_array_with_expr(CodeCParser::Def_array_with_exprContext *ctx) override {
+        string name = ctx->IDENT()->getText();
+        int size = (int) (long) visit(ctx->intval());
+        return new CInstrArray(name,size);
+    }
+
     virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx)
             override
             {
@@ -334,9 +349,13 @@ public:
         return (CExpression*) expr;
     }
 
-    virtual antlrcpp::Any visitLvalue(CodeCParser::LvalueContext *ctx) override {
+    virtual antlrcpp::Any visitSimple_variable(CodeCParser::Simple_variableContext *ctx) override {
         CExpressionVar* expr = new CExpressionVar(ctx->IDENT()->getText());
         return (CExpression*) expr;
+    }
+
+    virtual antlrcpp::Any visitVariable_in_array(CodeCParser::Variable_in_arrayContext *ctx) override {
+        CExpressionVarArray* expr = new CExpressionVarArray(ctx->IDENT()->getText(), (CExpression*) visit(ctx->rvalue()));
     }
 
 };

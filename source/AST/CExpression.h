@@ -36,6 +36,17 @@ public:
     string variable;
 };
 
+class CExpressionVarArray: public CExpression {
+public:
+    CExpressionVarArray(string variable, CExpression* index);
+    ~CExpressionVarArray();
+    string to_IR(CFG* cfg) const;
+    pair<string, string> to_asm(CFunction* f) const;
+
+    string variable;
+    CExpression* index;
+};
+
 class CExpressionComposed: public CExpression {
 public:
     CExpressionComposed(CExpression* lhs, string op, CExpression* rhs);
