@@ -2,6 +2,9 @@
 
 #include <string>
 using std::to_string;
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 #include "CFunction.h"
 
@@ -37,7 +40,13 @@ CExpressionVar::CExpressionVar(string variable) :
 }
 
 pair<string, string> CExpressionVar::to_asm(CFunction* f) const {
-    string ret = f->tos_addr(variable);
+    string ret;
+    try{
+        ret = f->tos_addr(variable);
+    }catch(std::exception const& e){
+        cerr << "ERROR : reference to undeclared variable " << variable << endl;
+        throw e;
+    }
     return pair<string, string>("", ret);
 }
 

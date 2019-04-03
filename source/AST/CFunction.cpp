@@ -1,13 +1,19 @@
 #include "CFunction.h"
 
 #include <iostream>
-using std::cerr;
-using std::endl;
+
+#include "CInstrVariable.h"
+//#include "CInstrVariableMulti.h"
+#include "CInstrExpression.h"
+#include "CExpression.h"
+#include "CInstruction.h"
+
 #include <string>
 using std::to_string;
+using std::cerr;
+using std::endl;
 
-#include "CInstruction.h"
-#include "CInstrVariable.h"
+
 
 CFunction::CFunction(string name, vector<CParameter> parameters, CInstructions& block_)
 : name(name), parameters(parameters)
@@ -25,11 +31,29 @@ CFunction::~CFunction() {
 
 string CFunction::to_asm() const {
     string code;
-    code += name + ":\n";
+    code += name;
+    
+    if(parameters.begin() != parameters.end()){
+        code += "(";
+        auto itEnd = parameters.end();
+        itEnd--;
+        for(auto it = parameters.begin(); it != itEnd; ++it) {
+            code += it->type + ", "; 
+        } 
+        code += itEnd->type;
+        code += ")";
+    }
+    code += ":\n";
 
     code += "  ## prologue\n";
     code += "  pushq %rbp # save %rbp on the stack\n";
     code += "  movq %rsp, %rbp # define %rbp for the current function\n";
+
+    int index = 0;
+    for (auto it = parameters.begin() ; it!= parameters.end() ; ++it) {
+        code += it->to_asm(this, index);
+        index++;
+    }
 
     code += "  ## contenu\n";
 
@@ -45,9 +69,9 @@ string CFunction::to_asm() const {
 }
 
 void CFunction::fill_tos() {
-    fill_tos(block);
     fill_tos(parameters);
-
+    fill_tos(block);
+    
     for (const string& i : tos) {
         //code += "  # variable " + tosType.at(i) + " " + i + "\n";
         //une fois qu'on aura d'autres tailles de variables, faudra changer ça
@@ -81,6 +105,12 @@ string CFunction::tos_add_temp(CType type) {
 }
 
 void CFunction::tos_add(string name, CType type) {
+    map<string,CType>::iterator it = tosType.find(name);
+    if(it!=tosType.end()){
+        cerr << "ERROR : already declared variable " << name << endl;
+        throw;
+    }
+    
     tos.push_back(name);
     tosType[name] = type;
 }
