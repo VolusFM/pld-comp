@@ -34,17 +34,17 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
     string variable;
     
     if (op == "=") {
-        variable = lhsvar;
-        /*
-        code += "  movl  " + rhsvar + ", %eax\n";
-        code += "  movl  %eax, " + lhsvar + "\n";
-        */
+        CType type = "int"; //TODO handle other types
+
+        // TODO check if it's a pointer
+
+        bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
         // to do
     } else {
         variable = cfg->tos_add_temp("int");
         
         vector<string> params = {variable, lhsvar, rhsvar};
-        CType type = "int"; // to fix
+        CType type = "int"; //TODO handle other types
         
         if (op == "+") {
             bb->add_IRInstr(op_add, type, params);

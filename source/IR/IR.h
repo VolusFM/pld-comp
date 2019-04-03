@@ -25,8 +25,9 @@ typedef enum {
     op_mul,
     op_div,
     op_mod,
-    op_rmem,
-    op_wmem,
+    op_copy,
+    op_rmem,  // va lire a une adresse memoire donnee dans le premier paramatre
+    op_wmem,  // va ecrire a une adresse memoire donnee dans le premier parametre.
     op_call, 
     op_cmp_eq,
     op_cmp_ne,

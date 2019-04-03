@@ -16,6 +16,10 @@ void IRInstr::gen_asm_x86(ostream& o) const {
     */
     
     switch (op) {
+    case op_copy:
+        o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
+        break;
     case op_ldconst:
         o << "  movl  $" << params[1] << ", " << cfg->tos_get_asm_x86(params[0])
                 << "\n";

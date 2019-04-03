@@ -18,8 +18,11 @@ CFG* CFunction::to_IR() const {
     CFG* cfg = new CFG(this, name);
     
     cfg->tosType = tosType;
-    cfg->tosIndex = tosAddress; // to fix, actually values are the opposite
     
+    for (auto it = tos.cbegin(); it != tos.cend(); ++it) {
+        cfg->tosIndex[*it] = -(tosAddress.at(*it));
+    }
+
     BasicBlock* bb = new BasicBlock(cfg, name + "_body"); // to fix, rename
     bb->exit_true = nullptr;
     bb->exit_false = nullptr;
