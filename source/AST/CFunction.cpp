@@ -31,8 +31,8 @@ string CFunction::to_asm() const {
         auto itEnd = parameters.end();
         itEnd--;
         for(auto it = parameters.begin(); it != itEnd; ++it) {
-            code += it->type + ", "; 
-        } 
+            code += it->type + ", ";
+        }
         code += itEnd->type;
         code += ")";
     }
