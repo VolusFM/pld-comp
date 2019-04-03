@@ -3,7 +3,11 @@
 #include "CInstrReturn.h"
 #include "CInstrVariable.h"
 #include "CInstrArray.h"
+#include "CInstrIf.h"
 
+#include <iostream>
+using std::cerr;
+using std::endl;
 #include <string>
 using std::to_string;
 #include <utility>
@@ -50,5 +54,10 @@ string CInstrReturn::to_asm(const CFunction* f) const {
     code += "  popq %rbp\n";
     code += "  ret\n";
     return code;
+}
+
+string CInstrIf::to_asm(const CFunction* f) const {
+    cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
+    throw;
 }
 

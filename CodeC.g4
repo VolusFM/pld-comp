@@ -24,7 +24,7 @@ instruction: instrreturn ';' #return
 ifblock: 'if' '(' rvalue ')' anyinstruction elseblock?;
 elseblock: 'else' anyinstruction;
 
-whileblock: 'while' '(' ')' anyinstruction;
+whileblock: 'while' '(' rvalue ')' anyinstruction;
 
 
 definition: type (vardefinition|arraydefinition) (','(vardefinition|arraydefinition))*;

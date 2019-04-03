@@ -32,6 +32,9 @@ void CFG::gen_asm_x86_prologue(ostream& o) const {
       << "  ## prologue\n"
       << "  pushq %rbp # save %rbp on the stack\n"
       << "  movq %rsp, %rbp # define %rbp for the current function\n"
+
+    /* TODO : rajouter les registres d'entrees */
+    //cfg->ast->parameters
     
       << "  ## contenu\n";
 }

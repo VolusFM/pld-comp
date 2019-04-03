@@ -5,6 +5,8 @@ using std::ostream;
 using std::cerr;
 using std::endl;
 
+static const string registerName[] = { "%rdi", "%rsi", "%rdx", "%rcx", "%r8d", "%r9d" };
+
 void IRInstr::gen_asm_x86(ostream& o) const {
     CFG* cfg = bb->cfg;
     
@@ -93,13 +95,20 @@ void IRInstr::gen_asm_x86(ostream& o) const {
         o << "  movzbl  %al, %eax\n";
         o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
         break;
-    
+    case op_call : {
+        int index = 0;
+        for (auto it = params.begin()+2 ; it != params.end() ; ++it) {
+            o << "  movl " << cfg->tos_get_asm_x86(*it) << ", " << registerName[index] << "\n";
+            if (++index==6) break;
+        }
+        o << "  call " << params[0] << "\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[1]) << "\n";
+        break;
+    }
         /*
         case op_rmem:
             break;
         case op_wmem:
-            break;
-        case op_call:
             break;
         case op_cmp_eq:
             break;
@@ -109,11 +118,10 @@ void IRInstr::gen_asm_x86(ostream& o) const {
             break;
         */
         // to do
-    
-        default:
-            cerr << "PROBLEM: operator not yet supported" << endl;
-            throw;
-            break;
+    default:
+        cerr << "PROBLEM: operator not yet supported" << endl;
+        throw;
+        break;
     }
 }
 
