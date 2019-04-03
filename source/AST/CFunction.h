@@ -16,7 +16,7 @@ class CFG;
 class CFunction {
 public:
     CFunction(string name, vector<CParameter> parameters, CInstructions& block);
-    ~CFunction();
+    ~CFunction() = default;
     
     CFG* to_IR() const;
     string to_asm() const;

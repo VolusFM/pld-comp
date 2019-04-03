@@ -1,10 +1,8 @@
 #include "CInstrExpression.h"
 
-#include <string>
-using std::to_string;
-
-CInstrExpression::CInstrExpression(CExpression * expr) :
-        expr(expr) {
+CInstrExpression::CInstrExpression(CExpression* expr)
+: expr(expr)
+{
 }
 
 CInstrExpression::~CInstrExpression() {

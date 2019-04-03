@@ -11,7 +11,7 @@ class CFunction;
 
 class CInstruction {
 public:
-    virtual ~CInstruction();
+    virtual ~CInstruction() = default;
     virtual void to_IR(CFG* cfg) const = 0;
     virtual string to_asm(const CFunction* f) const = 0;
 };
@@ -19,7 +19,7 @@ public:
 // Wrapper for a vector of instructions
 class CInstructions : public CInstruction {
 public:
-    CInstructions();
+    CInstructions() = default;
     CInstructions(vector<CInstruction*>& instructions);
     ~CInstructions();
     

@@ -19,10 +19,6 @@ CFunction::CFunction(string name, vector<CParameter> parameters, CInstructions& 
     block_.instructions.clear();
 }
 
-CFunction::~CFunction() {
-    // Nothing to do.
-}
-
 string CFunction::to_asm() const {
     string code;
     code += name + ":\n";

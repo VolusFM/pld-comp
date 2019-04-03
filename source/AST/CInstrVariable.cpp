@@ -1,11 +1,15 @@
 #include "CInstrVariable.h"
 
-CInstrVariable::CInstrVariable(string name) :
-        name(name), expr(nullptr) {
+#include "CExpression.h"
+
+CInstrVariable::CInstrVariable(string name)
+: name(name), expr(nullptr)
+{
 }
 
-CInstrVariable::CInstrVariable(string name, CExpression* expr_) :
-        name(name) {
+CInstrVariable::CInstrVariable(string name, CExpression* expr_)
+: name(name)
+{
     CExpressionVar* exprVar = new CExpressionVar(name);
     expr = new CExpressionComposed(exprVar, "=", expr_);
 }
