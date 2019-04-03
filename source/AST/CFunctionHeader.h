@@ -28,6 +28,8 @@ public:
     CParameter(string name, CType type);
     ~CParameter() = default;
     
+    string to_asm(const CFunction* f, int index) const;
+    
     string name;
     CType type;
 };
