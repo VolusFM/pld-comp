@@ -7,9 +7,9 @@ using std::vector;
 #include <map>
 using std::map;
 
-#include "CInstruction.h"
-#include "CFunctionHeader.h"
 #include "CType.h"
+#include "CInstruction.h"
+class CParameter;
 
 class CFG;
 

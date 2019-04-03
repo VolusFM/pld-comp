@@ -4,9 +4,9 @@
 using std::string;
 
 #include "CInstruction.h"
-#include "CExpression.h"
+class CExpression;
 
-class CInstrExpression: public CInstruction {
+class CInstrExpression : public CInstruction {
 public:
     CInstrExpression(CExpression* expr);
     ~CInstrExpression();

@@ -5,6 +5,7 @@ using std::ostream;
 using std::cerr;
 using std::endl;
 
+#include "../AST/CExpression.h"
 #include "../AST/CInstruction.h"
 #include "../AST/CInstrExpression.h"
 #include "../AST/CInstrVariable.h"

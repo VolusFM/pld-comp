@@ -4,6 +4,8 @@
 using std::cerr;
 using std::endl;
 
+#include "CFunction.h"
+
 string CProg::to_asm() const {
     string code;
     code += ".text\n";

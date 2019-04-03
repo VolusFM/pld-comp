@@ -5,9 +5,9 @@ using std::vector;
 #include <string>
 using std::string;
 
-class CFG;
-
 class CFunction;
+
+class CFG;
 
 class CInstruction {
 public:

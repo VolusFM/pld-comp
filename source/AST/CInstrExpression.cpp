@@ -1,5 +1,7 @@
 #include "CInstrExpression.h"
 
+#include "CExpression.h"
+
 CInstrExpression::CInstrExpression(CExpression* expr)
 : expr(expr)
 {
