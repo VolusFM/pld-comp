@@ -8,17 +8,15 @@ using std::endl;
 
 #include "CFunction.h"
 
-CExpression::~CExpression() {
-}
-
 pair<string, string> CExpression::to_asm(const CFunction* f) const {
     return this->to_asm(const_cast<CFunction*>(f));
 }
 
 // ----------------- CExpressionInt -----------------
 
-CExpressionInt::CExpressionInt(int value) :
-        value(value) {
+CExpressionInt::CExpressionInt(int value)
+: value(value)
+{
 }
 
 pair<string, string> CExpressionInt::to_asm(CFunction* f) const {
@@ -28,15 +26,10 @@ pair<string, string> CExpressionInt::to_asm(CFunction* f) const {
     return pair<string, string>(code, varaddr);
 }
 
-CExpressionInt::~CExpressionInt() {
-    // Nothing to do.
-}
-
 // ----------------- CExpressionVar -----------------
 
 CExpressionVar::CExpressionVar(string variable) :
         variable(variable) {
-
 }
 
 pair<string, string> CExpressionVar::to_asm(CFunction* f) const {
@@ -50,15 +43,12 @@ pair<string, string> CExpressionVar::to_asm(CFunction* f) const {
     return pair<string, string>("", ret);
 }
 
-CExpressionVar::~CExpressionVar() {
-    // Nothing to do.
-}
-
 // -------------- CExpressionComposed ---------------
 
 CExpressionComposed::CExpressionComposed(CExpression* lhs, string op,
-        CExpression* rhs) :
-        lhs(lhs), op(op), rhs(rhs) {
+        CExpression* rhs)
+: lhs(lhs), op(op), rhs(rhs)
+{
 }
 
 pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {

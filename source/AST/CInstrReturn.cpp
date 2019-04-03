@@ -2,18 +2,23 @@
 
 #include <string>
 using std::to_string;
+#include <utility>
+using std::pair;
+
+#include "CExpression.h"
 
 /*
  * Default constructor - If there is no return (return void),
  * set expr to nullptr to be able to recognize it.
  */
-CInstrReturn::CInstrReturn() :
-        expr(nullptr) {
-
+CInstrReturn::CInstrReturn()
+: expr(nullptr)
+{
 }
 
-CInstrReturn::CInstrReturn(CExpression* expr) :
-        expr(expr) {
+CInstrReturn::CInstrReturn(CExpression* expr)
+: expr(expr)
+{
 }
 
 CInstrReturn::~CInstrReturn() {

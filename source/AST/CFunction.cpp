@@ -1,18 +1,15 @@
 #include "CFunction.h"
 
 #include <iostream>
+using std::cerr;
+using std::endl;
+#include <string>
+using std::to_string;
 
 #include "CInstrVariable.h"
-//#include "CInstrVariableMulti.h"
 #include "CInstrExpression.h"
 #include "CExpression.h"
 #include "CInstruction.h"
-
-#include <string>
-using std::to_string;
-using std::cerr;
-using std::endl;
-
 
 
 CFunction::CFunction(string name, vector<CParameter> parameters, CInstructions& block_)
@@ -25,10 +22,6 @@ CFunction::CFunction(string name, vector<CParameter> parameters, CInstructions& 
     block_.instructions.clear();
 }
 
-CFunction::~CFunction() {
-    // Nothing to do.
-}
-
 string CFunction::to_asm() const {
     string code;
     code += name;
@@ -38,8 +31,8 @@ string CFunction::to_asm() const {
         auto itEnd = parameters.end();
         itEnd--;
         for(auto it = parameters.begin(); it != itEnd; ++it) {
-            code += it->type + ", "; 
-        } 
+            code += it->type + ", ";
+        }
         code += itEnd->type;
         code += ")";
     }
@@ -89,7 +82,7 @@ string CFunction::tos_addr(string variable) const {
         int addr = tosAddress.at(variable);
         return to_string(addr) + "(%rbp)";
     } catch(...) {
-        cerr << "ERROR: reference to undeclared variable " + variable << endl;
+        cerr << "ERROR: reference to undeclared variable '" << variable << "'" << endl;
         throw;
     }
 }
@@ -97,17 +90,17 @@ string CFunction::tos_addr(string variable) const {
 string CFunction::tos_add_temp(CType type) {
     temp_id++;
     string name = "temp" + to_string(temp_id);
-    tos.push_back(name);
-    tosType[name] = type;
+    
+    tos_add(name, type);
     tosOffset -= 4;
     tosAddress[name] = tosOffset;
     return name;
 }
 
 void CFunction::tos_add(string name, CType type) {
-    map<string,CType>::iterator it = tosType.find(name);
-    if(it!=tosType.end()){
-        cerr << "ERROR : already declared variable " << name << endl;
+    auto it = tosType.find(name);
+    if(it != tosType.end()) {
+        cerr << "ERROR: already declared variable '" << name << "'" << endl;
         throw;
     }
     
