@@ -47,6 +47,48 @@ void IRInstr::gen_asm_x86(ostream& o) const {
         o << "  idivl  " << cfg->tos_get_asm_x86(params[2]) << "\n";
         o << "  movl  %edx, " << cfg->tos_get_asm_x86(params[0]) << "\n";
         break;
+    case op_cmp_eq :
+        o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
+        o << "  cmpl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax\n";
+        o << "  sete  %al\n";
+        o << "  movzbl  %al, %eax\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
+        break;
+    case op_cmp_ne :
+        o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
+        o << "  cmpl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax\n";
+        o << "  setne  %al\n";
+        o << "  movzbl  %al, %eax\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
+        break;
+    case op_cmp_lt :
+        o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
+        o << "  cmpl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax\n";
+        o << "  setl  %al\n";
+        o << "  movzbl  %al, %eax\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
+        break;
+    case op_cmp_le :
+        o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
+        o << "  cmpl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax\n";
+        o << "  setle  %al\n";
+        o << "  movzbl  %al, %eax\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
+        break;
+    case op_cmp_gt :
+        o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
+        o << "  cmpl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax\n";
+        o << "  setg  %al\n";
+        o << "  movzbl  %al, %eax\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
+        break;
+    case op_cmp_ge :
+        o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
+        o << "  cmpl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax\n";
+        o << "  setge  %al\n";
+        o << "  movzbl  %al, %eax\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
+        break;
 
         /*case op_rmem:
             break;
