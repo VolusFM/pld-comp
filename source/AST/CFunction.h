@@ -7,16 +7,16 @@ using std::vector;
 #include <map>
 using std::map;
 
-#include "CInstruction.h"
-#include "CFunctionHeader.h"
 #include "CType.h"
+#include "CInstruction.h"
+class CParameter;
 
 class CFG;
 
 class CFunction {
 public:
-    CFunction(string name, vector<CParameter> parameters, CInstructions& block);
-    ~CFunction();
+    CFunction(string name, vector<CParameter>& parameters, CInstructions& block);
+    ~CFunction() = default;
     
     CFG* to_IR() const;
     string to_asm() const;

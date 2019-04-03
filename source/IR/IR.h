@@ -23,12 +23,18 @@ typedef enum {
     op_add,
     op_sub,
     op_mul,
-    op_rmem,
-    op_wmem,
+    op_div,
+    op_mod,
+    op_copy,
+    op_rmem,  // va lire a une adresse memoire donnee dans le premier paramatre
+    op_wmem,  // va ecrire a une adresse memoire donnee dans le premier parametre.
     op_call, 
     op_cmp_eq,
+    op_cmp_ne,
     op_cmp_lt,
-    op_cmp_le
+    op_cmp_le,
+    op_cmp_gt,
+    op_cmp_ge
 } Operation;
 
 // class for one 3-address instruction

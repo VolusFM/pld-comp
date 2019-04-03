@@ -9,7 +9,7 @@ code_visitors/
 
 # output
 yottacompilatron9001
-output.s
+*.s
 exe
 *.d
 *.o

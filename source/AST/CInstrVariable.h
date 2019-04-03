@@ -4,8 +4,8 @@
 using std::string;
 
 #include "CInstruction.h"
-#include "CExpression.h"
 #include "CType.h"
+class CExpression;
 
 class CInstrVariable : public CInstruction {
 public:

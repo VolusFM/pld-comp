@@ -8,14 +8,13 @@ using std::endl;
 using std::string;
 using std::to_string;
 
-IRInstr::IRInstr(BasicBlock* bb, Operation op, CType type, vector<string> params)
-: bb(bb), op(op), type(type), params(params)
-{
+IRInstr::IRInstr(BasicBlock* bb, Operation op, CType type,
+        vector<string> params) :
+        bb(bb), op(op), type(type), params(params) {
 }
 
-BasicBlock::BasicBlock(CFG* cfg, string name)
-: exit_true(nullptr), exit_false(nullptr), label(name), cfg(cfg)
-{
+BasicBlock::BasicBlock(CFG* cfg, string name) :
+        exit_true(nullptr), exit_false(nullptr), label(name), cfg(cfg) {
 }
 
 BasicBlock::~BasicBlock() {
@@ -24,15 +23,14 @@ BasicBlock::~BasicBlock() {
     }
 }
 
-void BasicBlock::add_IRInstr(Operation op, string type, vector<string> params)
-{
+void BasicBlock::add_IRInstr(Operation op, string type, vector<string> params) {
     IRInstr* instr = new IRInstr(this, op, type, params);
     instrs.push_back(instr);
 }
 
-CFG::CFG(const CFunction* f, string name)
-: ast(f), name(name), current_bb(nullptr), tosIndexNext(0), tosTempNext(1), bbNumberNext(1)
-{
+CFG::CFG(const CFunction* f, string name) :
+        ast(f), name(name), current_bb(nullptr), tosIndexNext(0), tosTempNext(
+                1), bbNumberNext(1) {
 }
 
 CFG::~CFG() {
@@ -62,8 +60,9 @@ string CFG::tos_add_temp(CType type) {
 int CFG::tos_get_index(string variable) const {
     try {
         return tosIndex.at(variable);
-    } catch(...) {
-        cerr << "ERROR: reference to undeclared variable '" << name << "'" << endl;
+    } catch (...) {
+        cerr << "ERROR: reference to undeclared variable '" << name << "'"
+                << endl;
         throw;
     }
 }
@@ -71,10 +70,10 @@ int CFG::tos_get_index(string variable) const {
 CType CFG::tos_get_type(string variable) const {
     try {
         return tosType.at(variable);
-    } catch(...) {
-        cerr << "ERROR: reference to undeclared variable '" << name << "'" << endl;
+    } catch (...) {
+        cerr << "ERROR: reference to undeclared variable '" << name << "'"
+                << endl;
         throw;
     }
 }
-
 
