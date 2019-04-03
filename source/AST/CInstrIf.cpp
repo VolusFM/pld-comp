@@ -1,11 +1,17 @@
 #include "CInstrIf.h"
 
-CInstrIf::CInstrIf(CExpression* condition, CInstructions* blockTrue,
-        CInstructions* blockFalse) :
-        condition(condition), blockTrue(blockTrue), blockFalse(blockFalse) {
-
+CInstrIf::CInstrIf(CExpression* condition, CInstructions& blockTrue_,
+        CInstructions& blockFalse_)
+: condition(condition)
+{
+    blockTrue = std::move(blockTrue_);
+    blockTrue_.instructions.clear();
+        
+    blockFalse = std::move(blockFalse_);
+    blockFalse_.instructions.clear();
 }
 
-string CInstrIf::to_asm(const CFunction* f) const {
-    return "on verra plus tard slt";
+CInstrIf::~CInstrIf() {
+    delete condition;
 }
+

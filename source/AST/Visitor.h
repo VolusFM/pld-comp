@@ -133,16 +133,20 @@ public:
     //TODO : check and test it
     virtual antlrcpp::Any visitIf_block(CodeCParser::If_blockContext *ctx)
             override {
-
-        CExpression* condition = (CExpression*) visit(ctx->ifblock()->rvalue());
+        CExpression* condition = (CExpression*) visit(ctx->ifblock()->expression());
         CInstructions* blockTrue = (CInstructions*) visit(
                 ctx->ifblock()->anyinstruction());
-        CodeCParser::ElseblockContext * ctxElse = ctx->ifblock()->elseblock();
+        auto ctxElse = ctx->ifblock()->elseblock();
         CInstructions* blockFalse;
         if (ctxElse != nullptr) {
             blockFalse = (CInstructions*) visit(ctxElse->anyinstruction());
+        } else {
+            blockFalse = new CInstructions();
         }
-        return new CInstrIf(condition, blockTrue, blockFalse);
+        CInstrIf* instr = new CInstrIf(condition, *blockTrue, *blockFalse);
+        delete blockTrue;
+        delete blockFalse;
+        return instr;
     }
 
     virtual antlrcpp::Any visitDef_var_with_expr(
