@@ -27,16 +27,17 @@ string CFunction::to_asm() const {
     string code;
     code += name;
     
-    if(parameters.begin() != parameters.end()){
-        code += "(";
-        auto itEnd = parameters.end();
-        itEnd--;
-        for(auto it = parameters.begin(); it != itEnd; ++it) {
-            code += it->type + ", ";
+    /*
+        string params = "";
+        params += "(";
+        for(auto it = parameters.begin(); it != parameters.end(); ++it) {
+            if (!params.empty()) params += ", ";
+            params += it->type;
         }
-        code += itEnd->type;
-        code += ")";
-    }
+        params += ")";
+        code += params;
+    } */
+    
     code += ":\n";
 
     code += "  ## prologue\n";
