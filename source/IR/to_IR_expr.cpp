@@ -28,7 +28,7 @@ string CExpressionVar::to_IR(CFG* cfg) const {
 
 string CExpressionVarArray::to_IR(CFG* cfg) const {
     //to do
-    return "todo";
+    return variable;
 }
 
 string CExpressionComposed::to_IR(CFG* cfg) const {
@@ -45,6 +45,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         // TODO check if it's a pointer
 
         bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
+        variable = lhsvar;
         // to do
     } else {
         variable = cfg->tos_add_temp("int");

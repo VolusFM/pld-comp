@@ -70,7 +70,7 @@ singleparameter : type IDENT;
 parametercall : rvalue;
 
 
-INTDEC : [1-9][0-9]*;
+INTDEC : [1-9][0-9]*|'0';
 INTHEX : '0x'[0-9A-F]+;
 INTBIN : '0b'[01]+;
 INTOCT :'0'[0-7]+;

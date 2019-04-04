@@ -61,7 +61,7 @@ int CFG::tos_get_index(string variable) const {
     try {
         return tosIndex.at(variable);
     } catch (...) {
-        cerr << "ERROR: reference to undeclared variable '" << name << "'"
+        cerr << "ERROR: reference to undeclared variable '" << variable << "'"
                 << endl;
         throw;
     }
@@ -71,7 +71,7 @@ CType CFG::tos_get_type(string variable) const {
     try {
         return tosType.at(variable);
     } catch (...) {
-        cerr << "ERROR: reference to undeclared variable '" << name << "'"
+        cerr << "ERROR: reference to undeclared variable '" << variable << "'"
                 << endl;
         throw;
     }

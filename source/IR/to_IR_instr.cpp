@@ -4,6 +4,7 @@
 using std::ostream;
 using std::cerr;
 using std::endl;
+using std::to_string;
 
 #include "../AST/CExpression.h"
 #include "../AST/CInstruction.h"
@@ -24,7 +25,37 @@ void CInstrExpression::to_IR(CFG* cfg) const {
 }
 
 void CInstrArray::to_IR(CFG* cfg) const {
-    //to do
+    if(exprs.size() <= size){
+        BasicBlock* bb = cfg->current_bb;
+
+        int index;
+        bool initializeNull = true;
+
+        if(exprs.size() == size || exprs.size()==0)
+            initializeNull = false;
+        
+        for (index = size-1; index >= 0; index--){
+            cfg->tos_add(name+to_string(index),type);
+            if(initializeNull)
+                bb->add_IRInstr(op_ldconst, type, {name+to_string(index), "0"});
+        }
+
+        index = 0;
+        for (auto expr : exprs){
+            if(dynamic_cast<CExpressionInt*>(expr) != NULL){
+                bb->add_IRInstr(op_ldconst, type, {name+to_string(index), to_string(dynamic_cast<CExpressionInt*>(expr)->value)});
+            }
+            else{
+                string temp = expr->to_IR(cfg);
+                bb->add_IRInstr(op_copy, type, {name+to_string(index), temp});
+            }
+            index++;
+        }
+    }
+    else{
+        cerr << "ERROR: too many initializers for '" + type + "[" + to_string(size) + "]'" << endl;
+        throw;
+    }
 }
 
 void CInstrVariable::to_IR(CFG* cfg) const {
