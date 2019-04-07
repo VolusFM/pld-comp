@@ -96,19 +96,16 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         if (op == "!") {
             bb->add_IRInstr(op_not, type, params);
         }
-        
-        /*
         if (op == "&") {
-            code += "  andl  " + rhsvar + ", %eax\n";
+            bb->add_IRInstr(op_binary_and, type, params);
         }
         if (op == "|") {
-            code += "  orl   " + rhsvar + ", %eax\n";
+	    bb->add_IRInstr(op_binary_or, type, params);
         }
         if (op == "^") {
-            code += "  xorl  " + rhsvar + ", %eax\n";
+            bb->add_IRInstr(op_binary_xor, type, params);
         }
-        code += variable + "\n";
-        */
+        
     }
     // to do
     

@@ -53,6 +53,21 @@ void IRInstr::gen_asm_x86(ostream& o) const {
         o << "  idivl " << cfg->tos_get_asm_x86(params[2]) << "\n";
         o << "  movl  %edx, " << cfg->tos_get_asm_x86(params[0]) << "\n";
         break;
+    case op_binary_and : 
+	o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
+	o << "  andl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax" << "\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n"; 
+ 	break;
+    case op_binary_or : 
+	o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
+	o << "  orl   " << cfg->tos_get_asm_x86(params[2]) << ", %eax" << "\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n"; 
+	break;
+    case op_binary_xor :
+	o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
+	o << "  xorl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax" << "\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n"; 
+	break;
     case op_not:
 	o << "  cmpl  $0, " << cfg->tos_get_asm_x86(params[2]) << "\n";
         o << "  sete    %al\n";
@@ -101,6 +116,7 @@ void IRInstr::gen_asm_x86(ostream& o) const {
         o << "  movzbl  %al, %eax\n";
         o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
         break;
+    //TODO : quoi de la fuck de l accolade ?
     case op_call : {
         int index = 0;
         for (auto it = params.begin()+2 ; it != params.end() ; ++it) {
@@ -111,6 +127,7 @@ void IRInstr::gen_asm_x86(ostream& o) const {
         o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[1]) << "\n";
         break;
     }
+
         /*
         case op_rmem:
             break;
