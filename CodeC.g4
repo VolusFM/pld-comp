@@ -26,6 +26,9 @@ elseblock: 'else' anyinstruction;
 
 whileblock: 'while' '(' rvalue ')' anyinstruction;
 
+//TODO : implement and compile for
+//forblock: 'for' '(' forCondition ')' anyinstruction;
+//forCondition: rvalue? ';' rvalue? ';' rvalue?;
 
 definition: type (vardefinition|arraydefinition) (','(vardefinition|arraydefinition))*;
 
@@ -35,7 +38,8 @@ vardefinition : IDENT #def_var
 arraydefinition : IDENT'['intval']'	#def_array
 	| IDENT'['intval']' '=' '{'(rvalue (',' rvalue)*)?'}' #def_array_with_expr;
 
-rvalue: (OPADD|OPSUB) rvalue #unary_expr
+
+rvalue: (OPNOT|OPADD|OPSUB) rvalue #unary_expr
 	| rvalue (OPMULT|OPDIV|OPMOD) rvalue #mult_expr
 	| rvalue (OPADD|OPSUB) rvalue #add_expr
 	// In C, boolean type doesn't exist and we use integers instead
@@ -87,6 +91,7 @@ OPRELATIONSUP : '>';
 OPRELATIONSUPEQUAL : '>=';
 OPEQUALITY : '==';
 OPINEQUALITY : '!=';
+OPNOT : '!';
 OPBINARYAND : '&';
 OPBINARYEXCLUSIVEOR : '^';
 OPBINARYOR : '|';
