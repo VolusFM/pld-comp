@@ -1,0 +1,20 @@
+.text
+.global main
+main:
+  ## prologue
+  pushq %rbp # save %rbp on the stack
+  movq %rsp, %rbp # define %rbp for the current function
+  ## contenu
+  movl    $1, -4(%rbp)
+  cmpl    $1, -4(%rbp)
+  jne     .L2
+  movl    $1, -8(%rbp)
+  jmp     .L3
+.L2:
+  movl    $2, -8(%rbp)
+.L3:
+  movl    $3, -8(%rbp)
+  ## epilogue
+  popq %rbp # restore %rbp from the stack
+  ret
+

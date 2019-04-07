@@ -20,12 +20,17 @@ class CFG;
 /* the instructions themselves */
 typedef enum {
     op_ldconst,
+    op_ldconst_mem,
+    op_ldconst_array,
+    op_index,
     op_add,
     op_sub,
     op_mul,
     op_div,
     op_mod,
     op_copy,
+    op_copy_mem,
+    op_copy_array,
     op_rmem,  // va lire a une adresse memoire donnee dans le premier paramatre
     op_wmem,  // va ecrire a une adresse memoire donnee dans le premier parametre.
     op_call, 
@@ -115,6 +120,7 @@ public:
     
     // symbol table methods
     void tos_add(string name, CType t);
+    void tos_add_array(string name, CType t, int size);
     string tos_add_temp(CType t);
     int tos_get_index(string name) const;
     CType tos_get_type(string name) const;

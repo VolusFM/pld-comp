@@ -1,11 +1,8 @@
 
 int main() {
-    int tab [4];
-    int a = 1;
-    int b = 4;
-    
-    tab[0] = 1;
-    tab[a] = 2;
-    tab[3-1] = 3;
-    tab[b*a] = 4;
+    int a = 36;
+    int b = 12;
+    int c = 5;
+    int d = 4*a-c+b/6;
+    return d;
 }

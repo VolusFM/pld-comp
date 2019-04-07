@@ -1,5 +1,6 @@
-
 int main() {
-    int e = 2*(-4)+5-(-6);
-    return e;
+    int a;
+    a = 0x9;
+    a = 0xF;
+    a = 0x10;
 }

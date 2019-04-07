@@ -1,1 +1,1 @@
-../../yottacompilatron9001 input.c -c output.s
+../../yottacompilatron9001 input.c -dev -c output.s

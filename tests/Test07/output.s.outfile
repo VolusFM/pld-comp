@@ -5,27 +5,30 @@ main:
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
   ## contenu
-  movl  $3, -4(%rbp)
-  movl  $4, -8(%rbp)
-  movl  $1, -28(%rbp)
-  movl  $2, -24(%rbp)
-  movl  $3, -20(%rbp)
-  movl  $0, -48(%rbp)
-  movl  $0, -44(%rbp)
-  movl  $0, -40(%rbp)
-  movl  $0, -36(%rbp)
-  movl  $0, -32(%rbp)
-  movl  $1, -44(%rbp)
+  movl  $2, -4(%rbp)
+  movl  $3, -8(%rbp)
   movl  -4(%rbp), %eax
-  movl  %eax, -60(%rbp)
-  movl  -4(%rbp), %edx
-  movl  -8(%rbp), %eax
-  addl  %edx, %eax
-  movl  %eax, -56(%rbp)
-  movl  -8(%rbp), %eax
+  imull -8(%rbp), %eax
+  movl  %eax, -12(%rbp)
+  movl  $4, -16(%rbp)
+  movl  -12(%rbp), %eax
+  addl  -16(%rbp), %eax
+  movl  %eax, -20(%rbp)
+  movl  $4, -24(%rbp)
+  movl  $4, -28(%rbp)
+  movl  $2, -32(%rbp)
+  movl  -28(%rbp), %eax
+  subl  -32(%rbp), %eax
+  movl  %eax, -36(%rbp)
+  movl  -24(%rbp), %eax
+  cltd
+  idivl -36(%rbp)
+  movl  %eax, -40(%rbp)
+  movl  -20(%rbp), %eax
+  subl  -40(%rbp), %eax
+  movl  %eax, -44(%rbp)
+  movl  -44(%rbp), %eax
   movl  %eax, -4(%rbp)
-  movl  -4(%rbp), %eax
-  movl  %eax, -52(%rbp)
   ## epilogue
   popq %rbp # restore %rbp from the stack
   ret

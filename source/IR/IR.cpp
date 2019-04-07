@@ -51,6 +51,13 @@ void CFG::tos_add(string name, CType type) {
     tosIndex[name] = tosIndexNext;
 }
 
+void CFG::tos_add_array(string name, CType type, int size) {
+    tos.push_back(name);
+    tosType[name] = type;
+    tosIndexNext += 4*size;
+    tosIndex[name] = tosIndexNext;
+}
+
 string CFG::tos_add_temp(CType type) {
     string name = "!tmp" + to_string(tosTempNext++);
     tos_add(name, type);

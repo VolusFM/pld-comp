@@ -26,6 +26,25 @@ void IRInstr::gen_asm_x86(ostream& o) const {
         o << "  movl  $" << params[1] << ", " << cfg->tos_get_asm_x86(params[0])
                 << "\n";
         break;
+    case op_copy_mem:
+        o << "  movl "  << cfg->tos_get_asm_x86(params[1]) << ", %eax\n";
+        o << "  movl  %eax, -" << params[0] << "(%rbp) \n";
+        break;
+    case op_ldconst_mem:
+        o << "  movl  $" << params[1] << ", -" << params[0] << "(%rbp) \n";
+        break;
+    case op_copy_array:
+        o << "  movl "  << cfg->tos_get_asm_x86(params[1]) << ", %eax\n";
+        o << "  movl  %eax, -" << cfg->tos_get_asm_x86(params[0]) 
+                << "(%rbp,%rax,4) \n";
+        break;
+    case op_ldconst_array:
+        o << "  movl  $" << params[1] << ", -" << cfg->tos_get_asm_x86(params[0]) 
+                << "(%rbp,%rax,4) \n";
+        break;
+    case op_index:
+        o << "  movl " << cfg->tos_get_asm_x86(params[0]) << ", %eax \n";
+        o << "  cltq \n";
     case op_add:
         o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
         o << "  addl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax" << "\n";

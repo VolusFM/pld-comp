@@ -29,25 +29,24 @@ void CInstrArray::to_IR(CFG* cfg) const {
         BasicBlock* bb = cfg->current_bb;
 
         int index;
-        bool initializeNull = true;
 
-        if(exprs.size() == size || exprs.size()==0)
-            initializeNull = false;
+        cfg->tos_add_array(name,type,size);
+        int address = cfg->tos_get_index(name);
         
-        for (index = size-1; index >= 0; index--){
-            cfg->tos_add(name+to_string(index),type);
-            if(initializeNull)
-                bb->add_IRInstr(op_ldconst, type, {name+to_string(index), "0"});
+        if(exprs.size() != size && exprs.size()!=0){
+            for (index = 0; index < size; index++){
+                bb->add_IRInstr(op_ldconst_mem, type, {to_string(address - 4*index), "0"});
+            }
         }
 
         index = 0;
         for (auto expr : exprs){
             if(dynamic_cast<CExpressionInt*>(expr) != NULL){
-                bb->add_IRInstr(op_ldconst, type, {name+to_string(index), to_string(dynamic_cast<CExpressionInt*>(expr)->value)});
+                bb->add_IRInstr(op_ldconst_mem, type, {to_string(address - 4*index), to_string(dynamic_cast<CExpressionInt*>(expr)->value)});
             }
             else{
                 string temp = expr->to_IR(cfg);
-                bb->add_IRInstr(op_copy, type, {name+to_string(index), temp});
+                bb->add_IRInstr(op_copy_mem, type, {to_string(address - 4*index), temp});
             }
             index++;
         }

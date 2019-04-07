@@ -27,8 +27,15 @@ string CExpressionVar::to_IR(CFG* cfg) const {
 }
 
 string CExpressionVarArray::to_IR(CFG* cfg) const {
-    //to do
-    return variable;
+    //TODO : incomplete
+    BasicBlock* bb = cfg->current_bb;
+    string addressIndex = index->to_IR(cfg);
+    int indexBase = cfg->tos_get_index(variable);
+
+    bb->add_IRInstr(op_index, "int", {addressIndex});
+
+    string addressWanted = "-"+to_string(indexBase)+"(%rbp,%rax,4)";
+    return addressWanted;
 }
 
 string CExpressionComposed::to_IR(CFG* cfg) const {
