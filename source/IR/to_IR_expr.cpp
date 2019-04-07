@@ -93,22 +93,11 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         //    code += "  movzbl  %al, %eax\n";
         
         
-        
+        if (op == "!") {
+            bb->add_IRInstr(op_not, type, params);
+        }
         
         /*
-        code += "  movl  " + lhsvar + ", %eax\n";
-        if (op == "*") {
-            code += "  imull " + rhsvar + ", %eax\n";
-        }
-        if (op == "/" || op == "%") {
-            code += "  cltd\n"; // convert values to long double
-            code += "  idivl " + rhsvar + "\n"; // do the division
-        }
-        
-        if (op == "-") {
-            code += "  subl  " + rhsvar + ", %eax\n";
-        }
-        
         if (op == "&") {
             code += "  andl  " + rhsvar + ", %eax\n";
         }
@@ -117,12 +106,6 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         }
         if (op == "^") {
             code += "  xorl  " + rhsvar + ", %eax\n";
-        }
-        
-        if (op == "%") {
-            code += "  movl  %edx, ";
-        } else {
-            code += "  movl  %eax, ";
         }
         code += variable + "\n";
         */

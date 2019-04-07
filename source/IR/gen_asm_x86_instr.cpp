@@ -53,6 +53,12 @@ void IRInstr::gen_asm_x86(ostream& o) const {
         o << "  idivl " << cfg->tos_get_asm_x86(params[2]) << "\n";
         o << "  movl  %edx, " << cfg->tos_get_asm_x86(params[0]) << "\n";
         break;
+    case op_not:
+	o << "  cmpl  $0, " << cfg->tos_get_asm_x86(params[2]) << "\n";
+        o << "  sete    %al\n";
+        o << "  movzbl  %al, %eax\n"; 
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
+	break;
     case op_cmp_eq :
         o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
         o << "  cmpl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax\n";

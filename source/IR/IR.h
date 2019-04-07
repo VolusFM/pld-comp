@@ -34,7 +34,8 @@ typedef enum {
     op_cmp_lt,
     op_cmp_le,
     op_cmp_gt,
-    op_cmp_ge
+    op_cmp_ge,
+    op_not
 } Operation;
 
 // class for one 3-address instruction
