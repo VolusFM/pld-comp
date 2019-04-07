@@ -14,18 +14,22 @@ anyinstruction: instructionsblock // some instructions
 
 instructionsblock: '{' instruction* '}';
 
+
 instruction: instrreturn ';' #return
 	| definition ';' #instr_def
 	| rvalue ';' #instr_expr
 	| ifblock #if_block
 	| whileblock #while_block;
-
+//      | forblock #for_block;
 
 ifblock: 'if' '(' rvalue ')' anyinstruction elseblock?;
 elseblock: 'else' anyinstruction;
 
 whileblock: 'while' '(' rvalue ')' anyinstruction;
 
+//TODO : implement and compile for 
+//forblock: 'for' '(' forCondition ')' anyinstruction #instr_for;
+//forCondition: (definition|rvalue)? ';' (definition| rvalue)? ';' (definition| rvalue)? ;
 
 definition: type (vardefinition|arraydefinition) (','(vardefinition|arraydefinition))*;
 
@@ -35,7 +39,8 @@ vardefinition : IDENT #def_var
 arraydefinition : IDENT'['intval']'	#def_array
 	| IDENT'['intval']' '=' '{'(rvalue (',' rvalue)*)?'}' #def_array_with_expr;
 
-rvalue: (OPADD|OPSUB) rvalue #unary_expr
+
+rvalue: (OPNOT|OPADD|OPSUB) rvalue #unary_expr
 	| rvalue (OPMULT|OPDIV|OPMOD) rvalue #mult_expr
 	| rvalue (OPADD|OPSUB) rvalue #add_expr
 	// In C, boolean type doesn't exist and we use integers instead
@@ -87,6 +92,7 @@ OPRELATIONSUP : '>';
 OPRELATIONSUPEQUAL : '>=';
 OPEQUALITY : '==';
 OPINEQUALITY : '!=';
+OPNOT : '!';
 OPBINARYAND : '&';
 OPBINARYEXCLUSIVEOR : '^';
 OPBINARYOR : '|';

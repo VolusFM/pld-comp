@@ -100,39 +100,19 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         //    code += "  movzbl  %al, %eax\n";
         
         
-        
-        
-        /*
-        code += "  movl  " + lhsvar + ", %eax\n";
-        if (op == "*") {
-            code += "  imull " + rhsvar + ", %eax\n";
+        if (op == "!") {
+            bb->add_IRInstr(op_not, type, params);
         }
-        if (op == "/" || op == "%") {
-            code += "  cltd\n"; // convert values to long double
-            code += "  idivl " + rhsvar + "\n"; // do the division
-        }
-        
-        if (op == "-") {
-            code += "  subl  " + rhsvar + ", %eax\n";
-        }
-        
         if (op == "&") {
-            code += "  andl  " + rhsvar + ", %eax\n";
+            bb->add_IRInstr(op_binary_and, type, params);
         }
         if (op == "|") {
-            code += "  orl   " + rhsvar + ", %eax\n";
+	    bb->add_IRInstr(op_binary_or, type, params);
         }
         if (op == "^") {
-            code += "  xorl  " + rhsvar + ", %eax\n";
+            bb->add_IRInstr(op_binary_xor, type, params);
         }
         
-        if (op == "%") {
-            code += "  movl  %edx, ";
-        } else {
-            code += "  movl  %eax, ";
-        }
-        code += variable + "\n";
-        */
     }
     // to do
     

@@ -306,6 +306,8 @@ public:
             op = '+';
         else if (ctx->OPSUB() != nullptr)
             op = '-';
+	else if (ctx->OPNOT() != nullptr)
+	    op = '!';	
 
         CExpressionComposed *expr = new CExpressionComposed(lhs, op, rhs);
         return (CExpression*) expr;

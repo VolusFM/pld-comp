@@ -13,6 +13,7 @@ using std::to_string;
 #include "../AST/CInstrReturn.h"
 #include "../AST/CInstrArray.h"
 #include "../AST/CInstrIf.h"
+#include "../AST/CInstrWhile.h"
 
 void CInstructions::to_IR(CFG* cfg) const {
     for (auto it = instructions.begin(); it != instructions.end(); ++it) {
@@ -76,3 +77,9 @@ void CInstrIf::to_IR(CFG* cfg) const {
     // run to_ir on the two blocks (check if the second is nullptr here)
 }
 
+void CInstrWhile::to_IR(CFG* cfg) const {
+    //TODO : make two basic blocks : one true one false. Add those to cfg's vector of basic block
+    // the basicblock exit_false will be nullptr (or remove it ?)
+    // run to_ir on condition
+    // run to_ir on the exit_true block
+}
