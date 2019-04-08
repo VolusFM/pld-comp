@@ -75,6 +75,8 @@ void CInstrReturn::to_IR(CFG* cfg) const {
         expr->to_IR(cfg);
         // s'assurer que le résultat soit dans %eax
     
+    cfg->current_bb->exit_true = nullptr;
+    cfg->current_bb->exit_false = nullptr;
     cfg->add_bb(new BasicBlock(cfg, cfg->new_BB_name()));
 }
 
@@ -103,15 +105,15 @@ void CInstrIf::to_IR(CFG* cfg) const {
     // Prepare the exit_true and link it to the next block
     if (bbTrue != nullptr) {
         cfg->add_bb(bbTrue);
-        blockTrue.to_IR(cfg);
         bbTrue->exit_true = bbNext;
+        blockTrue.to_IR(cfg);
     }
 
     // If there is an exit_false, prepare it as well
     if (bbFalse != nullptr) {
         cfg->add_bb(bbFalse);
-        blockFalse.to_IR(cfg);
         bbFalse->exit_true = bbNext;
+        blockFalse.to_IR(cfg);
     }
 
     // Add next block to CFG
@@ -139,8 +141,8 @@ void CInstrWhile::to_IR(CFG* cfg) const {
 
     // Prepare the exit_true and exit_false and link them to the next block
     cfg->add_bb(bbContent);
-    blockContent.to_IR(cfg);
     bbContent->exit_true = bbCondition;
+    blockContent.to_IR(cfg);
 
     // Add next block to CFG
     cfg->add_bb(bbNext);
@@ -161,8 +163,8 @@ void CInstrDoWhile::to_IR(CFG* cfg) const {
 
     // Prepare the exit_true and exit_false and link them to the next block
     cfg->add_bb(bbContent);
-    blockContent.to_IR(cfg);
     bbContent->exit_true = bbCondition;
+    blockContent.to_IR(cfg);
 
     bbCondition->exit_true = bbContent;
     bbCondition->exit_false = bbNext;
@@ -195,9 +197,9 @@ void CInstrFor::to_IR(CFG* cfg) const {
 
     // Prepare the exit_true and exit_false and link them to the next block
     cfg->add_bb(bbContent);
+    bbContent->exit_true = bbStopCondition;
     blockContent.to_IR(cfg);
     evolution->to_IR(cfg);
-    bbContent->exit_true = bbStopCondition;
 
     // Add next block to CFG
     cfg->add_bb(bbNext);
