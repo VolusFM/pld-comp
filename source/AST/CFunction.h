@@ -9,7 +9,8 @@ using std::map;
 
 #include "CType.h"
 #include "CInstruction.h"
-class CParameter;
+//class CParameter;
+#include "CFunctionHeader.h"
 
 class CFG;
 

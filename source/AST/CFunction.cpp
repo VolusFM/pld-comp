@@ -64,7 +64,7 @@ string CFunction::tos_add_temp(CType type) {
 
 void CFunction::tos_add(string name, CType type) {
     auto it = tosType.find(name);
-    if(it != tosType.end()) {
+    if (it != tosType.end()) {
         cerr << "ERROR: already declared variable '" << name << "'" << endl;
         throw;
     }
@@ -74,8 +74,8 @@ void CFunction::tos_add(string name, CType type) {
 }
 
 void CFunction::fill_tos(const CInstructions& block) {
-    for (auto it = block.instructions.begin();
-              it != block.instructions.end(); ++it) {
+    for (auto it = block.instructions.cbegin();
+              it != block.instructions.cend(); ++it) {
         const CInstruction* i = *it;
         
         const CInstructions* instrlist = dynamic_cast<const CInstructions*>(i);
@@ -87,7 +87,7 @@ void CFunction::fill_tos(const CInstructions& block) {
 }
 
 void CFunction::fill_tos(const vector<CParameter>& parameters) {
-    for(auto it = parameters.begin(); it!= parameters.end(); ++it) {
+    for (auto it = parameters.cbegin(); it != parameters.cend(); ++it) {
         const CParameter& param = *it;
         tos_add(param.name, param.type);
     }    

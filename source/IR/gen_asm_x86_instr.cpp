@@ -5,8 +5,6 @@ using std::ostream;
 using std::cerr;
 using std::endl;
 
-static const string registerName[] = { "%rdi", "%rsi", "%rdx", "%rcx", "%r8d", "%r9d" };
-
 void IRInstr::gen_asm_x86(ostream& o) const {
     CFG* cfg = bb->cfg;
     
