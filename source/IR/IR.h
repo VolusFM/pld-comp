@@ -40,7 +40,10 @@ typedef enum {
     op_cmp_le,
     op_cmp_gt,
     op_cmp_ge,
-    op_not
+    op_not,
+    op_binary_and,
+    op_binary_or,
+    op_binary_xor
 } Operation;
 
 // class for one 3-address instruction
