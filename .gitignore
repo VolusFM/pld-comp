@@ -10,6 +10,7 @@ code_visitors/
 # output
 yottacompilatron9001
 *.s
+temp.c
 exe
 *.d
 *.o
