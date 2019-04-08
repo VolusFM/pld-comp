@@ -18,6 +18,7 @@ using std::vector;
 #include "CInstrExpression.h"
 #include "CInstrIf.h"
 #include "CInstrWhile.h"
+#include "CInstrDoWhile.h"
 #include "CFunctionCall.h"
 
 class Visitor: public CodeCBaseVisitor {
@@ -165,6 +166,18 @@ public:
         CInstructions* blockContent = (CInstructions*) visit(
                 ctx->whileblock()->anyinstruction());
         CInstrWhile* instr = new CInstrWhile(condition, *blockContent);
+        delete blockContent;
+        return (CInstruction*) instr;
+    }
+
+    //TODO : check and test it
+    virtual antlrcpp::Any visitDo_while_block(CodeCParser::Do_while_blockContext *ctx)
+            override {
+        CExpression* condition = (CExpression*) visit(
+                ctx->dowhileblock()->rvalue());
+        CInstructions* blockContent = (CInstructions*) visit(
+                ctx->dowhileblock()->anyinstruction());
+        CInstrDoWhile* instr = new CInstrDoWhile(condition, *blockContent);
         delete blockContent;
         return (CInstruction*) instr;
     }
