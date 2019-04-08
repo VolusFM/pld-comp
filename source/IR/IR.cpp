@@ -105,3 +105,34 @@ string CFG::new_BB_name(const string& prefix) {
     return name + "_" + prefix + to_string(++bbNumberLast);
 }
 
+void CFG::optimize() {
+    if (bbs.size() == 0) return;
+    
+    // remove unused bbs
+    
+    map<BasicBlock*, bool> bbUsed;
+    bbUsed[bbs[0]] = true;
+    
+    bool changed = true;
+    while (changed) {
+        changed = false;
+        
+        for (auto it = bbs.begin(); it != bbs.end(); ++it) {
+            BasicBlock* b = (*it);
+            if (bbUsed[b]) {
+                if (!bbUsed[b->exit_true]) changed = true;
+                if (!bbUsed[b->exit_false]) changed = true;
+                bbUsed[b->exit_true] = true;
+                bbUsed[b->exit_false] = true;
+            }
+        }
+    }
+    
+    for (auto it = bbs.begin(); it != bbs.end(); /*rien*/) {
+        if (!bbUsed[*it])
+            it = bbs.erase(it);
+        else
+            ++it;
+    }
+}
+

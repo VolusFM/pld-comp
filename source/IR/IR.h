@@ -119,7 +119,8 @@ public:
     
     const CFunction* ast; /**< The AST this CFG comes from */
     
-    void add_bb(BasicBlock* bb); 
+    
+    void optimize();
     
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream& o) const;
@@ -137,10 +138,12 @@ public:
     CType tos_get_type(string name) const;
     
     // basic block management
+    void add_bb(BasicBlock* bb); 
     string new_BB_name(const string& prefix = "");
     BasicBlock* current_bb;
     
-public: // to fix, should be protected
+    
+public: // FIXME should be protected
     string name;
     
     vector<string> tos; /* part of the symbol table */
