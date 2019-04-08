@@ -19,6 +19,7 @@ using std::vector;
 #include "CInstrIf.h"
 #include "CInstrWhile.h"
 #include "CInstrDoWhile.h"
+#include "CInstrFor.h"
 #include "CFunctionCall.h"
 
 class Visitor: public CodeCBaseVisitor {
@@ -192,21 +193,21 @@ public:
             override {
         CExpression* forStartCondition = nullptr;
         auto ctxForStartCondition =
-                ctx->forblock()->forCondition()->forStartCondition();
+                ctx->forblock()->forcondition()->forstartcondition();
         if (ctxForStartCondition != nullptr) {
             forStartCondition = (CExpression*) visit(
                         ctxForStartCondition->rvalue());
         }
         CExpression* forStopCondition = nullptr;
         auto ctxForStopCondition =
-                ctx->forblock()->forCondition()->forStopCondition();
+                ctx->forblock()->forcondition()->forstopcondition();
         if (ctxForStopCondition != nullptr) {
             forStopCondition = (CExpression*) visit(
                         ctxForStopCondition->rvalue());
         }
         CExpression* forEvolution = nullptr;
         auto ctxForEvolution =
-                ctx->forblock()->forCondition()->forEvolution();
+                ctx->forblock()->forcondition()->forevolution();
         if (ctxForEvolution != nullptr) {
             forEvolution = (CExpression*) visit(
                         ctxForEvolution->rvalue());

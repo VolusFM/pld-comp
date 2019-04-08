@@ -29,11 +29,11 @@ elseblock: 'else' anyinstruction;
 whileblock: 'while' '(' rvalue ')' anyinstruction;
 
 //TODO : implement and compile for 
-forblock: 'for' '(' forCondition ')' anyinstruction #instr_for;
-forCondition: forStartCondition? ';' forStopCondition? ';' forEvolution?;
-forStartCondition: rvalue;
-forStopCondition: rvalue;
-forEvolution: rvalue;
+forblock: 'for' '(' forcondition ')' anyinstruction;
+forcondition: forstartcondition? ';' forstopcondition? ';' forevolution?;
+forstartcondition: rvalue;
+forstopcondition: rvalue;
+forevolution: rvalue;
 
 // TODO: implement and compile do...while
 dowhileblock: 'do' anyinstruction 'while' '(' rvalue ')' ';';
