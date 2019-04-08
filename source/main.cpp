@@ -150,18 +150,23 @@ int main(int argc, const char* argv[]) {
     
     Visitor visitor;
     CProg* ast = visitor.visit(tree);
-    IProg* ir; if (args.tmp) /* temporary */ ir = ast->to_IR();
-    if (args.tmp) delete ast; /* temporary */
+    IProg* ir;
+    
+    /* temporary */
+    if (!args.tmp) {
+        ir = ast->to_IR();
+        delete ast;
+    }
     
     if (args.optc) {
-        if (args.tmp) /* temporary */
+        if (!args.tmp) /* temporary */
         ir->gen_asm_x86(*os);
         else *os << ast->to_asm(); /* temporary */
         *os << endl;
         if (!args.fo.empty())
             ofs.close();
     }
-    if (!args.tmp) delete ast; else /* temporary */
+    if (args.tmp) delete ast; else /* temporary */
     delete ir;
     
     return 0;
