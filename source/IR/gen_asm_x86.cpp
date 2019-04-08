@@ -55,19 +55,38 @@ void CFG::gen_asm_x86_prologue(ostream& o) const {
 }
 
 void CFG::gen_asm_x86(ostream& o) const {
-
     gen_asm_x86_prologue(o);
-
+    
+    vector<const BasicBlock*> nullbbs;
+    
     for (const BasicBlock* b : bbs) {
-        b->gen_asm_x86(o);
-        if (b->exit_true == nullptr && b->exit_false == nullptr)
-            gen_asm_x86_epilogue(o);
+        if (b->exit_true == nullptr && b->exit_false == nullptr) {
+            if (b->instrs.empty()) {
+                nullbbs.push_back(b);
+                continue;
+            }
+            
+            b->gen_asm_x86(o);
+            o << "  jmp " << name << "_end\n";
+        } else {
+            b->gen_asm_x86(o);
+        }
     }
+    
+    if (!nullbbs.empty()) {
+        for (auto it = nullbbs.cbegin(); it != nullbbs.cend() ; ++it) {
+            o << (*it)->label << ":\n";
+        }
+    }
+    
+    gen_asm_x86_epilogue(o);
 }
 
 void CFG::gen_asm_x86_epilogue(ostream& o) const {
-    o << "  ## epilogue\n" << "  popq %rbp # restore %rbp from the stack\n"
-            << "  ret\n";
+    o << name << "_end:\n"
+      << "  ## epilogue\n"
+      << "  popq %rbp # restore %rbp from the stack\n"
+      << "  ret\n";
 }
 
 void BasicBlock::gen_asm_x86(ostream& o) const {
@@ -87,6 +106,5 @@ void BasicBlock::gen_asm_x86(ostream& o) const {
         o << "  jne " << exit_true->label << "\n";
         o << "  jmp " << exit_false->label << "\n";
     }
-
 }
 
