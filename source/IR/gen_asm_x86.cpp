@@ -34,10 +34,11 @@ void CFG::gen_asm_x86_prologue(ostream& o) const {
     
       << "  ## prologue\n"
       << "  pushq %rbp # save %rbp on the stack\n"
-      << "  movq %rsp, %rbp # define %rbp for the current function\n";
+      << "  movq %rsp, %rbp # define %rbp for the current function\n"
+      
+      /* TODO : adapt for different types (size has to change) */
+      << "  subq $" << to_string((1+(int)(4*(ast->tosAddress).size()/16))*16) << ", %rsp\n";
 
-    /* TODO : rajouter les registres d'entrees */
-    //cfg->ast->parameters
     int index = 0;
     for (auto it = ast->parameters.cbegin(); it != ast->parameters.cend() ; ++it) {
         o << "  movl : " << registerName[index++] << ", " << ast->tos_addr(it->name) << "\n";
