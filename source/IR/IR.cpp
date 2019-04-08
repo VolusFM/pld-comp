@@ -61,7 +61,7 @@ void CFG::tos_add_array(string name, CType type, int size) {
 string CFG::tos_add_temp(CType type) {
     string name = "!tmp" + to_string(++tosTempLast);
     tos_add(name, type);
-    return this->tos_get_asm_x86(name);
+    return name;
 }
 
 int CFG::tos_get_index(string variable) const {
