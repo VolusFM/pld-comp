@@ -2,6 +2,8 @@
 
 #include "CFunction.h"
 
+#include <iostream>
+
 CFunctionHeader::CFunctionHeader(string name, vector<CParameter>& parameters_)
 : name(name)
 {
@@ -11,6 +13,4 @@ CFunctionHeader::CFunctionHeader(string name, vector<CParameter>& parameters_)
 
 CParameter::CParameter(string name, CType type)
 : name(name), type(type)
-{
-}
-
+{}

@@ -1,5 +1,6 @@
 #include "IR.h"
 #include "IProg.h"
+//#include "./../AST/CFunction.h"
 
 #include <iostream>
 using std::ostream;
@@ -31,15 +32,20 @@ void CFG::gen_asm_x86_prologue(ostream& o) const {
     
       << "  ## prologue\n"
       << "  pushq %rbp # save %rbp on the stack\n"
-      << "  movq %rsp, %rbp # define %rbp for the current function\n"
+      << "  movq %rsp, %rbp # define %rbp for the current function\n";
 
     /* TODO : rajouter les registres d'entrees */
     //cfg->ast->parameters
+    int index = 0;
+    for (auto it = ast->parameters.cbegin(); it != ast->parameters.cend() ; ++it) {
+        o << "  movl : " << registerName[index++] << ", " << ast->tos_addr(it->name) << "\n";
+    }
     
-      << "  ## contenu\n";
+    o << "  ## contenu\n";
 }
 
 void CFG::gen_asm_x86(ostream& o) const {
+
     gen_asm_x86_prologue(o);
     
     for (const BasicBlock* b : bbs) {
