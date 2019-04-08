@@ -84,3 +84,7 @@ CType CFG::tos_get_type(string variable) const {
     }
 }
 
+string CFG::new_BB_name() {
+    return ""; //TODO
+}
+

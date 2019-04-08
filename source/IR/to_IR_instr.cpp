@@ -26,34 +26,38 @@ void CInstrExpression::to_IR(CFG* cfg) const {
 }
 
 void CInstrArray::to_IR(CFG* cfg) const {
-    if(exprs.size() <= size){
+    if (exprs.size() <= size) {
         BasicBlock* bb = cfg->current_bb;
 
         int index;
 
-        cfg->tos_add_array(name,type,size);
+        cfg->tos_add_array(name, type, size);
         int address = cfg->tos_get_index(name);
-        
-        if(exprs.size() != size && exprs.size()!=0){
-            for (index = 0; index < size; index++){
-                bb->add_IRInstr(op_ldconst_mem, type, {to_string(address - 4*index), "0"});
+
+        if (exprs.size() != size && exprs.size() != 0) {
+            for (index = 0; index < size; index++) {
+                bb->add_IRInstr(op_ldconst_mem, type,
+                        { to_string(address - 4 * index), "0" });
             }
         }
 
         index = 0;
-        for (auto expr : exprs){
-            if(dynamic_cast<CExpressionInt*>(expr) != NULL){
-                bb->add_IRInstr(op_ldconst_mem, type, {to_string(address - 4*index), to_string(dynamic_cast<CExpressionInt*>(expr)->value)});
-            }
-            else{
+        for (auto expr : exprs) {
+            if (dynamic_cast<CExpressionInt*>(expr) != NULL) {
+                bb->add_IRInstr(op_ldconst_mem, type,
+                        { to_string(address - 4 * index), to_string(
+                                dynamic_cast<CExpressionInt*>(expr)->value) });
+            } else {
                 string temp = expr->to_IR(cfg);
-                bb->add_IRInstr(op_copy_mem, type, {to_string(address - 4*index), temp});
+                bb->add_IRInstr(op_copy_mem, type,
+                        { to_string(address - 4 * index), temp });
             }
             index++;
         }
-    }
-    else{
-        cerr << "ERROR: too many initializers for '" + type + "[" + to_string(size) + "]'" << endl;
+    } else {
+        cerr
+                << "ERROR: too many initializers for '" + type + "["
+                        + to_string(size) + "]'" << endl;
         throw;
     }
 }
@@ -71,6 +75,33 @@ void CInstrReturn::to_IR(CFG* cfg) const {
 }
 
 void CInstrIf::to_IR(CFG* cfg) const {
+    BasicBlock* bb = cfg->current_bb;
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
+
+    condition->to_IR(cfg);
+
+    BasicBlock* bbTrue = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock* bbFalse = blockFalse.instructions.empty() ? nullptr : new BasicBlock(cfg, cfg->new_BB_name());
+
+    bb->exit_true = bbTrue;
+    bb->exit_false = bbFalse ? bbFalse : bbNext;
+
+    cfg->current_bb = bbTrue;
+    blockTrue.to_IR(cfg);
+    cfg->add_bb(bbTrue);
+
+    bbTrue->exit_true = bbNext;
+    bbFalse->exit_true = bbNext;
+
+    if (!blockFalse.instructions.empty()) {
+        cfg->current_bb = bbFalse;
+        blockFalse.to_IR(cfg);
+        cfg->add_bb(bbFalse);
+    }
+
+    cfg->current_bb = bbNext;
+    cfg->add_bb(bbNext);
+
     //TODO : make two basic blocks : one true one false. Add those to cfg's vector of basic block
     // if there is no else statement, the basicblock exit_false will be nullptr (very important to check it later)
     // run to_ir on condition
