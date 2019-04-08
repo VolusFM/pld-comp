@@ -11,14 +11,13 @@ using std::to_string;
 #include "../AST/CExpression.h"
 #include "../AST/CFunctionCall.h"
 
-
 string CExpressionInt::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-    
+
     string variable = cfg->tos_add_temp("int");
-    
-    bb->add_IRInstr(op_ldconst, "int", {variable, to_string(value)});
-    
+
+    bb->add_IRInstr(op_ldconst, "int", { variable, to_string(value) });
+
     return variable;
 }
 
@@ -28,38 +27,71 @@ string CExpressionVar::to_IR(CFG* cfg) const {
 
 string CExpressionVarArray::to_IR(CFG* cfg) const {
     //TODO : incomplete
+
     BasicBlock* bb = cfg->current_bb;
     string addressIndex = index->to_IR(cfg);
     int indexBase = cfg->tos_get_index(variable);
 
-    bb->add_IRInstr(op_index, "int", {addressIndex});
+    string variable = cfg->tos_add_temp("int");
 
-    string addressWanted = "-"+to_string(indexBase)+"(%rbp,%rax,4)";
-    return addressWanted;
+    // 
+    bb->add_IRInstr(op_index, "int", { addressIndex });
+
+    cerr << "PROBLEM: ExpressionVarArray::to_IR unimplemented" << endl;
+    throw;
+
+    return variable;
+}
+
+string CExpressionVarArray::to_IR_address(CFG* cfg) const {
+    //TODO : incomplete
+    BasicBlock* bb = cfg->current_bb;
+    string addressIndex = index->to_IR(cfg);
+    int indexBase = cfg->tos_get_index(variable);
+
+    bb->add_IRInstr(op_index, "int", { addressIndex });
+
+    return "-" + to_string(indexBase) + "(%rbp,%rax,4)";
+
+    cerr << "PROBLEM: ExpressionVarArray::to_IR_address incorrect" << endl;
+    throw;
+
 }
 
 string CExpressionComposed::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-    
-    string lhsvar = lhs->to_IR(cfg);
-    string rhsvar = rhs->to_IR(cfg);
-    
+
     string variable;
-    
+
     if (op == "=") {
+        string lhsvar;
+
+        CExpressionVarArray* vararray = dynamic_cast<CExpressionVarArray*>(lhs);
+        if (vararray == nullptr)
+            lhsvar = lhs->to_IR(cfg);
+        else
+            lhsvar = vararray->to_IR_address(cfg);
+        string rhsvar = rhs->to_IR(cfg);
+
         CType type = "int"; //TODO handle other types
 
-        // TODO check if it's a pointer
+        if (vararray == nullptr)
+            bb->add_IRInstr(op_copy, type, { lhsvar, rhsvar });
+        else {
+            /* todo */ // bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
+        }
 
-        bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
         variable = lhsvar;
         // to do
     } else {
+        string lhsvar = lhs->to_IR(cfg);
+        string rhsvar = rhs->to_IR(cfg);
+
         variable = cfg->tos_add_temp("int");
-        
+
         vector<string> params = {variable, lhsvar, rhsvar};
         CType type = "int"; //TODO handle other types
-        
+
         if (op == "+") {
             bb->add_IRInstr(op_add, type, params);
         }
@@ -75,8 +107,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         if (op == "%") {
             bb->add_IRInstr(op_mod, type, params);
         }
-        
-        
+
         //   code += "  cmpl  " + rhsvar + ", %eax\n";
         if (op == "<") {
             bb->add_IRInstr(op_cmp_lt, type, params);
@@ -98,8 +129,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         }
         //    code += "  %al\n";
         //    code += "  movzbl  %al, %eax\n";
-        
-        
+
         if (op == "!") {
             bb->add_IRInstr(op_not, type, params);
         }
@@ -107,32 +137,32 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             bb->add_IRInstr(op_binary_and, type, params);
         }
         if (op == "|") {
-	    bb->add_IRInstr(op_binary_or, type, params);
+            bb->add_IRInstr(op_binary_or, type, params);
         }
         if (op == "^") {
             bb->add_IRInstr(op_binary_xor, type, params);
         }
-        
+
     }
     // to do
-    
+
     return variable;
 }
 
-string CFunctionCall::to_IR(CFG* cfg) const{
+string CFunctionCall::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-    
+
     string variable = cfg->tos_add_temp("int");
-    
-    vector<string> results;
+
+    vector < string > results;
     results.push_back(functionName);
     results.push_back(variable);
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         results.push_back((*it)->to_IR(cfg));
     }
-    
+
     bb->add_IRInstr(op_call, "int", results);
-    
+
     return variable;
 }
 

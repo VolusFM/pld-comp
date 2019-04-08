@@ -2,6 +2,9 @@
 #include "IProg.h"
 //#include "./../AST/CFunction.h"
 
+#include "../AST/CInstruction.h"
+#include "../AST/CExpression.h"
+
 #include <iostream>
 using std::ostream;
 using std::cerr;
@@ -10,14 +13,13 @@ using std::endl;
 using std::to_string;
 
 void IProg::gen_asm_x86(ostream& o) const {
-    o << ".text\n"
-      << ".global main\n";
-    
+    o << ".text\n" << ".global main\n";
+
     try {
         for (const CFG* f : functions) {
             f->gen_asm_x86(o);
         }
-    } catch(...) {
+    } catch (...) {
         cerr << "ERROR: couldn't generate assembly code" << endl;
     }
 }
@@ -47,23 +49,36 @@ void CFG::gen_asm_x86_prologue(ostream& o) const {
 void CFG::gen_asm_x86(ostream& o) const {
 
     gen_asm_x86_prologue(o);
-    
+
     for (const BasicBlock* b : bbs) {
         b->gen_asm_x86(o);
     }
-    
+
     gen_asm_x86_epilogue(o);
 }
 
 void CFG::gen_asm_x86_epilogue(ostream& o) const {
-    o << "  ## epilogue\n"
-      << "  popq %rbp # restore %rbp from the stack\n"
-      << "  ret\n";
+    o << "  ## epilogue\n" << "  popq %rbp # restore %rbp from the stack\n"
+            << "  ret\n";
 }
 
 void BasicBlock::gen_asm_x86(ostream& o) const {
+    o << label << ":\n";
+
     for (auto it = instrs.begin(); it != instrs.end(); ++it) {
         (*it)->gen_asm_x86(o);
     }
+
+    if (exit_false == nullptr) {
+        if (exit_true != nullptr) {
+            o << "  jmp " << exit_true->label << "\n";
+        }
+    } else if (exit_true != nullptr) {
+        // FIXME %eax could be not hardcoded
+        o << "  cmpl $0, %eax" << "\n";
+        o << "  jne " << exit_true->label << "\n";
+        o << "  jmp " << exit_false->label << "\n";
+    }
+
 }
 

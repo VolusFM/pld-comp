@@ -29,8 +29,8 @@ void BasicBlock::add_IRInstr(Operation op, string type, vector<string> params) {
 }
 
 CFG::CFG(const CFunction* f, string name) :
-        ast(f), name(name), current_bb(nullptr), tosIndexNext(0), tosTempNext(
-                1), bbNumberNext(1) {
+        ast(f), name(name), current_bb(nullptr), tosIndexLast(0), tosTempLast(
+                0), bbNumberLast(0) {
 }
 
 CFG::~CFG() {
@@ -47,19 +47,19 @@ void CFG::add_bb(BasicBlock* bb) {
 void CFG::tos_add(string name, CType type) {
     tos.push_back(name);
     tosType[name] = type;
-    tosIndexNext += 4;
-    tosIndex[name] = tosIndexNext;
+    tosIndexLast += 4;
+    tosIndex[name] = tosIndexLast;
 }
 
 void CFG::tos_add_array(string name, CType type, int size) {
     tos.push_back(name);
     tosType[name] = type;
-    tosIndexNext += 4*size;
-    tosIndex[name] = tosIndexNext;
+    tosIndexLast += 4*size;
+    tosIndex[name] = tosIndexLast;
 }
 
 string CFG::tos_add_temp(CType type) {
-    string name = "!tmp" + to_string(tosTempNext++);
+    string name = "!tmp" + to_string(++tosTempLast);
     tos_add(name, type);
     return name;
 }
@@ -82,5 +82,9 @@ CType CFG::tos_get_type(string variable) const {
                 << endl;
         throw;
     }
+}
+
+string CFG::new_BB_name(const string& prefix) {
+    return name + "_" + prefix + to_string(++bbNumberLast);
 }
 
