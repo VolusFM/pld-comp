@@ -25,8 +25,15 @@ void IProg::gen_asm_x86(ostream& o) const {
 }
 
 string CFG::tos_get_asm_x86(string name) const {
+    if(name.at(0)=='$')
+        return name;
     int index = tos_get_index(name);
     return "-" + to_string(index) + "(%rbp)";
+}
+
+string CFG::tos_get_asm_x86_array(string name) const {
+    int index = tos_get_index(name);
+    return "-" + to_string(index) + "(%rbp,%rax,4)";
 }
 
 void CFG::gen_asm_x86_prologue(ostream& o) const {
