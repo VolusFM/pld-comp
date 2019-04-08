@@ -73,8 +73,9 @@ void CInstrVariable::to_IR(CFG* cfg) const {
 void CInstrReturn::to_IR(CFG* cfg) const {
     if (expr != nullptr)
         expr->to_IR(cfg);
-
-    // to do
+        // s'assurer que le résultat soit dans %eax
+    
+    cfg->add_bb(new BasicBlock(cfg, cfg->new_BB_name()));
 }
 
 void CInstrIf::to_IR(CFG* cfg) const {
