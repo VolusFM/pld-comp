@@ -36,21 +36,21 @@ void CInstrArray::to_IR(CFG* cfg) const {
 
         if (exprs.size() != size && exprs.size() != 0) {
             for (index = 0; index < size; index++) {
-                bb->add_IRInstr(op_ldconst_mem, type,
-                        { to_string(address - 4 * index), "0" });
+                bb->add_IRInstr(op_ldconst, type,
+                        { '-'+to_string(address - 4 * index)+"(%rbp)", "$0" });
             }
         }
 
         index = 0;
         for (auto expr : exprs) {
             if (dynamic_cast<CExpressionInt*>(expr) != NULL) {
-                bb->add_IRInstr(op_ldconst_mem, type,
-                        { to_string(address - 4 * index), to_string(
+                bb->add_IRInstr(op_ldconst, type,
+                        { '-'+to_string(address - 4 * index)+"(%rbp)", '$'+to_string(
                                 dynamic_cast<CExpressionInt*>(expr)->value) });
             } else {
                 string temp = expr->to_IR(cfg);
-                bb->add_IRInstr(op_copy_mem, type,
-                        { to_string(address - 4 * index), temp });
+                bb->add_IRInstr(op_copy, type,
+                        { '-'+to_string(address - 4 * index)+"(%rbp)", temp });
             }
             index++;
         }
@@ -63,6 +63,7 @@ void CInstrArray::to_IR(CFG* cfg) const {
 }
 
 void CInstrVariable::to_IR(CFG* cfg) const {
+    cfg->tos_add(name, type);
     if (expr != nullptr)
         expr->to_IR(cfg);
 }

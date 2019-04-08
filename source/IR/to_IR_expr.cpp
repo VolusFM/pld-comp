@@ -13,13 +13,13 @@ using std::to_string;
 
 
 string CExpressionInt::to_IR(CFG* cfg) const {
-    BasicBlock* bb = cfg->current_bb;
+    //BasicBlock* bb = cfg->current_bb;
     
-    string variable = cfg->tos_add_temp("int");
+    //string variable = cfg->tos_add_temp("int");
     
-    bb->add_IRInstr(op_ldconst, "int", {variable, to_string(value)});
+    //bb->add_IRInstr(op_ldconst, "int", {variable, to_string(value)});
     
-    return variable;
+    return '$'+to_string(value);
 }
 
 string CExpressionVar::to_IR(CFG* cfg) const {
@@ -31,7 +31,6 @@ string CExpressionVarArray::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
     string addressIndex = index->to_IR(cfg);
     int indexBase = cfg->tos_get_index(variable);
-
     bb->add_IRInstr(op_index, "int", {addressIndex});
 
     return "-"+to_string(indexBase)+"(%rbp,%rax,4)";
@@ -49,8 +48,10 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         CType type = "int"; //TODO handle other types
 
         // TODO check if it's a pointer
-
-        bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
+        if (rhsvar.at(0) == '$')
+            bb->add_IRInstr(op_ldconst, type, {lhsvar, rhsvar});
+        else
+            bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
         variable = lhsvar;
         // to do
     } else {
