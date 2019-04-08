@@ -109,3 +109,7 @@ void CFunction::fill_tos(const vector<CParameter>& parameters) {
     }    
 }
 
+void CFunction::optimize() {
+    block.optimize();
+}
+

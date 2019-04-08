@@ -11,6 +11,7 @@ class CFG;
 class CExpression {
 public:
     virtual ~CExpression() = default;
+    virtual CExpression* optimize();
     virtual string to_IR(CFG* cfg) const = 0;
     virtual pair<string, string> to_asm(CFunction* f) const = 0;
     pair<string, string> to_asm(const CFunction* f) const;
@@ -52,6 +53,7 @@ class CExpressionComposed: public CExpression {
 public:
     CExpressionComposed(CExpression* lhs, string op, CExpression* rhs);
     ~CExpressionComposed();
+    CExpression* optimize();
     string to_IR(CFG* cfg) const;
     pair<string, string> to_asm(CFunction* f) const;
 

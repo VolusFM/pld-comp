@@ -13,13 +13,14 @@ public:
     CInstrDoWhile() = default;
     CInstrDoWhile(CExpression* condition, CInstructions& blockContent);
     ~CInstrDoWhile();
-
+    
+    void optimize();
     void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;
-
+    
     CInstructions blockContent;
     CExpression* condition;
-
+    
 private:
     // no copy wanted
     CInstrDoWhile(const CInstrDoWhile&); // no implementation

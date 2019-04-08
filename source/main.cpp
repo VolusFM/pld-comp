@@ -21,7 +21,6 @@ using std::ofstream;
 using namespace antlr4;
 
 typedef struct {
-
     bool opta; // static analysis
     bool opto; // optimize
     bool optc; // assembly generation
@@ -101,7 +100,7 @@ int main(int argc, const char* argv[]) {
     arguments args;
 
     if (!argsparse(argc, argv, args)) {
-        cerr << "Syntax: ./yottacompilatron9001 <input_file> [-o] [-a] [--IR] [--AST] -c <output_file>" << endl;
+        cerr << "Syntax: ./yottacompilatron9001 <input_file> [-o] [-a] [-c [<output_file>]]" << endl;
         exit (EXIT_FAILURE);
     }
 
@@ -149,11 +148,22 @@ int main(int argc, const char* argv[]) {
 
     Visitor visitor;
     CProg* ast = visitor.visit(tree);
+    
+    if (args.opto) ast->optimize();
+    
     IProg* ir;
-
+    
     if (!args.tmp) // temporary
+    {
         ir = ast->to_IR();
-
+        if (args.opto) ir->optimize();
+    }
+    
+    if (args.opta && !args.optc) {
+        args.optc = true;
+        args.fo = "/dev/null";
+    }
+    
     if (args.optc) {
         if (!args.tmp) // temporary
             ir->gen_asm_x86(*os);

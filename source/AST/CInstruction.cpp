@@ -10,3 +10,9 @@ CInstructions::~CInstructions() {
     }
 }
 
+void CInstructions::optimize() {
+    for (auto it = instructions.begin(); it != instructions.end(); ++it) {
+        (*it)->optimize();
+    }
+}
+

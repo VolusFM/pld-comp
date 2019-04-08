@@ -19,6 +19,7 @@ public:
     CFunction(string name, vector<CParameter>& parameters, CInstructions& block);
     ~CFunction() = default;
     
+    void optimize();
     CFG* to_IR() const;
     string to_asm() const;
     

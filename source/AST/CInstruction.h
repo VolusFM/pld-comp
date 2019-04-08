@@ -12,6 +12,7 @@ class CFG;
 class CInstruction {
 public:
     virtual ~CInstruction() = default;
+    virtual void optimize() = 0;
     virtual void to_IR(CFG* cfg) const = 0;
     virtual string to_asm(const CFunction* f) const = 0;
 };
@@ -23,6 +24,7 @@ public:
     CInstructions(vector<CInstruction*>& instructions);
     ~CInstructions();
     
+    void optimize();
     void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;
     

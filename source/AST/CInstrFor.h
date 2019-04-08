@@ -15,15 +15,16 @@ public:
             CExpression* stopCondition,
             CExpression* evolution, CInstructions& blockContent);
     ~CInstrFor();
-
+    
+    void optimize();
     void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;
-
+    
     CInstructions blockContent;
     CExpression* start;
     CExpression* stopCondition;
     CExpression* evolution;
-
+    
 private:
     // no copy wanted
     CInstrFor(const CInstrFor&); // no implementation

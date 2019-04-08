@@ -13,3 +13,14 @@ CInstrExpression::~CInstrExpression() {
     }
 }
 
+void CInstrExpression::optimize()
+{
+    if (expr != nullptr) {
+        CExpression* opti = expr->optimize();
+        if (opti != nullptr) {
+            delete expr;
+            expr = opti;
+        }
+    }
+}
+
