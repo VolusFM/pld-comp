@@ -66,7 +66,7 @@ bool argsparse(int argc, const char* argv[], arguments& args) {
                 args.tmp = false;
 
             else {
-                cerr << "ERROR: unknown argument : '" << arg << "'" << endl;
+                cerr << "ERROR: unknown argument : '" << arg << "'." << endl;
                 return false;
             }
         } else {
@@ -75,19 +75,19 @@ bool argsparse(int argc, const char* argv[], arguments& args) {
             else if (args.fo.empty())
                 args.fo = arg;
             else {
-                cerr << "ERROR: too many arguments" << endl;
+                cerr << "ERROR: too many arguments." << endl;
                 return false;
             }
         }
     }
 
     if (args.fi.empty()) {
-        cerr << "ERROR: missing file input argument" << endl;
+        cerr << "ERROR: missing file input argument." << endl;
         return false;
     }
 
     if (!args.optc && !args.fo.empty()) {
-        cerr << "ERROR: too many arguments" << endl;
+        cerr << "ERROR: too many arguments." << endl;
         return false;
     }
 
@@ -101,7 +101,7 @@ int main(int argc, const char* argv[]) {
     arguments args;
 
     if (!argsparse(argc, argv, args)) {
-        cerr << "ERROR: incorrect arguments" << endl;
+        cerr << "Syntax: ./yottacompilatron9001 <input_file> [-o] [-a] [--IR] [--AST] -c <output_file>" << endl;
         exit (EXIT_FAILURE);
     }
 
@@ -111,7 +111,7 @@ int main(int argc, const char* argv[]) {
     ifstream ifs(args.fi);
 
     if (!ifs.is_open()) {
-        cerr << "ERROR: can't open input file in reading mode" << endl;
+        cerr << "ERROR: can't open input file in reading mode." << endl;
         exit (EXIT_FAILURE);
     }
 
@@ -122,7 +122,7 @@ int main(int argc, const char* argv[]) {
     tree::ParseTree* tree = parser.prog();
 
     if (parser.getNumberOfSyntaxErrors() > 0) {
-        cerr << "ERROR: incorrect syntax in the input file" << endl;
+        cerr << "ERROR: incorrect syntax in the input file." << endl;
         exit (EXIT_FAILURE);
     }
 
