@@ -174,5 +174,30 @@ void CInstrDoWhile::to_IR(CFG* cfg) const {
 }
 
 void CInstrFor::to_IR(CFG* cfg) const {
-    // TODO
+    BasicBlock* bb = cfg->current_bb;
+
+    // Create new blocks for while statement
+    string prefix = cfg->new_BB_name("for");
+    BasicBlock* bbStopCondition = new BasicBlock(cfg, prefix + "condition");
+    BasicBlock* bbContent = new BasicBlock(cfg, prefix);
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name(""));
+
+    start->to_IR(cfg);
+
+    // Link current block to the contents of the while
+    bb->exit_true = bbStopCondition;
+    bbStopCondition->exit_true = bbContent;
+    bbStopCondition->exit_false = bbNext;
+    cfg->add_bb(bbStopCondition);
+    // Add condition to the current block
+    stopCondition->to_IR(cfg);
+
+    // Prepare the exit_true and exit_false and link them to the next block
+    cfg->add_bb(bbContent);
+    blockContent.to_IR(cfg);
+    evolution->to_IR(cfg);
+    bbContent->exit_true = bbStopCondition;
+
+    // Add next block to CFG
+    cfg->add_bb(bbNext);
 }
