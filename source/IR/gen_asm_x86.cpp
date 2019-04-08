@@ -62,6 +62,12 @@ void BasicBlock::gen_asm_x86(ostream& o) const {
         (*it)->gen_asm_x86(o);
     }
     
-    if (exit_true) o << "  jmp " << exit_true->label << "\n";
+    if (exit_false == nullptr) {
+        if (exit_true != nullptr) o << "  jmp " << exit_true->label << "\n";
+    } else if (exit_true != nullptr) {
+        o << "  jne " << exit_false->label << "\n";
+        o << "  jmp " << exit_true->label << "\n";
+    }
+    
 }
 

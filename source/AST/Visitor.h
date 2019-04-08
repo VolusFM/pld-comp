@@ -154,7 +154,7 @@ public:
         CInstrIf* instr = new CInstrIf(condition, *blockTrue, *blockFalse);
         delete blockTrue;
         delete blockFalse;
-        return instr;
+        return (CInstruction*) instr;
     }
 
     //TODO : check and test it
@@ -166,7 +166,7 @@ public:
                 ctx->whileblock()->anyinstruction());
         CInstrWhile* instr = new CInstrWhile(condition, *blockContent);
         delete blockContent;
-        return instr;
+        return (CInstruction*) instr;
     }
 
     virtual antlrcpp::Any visitDef_var_with_expr(

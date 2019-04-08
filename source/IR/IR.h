@@ -130,7 +130,7 @@ public:
     CType tos_get_type(string name) const;
     
     // basic block management
-    string new_BB_name();
+    string new_BB_name(const string& prefix);
     BasicBlock* current_bb;
     
 public: // to fix, should be protected

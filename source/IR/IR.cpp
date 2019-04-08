@@ -84,7 +84,7 @@ CType CFG::tos_get_type(string variable) const {
     }
 }
 
-string CFG::new_BB_name() {
-    return name + "_" + to_string(++bbNumberLast);
+string CFG::new_BB_name(const string& prefix) {
+    return name + "_" + prefix + to_string(++bbNumberLast);
 }
 
