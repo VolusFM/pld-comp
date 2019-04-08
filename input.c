@@ -16,15 +16,15 @@ int main() {
   return i;
 }
 
-int test(int a, int b) {
+/*int test(int a, int b) {
   return a*b;
-}
+}*/
 
-/*int test(int a){
+int test(int a){
   if(a==1){
     return 1;
   } else {
     return a * test(a-1);
   }
   return 0;
-}*/
+}
