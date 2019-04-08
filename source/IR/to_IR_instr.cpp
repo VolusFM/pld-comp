@@ -14,6 +14,7 @@ using std::to_string;
 #include "../AST/CInstrArray.h"
 #include "../AST/CInstrIf.h"
 #include "../AST/CInstrWhile.h"
+#include "../AST/CInstrFor.h"
 
 void CInstructions::to_IR(CFG* cfg) const {
     for (auto it = instructions.begin(); it != instructions.end(); ++it) {
@@ -133,4 +134,8 @@ void CInstrWhile::to_IR(CFG* cfg) const {
     // Add next block to CFG
     cfg->current_bb = bbNext;
     cfg->add_bb(bbNext);
+}
+
+void CInstrFor::to_IR(CFG* cfg) const {
+    // TODO
 }
