@@ -60,8 +60,10 @@ bool argsparse(int argc, const char* argv[], arguments& args)
                 args.optc = true;
             
             /* temporary */
-            else if (strequal(arg, "dev"))
+            else if (strequal(arg, "-AST"))
                 args.tmp = true;
+            else if (strequal(arg, "-IR"))
+                args.tmp = false;
             
             else {
                 cerr << "ERROR: unknown argument : '" << arg << "'" << endl;
