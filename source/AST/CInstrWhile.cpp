@@ -1,9 +1,9 @@
 #include "CInstrWhile.h"
 
-CInstrWhile::CInstrWhile(CExpression* condition, CInstructions& blockTrue_) :
+CInstrWhile::CInstrWhile(CExpression* condition, CInstructions& blockContent_) :
         condition(condition) {
-    blockTrue = std::move(blockTrue_);
-    blockTrue_.instructions.clear();
+    blockContent = std::move(blockContent_);
+    blockContent_.instructions.clear();
 }
 
 string CInstrWhile::to_asm(const CFunction* f) const {

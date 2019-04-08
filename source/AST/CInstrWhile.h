@@ -11,14 +11,13 @@ using std::string;
 class CInstrWhile: public CInstruction {
 public:
     CInstrWhile() = default;
-    CInstrWhile(CExpression* condition, CInstructions& blockTrue);
+    CInstrWhile(CExpression* condition, CInstructions& blockContent);
     ~CInstrWhile();
 
     void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;
 
-    CInstructions blockTrue;
-    CInstructions blockFalse;
+    CInstructions blockContent;
     CExpression* condition;
 
 private:
