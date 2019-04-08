@@ -14,37 +14,41 @@ void IRInstr::gen_asm_x86(ostream& o) const {
         for call: label, d, params;
         for wmem and rmem: choose yourself
     */
-    
     switch (op) {
     case op_copy:
         o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax\n";
         o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
         break;
     case op_ldconst:
-        o << "  movl  $" << cfg->tos_get_asm_x86(params[1]) << ", " << cfg->tos_get_asm_x86(params[0])
+        o << "  movl  " << params[1] << ", " << cfg->tos_get_asm_x86(params[0])
                 << "\n";
         break;
-/*
-    case op_copy_mem:
-        o << "  movl "  << cfg->tos_get_asm_x86(params[1]) << ", %eax\n";
-        o << "  movl  %eax, -" << cfg->tos_get_asm_x86(params[0]) << "(%rbp) \n";
-        break;
-    case op_ldconst_mem:
-        o << "  movl  $" << cfg->tos_get_asm_x86(params[1]) << ", -" << cfg->tos_get_asm_x86(params[0]) << "(%rbp) \n";
-        break;
     case op_copy_array:
-        o << "  movl "  << cfg->tos_get_asm_x86(params[1]) << ", %eax\n";
-        o << "  movl  %eax, -" << cfg->tos_get_asm_x86(params[0])
-                << "(%rbp,%rax,4) \n";
+        o << "  movl  "  << cfg->tos_get_asm_x86(params[1]) << ", %edx\n";
+        o << "  movl  %edx, " << cfg->tos_get_asm_x86_array(params[0]) << "\n";
         break;
     case op_ldconst_array:
-        o << "  movl  $" << cfg->tos_get_asm_x86(params[1]) << ", -" << cfg->tos_get_asm_x86(params[0])
-                << "(%rbp,%rax,4) \n";
+        o << "  movl  " << params[1] << ", " << cfg->tos_get_asm_x86_array(params[0])<< "\n";
         break;
-*/
+    case op_copy_from_array:
+        o << "  movl  "  << cfg->tos_get_asm_x86_array(params[1]) << ", %eax\n";
+        o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[0]) << "\n";
+        break;
+    case op_copy_mem:
+        o << "  movl  "  << cfg->tos_get_asm_x86(params[1]) << ", %eax\n";
+        o << "  movl  %eax, -" << params[0] << "(%rbp) \n";
+        break;
+    case op_ldconst_mem:
+        o << "  movl  " << params[1] << ", -" << params[0] << "(%rbp) \n";
+        break;
     case op_index:
-        o << "  movl " << cfg->tos_get_asm_x86(params[0]) << ", %eax \n";
+        o << "  movl  " << cfg->tos_get_asm_x86(params[0]) << ", %eax \n";
         o << "  cltq \n";
+        break;
+    case op_index_ldconst:
+        o << "  movl  " << params[0] << ", %eax \n";
+        o << "  cltq \n";
+        break;
     case op_add:
         o << "  movl  " << cfg->tos_get_asm_x86(params[1]) << ", %eax" << "\n";
         o << "  addl  " << cfg->tos_get_asm_x86(params[2]) << ", %eax" << "\n";

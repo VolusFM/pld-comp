@@ -12,13 +12,13 @@ using std::to_string;
 #include "../AST/CFunctionCall.h"
 
 string CExpressionInt::to_IR(CFG* cfg) const {
-    BasicBlock* bb = cfg->current_bb;
-
-    string variable = cfg->tos_add_temp("int");
-
-    bb->add_IRInstr(op_ldconst, "int", { variable, to_string(value) });
-
-    return variable;
+    //BasicBlock* bb = cfg->current_bb;
+    
+    //string variable = cfg->tos_add_temp("int");
+    
+    //bb->add_IRInstr(op_ldconst, "int", {variable, to_string(value)});
+    
+    return '$'+to_string(value);
 }
 
 string CExpressionVar::to_IR(CFG* cfg) const {
@@ -30,32 +30,28 @@ string CExpressionVarArray::to_IR(CFG* cfg) const {
 
     BasicBlock* bb = cfg->current_bb;
     string addressIndex = index->to_IR(cfg);
-    int indexBase = cfg->tos_get_index(variable);
-
-    string variable = cfg->tos_add_temp("int");
-
-    // 
-    bb->add_IRInstr(op_index, "int", { addressIndex });
-
-    cerr << "PROBLEM: ExpressionVarArray::to_IR unimplemented" << endl;
-    throw;
-
-    return variable;
+    
+    string temp = cfg->tos_add_temp("int");
+    
+    if (addressIndex.at(0) == '$')
+        bb->add_IRInstr(op_index_ldconst, "int", {addressIndex});
+    else
+        bb->add_IRInstr(op_index, "int", {addressIndex});
+    bb->add_IRInstr(op_copy_from_array, "int", {temp,variable});
+    
+    return temp;
 }
 
 string CExpressionVarArray::to_IR_address(CFG* cfg) const {
-    //TODO : incomplete
     BasicBlock* bb = cfg->current_bb;
     string addressIndex = index->to_IR(cfg);
-    int indexBase = cfg->tos_get_index(variable);
-
-    bb->add_IRInstr(op_index, "int", { addressIndex });
-
-    return "-" + to_string(indexBase) + "(%rbp,%rax,4)";
-
-    cerr << "PROBLEM: ExpressionVarArray::to_IR_address incorrect" << endl;
-    throw;
-
+    
+    if (addressIndex.at(0) == '$')
+        bb->add_IRInstr(op_index_ldconst, "int", {addressIndex});
+    else
+        bb->add_IRInstr(op_index, "int", {addressIndex});
+    
+    return variable;
 }
 
 string CExpressionComposed::to_IR(CFG* cfg) const {
@@ -75,10 +71,19 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
 
         CType type = "int"; //TODO handle other types
 
-        if (vararray == nullptr)
-            bb->add_IRInstr(op_copy, type, { lhsvar, rhsvar });
+        // TODO check if it's a pointer
+
+        if (vararray == nullptr){
+            if (rhsvar.at(0) == '$')
+                bb->add_IRInstr(op_ldconst, type, {lhsvar, rhsvar});
+            else
+                bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
+        }
         else {
-            /* todo */ // bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
+            if (rhsvar.at(0) == '$')
+                bb->add_IRInstr(op_ldconst_array, type, {lhsvar, rhsvar});
+            else
+                bb->add_IRInstr(op_copy_array, type, {lhsvar, rhsvar});
         }
 
         variable = lhsvar;

@@ -25,6 +25,7 @@ typedef enum {
     op_ldconst_mem,
     op_ldconst_array,
     op_index,
+    op_index_ldconst,
     op_add,
     op_sub,
     op_mul,
@@ -33,6 +34,7 @@ typedef enum {
     op_copy,
     op_copy_mem,
     op_copy_array,
+    op_copy_from_array,
     op_rmem,  // va lire a une adresse memoire donnee dans le premier paramatre
     op_wmem,  // va ecrire a une adresse memoire donnee dans le premier parametre.
     op_call, 
@@ -121,6 +123,7 @@ public:
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream& o) const;
     string tos_get_asm_x86(string reg) const; /* helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
+    string tos_get_asm_x86_array(string reg) const;
     void gen_asm_x86_prologue(ostream& o) const;
     void gen_asm_x86_epilogue(ostream& o) const;
     
