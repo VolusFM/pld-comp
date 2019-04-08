@@ -22,8 +22,8 @@ CFG* CFunction::to_IR() const {
     for (auto it = tos.cbegin(); it != tos.cend(); ++it) {
         cfg->tosIndex[*it] = -(tosAddress.at(*it));
     }
-
-    BasicBlock* bb = new BasicBlock(cfg, cfg->new_BB_name());
+    
+    BasicBlock* bb = new BasicBlock(cfg, name + "_body");
     bb->exit_true = nullptr;
     bb->exit_false = nullptr;
     
