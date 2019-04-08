@@ -19,17 +19,18 @@ instruction: instrreturn ';' #return
 	| definition ';' #instr_def
 	| rvalue ';' #instr_expr
 	| ifblock #if_block
-	| whileblock #while_block;
-//      | forblock #for_block;
+	| whileblock #while_block
+        | forblock #for_block;
 
 ifblock: 'if' '(' rvalue ')' anyinstruction elseblock?;
 elseblock: 'else' anyinstruction;
 
 whileblock: 'while' '(' rvalue ')' anyinstruction;
+//TODO : definition in while ?
 
 //TODO : implement and compile for 
-//forblock: 'for' '(' forCondition ')' anyinstruction #instr_for;
-//forCondition: (definition|rvalue)? ';' (definition| rvalue)? ';' (definition| rvalue)? ;
+forblock: 'for' '(' forCondition ')' anyinstruction #instr_for;
+forCondition: (definition|rvalue)? ';' (definition| rvalue)? ';' (definition| rvalue)? ;
 
 definition: type (vardefinition|arraydefinition) (','(vardefinition|arraydefinition))*;
 

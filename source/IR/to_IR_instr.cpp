@@ -14,6 +14,7 @@ using std::to_string;
 #include "../AST/CInstrArray.h"
 #include "../AST/CInstrIf.h"
 #include "../AST/CInstrWhile.h"
+#include "../AST/CInstrFor.h"
 
 void CInstructions::to_IR(CFG* cfg) const {
     for (auto it = instructions.begin(); it != instructions.end(); ++it) {
@@ -77,47 +78,66 @@ void CInstrReturn::to_IR(CFG* cfg) const {
 
 void CInstrIf::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-
-    // Create new blocks for if statement
-    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
-    BasicBlock* bbTrue = new BasicBlock(cfg, cfg->new_BB_name());
-    BasicBlock* bbFalse =
-            blockFalse.instructions.empty() ?
-                    nullptr : new BasicBlock(cfg, cfg->new_BB_name());
-
+    
     // Add condition to the cfg
     condition->to_IR(cfg);
-
+    
+    bool hasTrue = !blockTrue.instructions.empty();
+    bool hasFalse = !blockFalse.instructions.empty();
+    if ((!hasTrue) && (!hasFalse)) return;
+    
+    // Create new blocks for if statement
+    string prefix = cfg->new_BB_name("if");
+    BasicBlock* bbTrue = new BasicBlock(cfg, prefix + "true"); // hasTrue ? ... : nullptr
+    BasicBlock* bbFalse = hasFalse ? new BasicBlock(cfg, prefix + "false") : nullptr;
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name(""));
+    
     // Link current block to the content of the if
-    bb->exit_true = bbTrue;
+    bb->exit_true = bbTrue ? bbTrue : bbNext;
     bb->exit_false = bbFalse ? bbFalse : bbNext;
-
+    
     // Prepare the exit_true and link it to the next block
-    cfg->current_bb = bbTrue;
-    blockTrue.to_IR(cfg);
-    bbTrue->exit_true = bbNext;
-    cfg->add_bb(bbTrue);
-
-    if (bbFalse != nullptr) { // If there is an exit_false, prepare it as well
-        cfg->current_bb = bbFalse;
+    if (bbTrue != nullptr) {
+        cfg->add_bb(bbTrue);
+        blockTrue.to_IR(cfg);
+        bbTrue->exit_true = bbNext;
+    }
+    
+    // If there is an exit_false, prepare it as well
+    if (bbFalse != nullptr) {
+        cfg->add_bb(bbFalse);
         blockFalse.to_IR(cfg);
         bbFalse->exit_true = bbNext;
-        cfg->add_bb(bbFalse);
     }
-
+    
     // Add next block to CFG
-    cfg->current_bb = bbNext;
     cfg->add_bb(bbNext);
-
-    //TODO : make two basic blocks : one true one false. Add those to cfg's vector of basic block
-    // if there is no else statement, the basicblock exit_false will be nullptr (very important to check it later)
-    // run to_ir on condition
-    // run to_ir on the two blocks (check if the second is nullptr here)
 }
 
 void CInstrWhile::to_IR(CFG* cfg) const {
-    //TODO : make two basic blocks : one true one false. Add those to cfg's vector of basic block
-    // the basicblock exit_false will be nullptr (or remove it ?)
-    // run to_ir on condition
-    // run to_ir on the exit_true block
+    BasicBlock* bb = cfg->current_bb;
+    
+    // Create new blocks for while statement
+    BasicBlock* bbContent = new BasicBlock(cfg, cfg->new_BB_name(""));
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name("while"));
+    
+    // Add condition to the cfg
+    condition->to_IR(cfg);
+    
+    // Link current block to the contents of the while
+    bb->exit_true = bbContent;
+    bb->exit_false = bbNext;
+    
+    // Prepare the exit_true and exit_false and link them to the next block
+    cfg->add_bb(bbContent);
+    blockContent.to_IR(cfg);
+    bbContent->exit_true = bbContent;
+    bbContent->exit_false = bbNext;
+    
+    // Add next block to CFG
+    cfg->add_bb(bbNext);
+}
+
+void CInstrFor::to_IR(CFG* cfg) const {
+    // TODO
 }

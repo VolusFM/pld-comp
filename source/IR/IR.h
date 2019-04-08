@@ -130,7 +130,7 @@ public:
     CType tos_get_type(string name) const;
     
     // basic block management
-    string new_BB_name();
+    string new_BB_name(const string& prefix);
     BasicBlock* current_bb;
     
 public: // to fix, should be protected
@@ -139,10 +139,10 @@ public: // to fix, should be protected
     vector<string> tos; /* part of the symbol table */
     map<string, CType> tosType; /* part of the symbol table */
     map<string, int> tosIndex; /* part of the symbol table */
-    int tosIndexNext; /* to allocate new symbols in the symbol table */
-    int tosTempNext;
+    int tosIndexLast; /* to allocate new symbols in the symbol table */
+    int tosTempLast;
     
     vector<BasicBlock*> bbs; /* all the basic blocks of this CFG */
-    int bbNumberNext; /* just for naming */
+    int bbNumberLast; /* just for naming */
 };
 
