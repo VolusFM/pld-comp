@@ -129,10 +129,12 @@ void CFG::optimize() {
     }
     
     for (auto it = bbs.begin(); it != bbs.end(); /*rien*/) {
-        if (!bbUsed[*it])
+        if (!bbUsed[*it]) {
+            delete (*it);
             it = bbs.erase(it);
-        else
+        } else {
             ++it;
+        }
     }
 }
 
