@@ -135,6 +135,7 @@ void CFG::optimize() {
     for (auto itr = bbReplace.begin(); itr != bbReplace.end(); ++itr) {
         for (auto it = bbs.begin(); it != bbs.end(); ++it) {
             BasicBlock* b = (*it);
+            if (b->exit_false != nullptr && itr->second == nullptr) continue;
             if (b->exit_true == itr->first) b->exit_true = itr->second;
             if (b->exit_false == itr->first) b->exit_false = itr->second;
         }
