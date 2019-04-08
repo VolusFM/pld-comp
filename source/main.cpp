@@ -151,10 +151,8 @@ int main(int argc, const char* argv[]) {
     CProg* ast = visitor.visit(tree);
     IProg* ir;
 
-    if (!args.tmp) { // temporary
+    if (!args.tmp) // temporary
         ir = ast->to_IR();
-        delete ast;
-    } // temporary
 
     if (args.optc) {
         if (!args.tmp) // temporary
@@ -169,10 +167,7 @@ int main(int argc, const char* argv[]) {
             ofs.close();
     }
 
-    // temporary
-    if (args.tmp)
-        delete ast;
-
+    delete ast;
     delete ir;
 
     return 0;

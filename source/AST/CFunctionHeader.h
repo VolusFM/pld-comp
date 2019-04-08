@@ -29,8 +29,9 @@ public:
     ~CParameter() = default;
     
     string to_asm(const CFunction* f, int index) const;
-    
-    string name;
+   
     CType type;
+    string name;
+    
 };
 

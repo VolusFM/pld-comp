@@ -26,7 +26,10 @@ string CProg::to_asm() const {
 string CParameter::to_asm(const CFunction* f, int index) const {
     static const string registerName[] = { "rdi", "rsi", "rdx", "rcx", "r8d", "r9d" };
     
+    cerr << "  ICIDESUKA : " << name << endl;
     string variable = f->tos_addr(name);
+    cerr << "  ICIDESUKA : " << name << endl;
+
     string code = "  movl %" + registerName[index] + ", " + variable + " # Move the parameter to one of the function registers\n";
     return code;
 }
@@ -53,15 +56,15 @@ string CFunction::to_asm() const {
     code += "  movq %rsp, %rbp # define %rbp for the current function\n";
 
     int index = 0;
-    for (auto it = parameters.begin() ; it!= parameters.end() ; ++it) {
+    for (auto it = parameters.cbegin() ; it != parameters.cend() ; ++it) {
         code += it->to_asm(this, index);
         index++;
     }
 
     code += "  ## contenu\n";
 
-    for (const CInstruction* i : block.instructions) {
-        code += i->to_asm(this);
+    for (const CInstruction* it : block.instructions) {
+        code += it->to_asm(this);
     }
 
     code += "  ## epilogue\n";
