@@ -20,17 +20,23 @@ instruction: instrreturn ';' #return
 	| rvalue ';' #instr_expr
 	| ifblock #if_block
 	| whileblock #while_block
-        | forblock #for_block;
+        | forblock #for_block
+	| dowhileblock #do_while_block;
 
 ifblock: 'if' '(' rvalue ')' anyinstruction elseblock?;
 elseblock: 'else' anyinstruction;
 
 whileblock: 'while' '(' rvalue ')' anyinstruction;
-//TODO : definition in while ?
 
 //TODO : implement and compile for 
-forblock: 'for' '(' forCondition ')' anyinstruction #instr_for;
-forCondition: (definition|rvalue)? ';' (definition| rvalue)? ';' (definition| rvalue)? ;
+forblock: 'for' '(' forcondition ')' anyinstruction;
+forcondition: forstartcondition? ';' forstopcondition? ';' forevolution?;
+forstartcondition: rvalue;
+forstopcondition: rvalue;
+forevolution: rvalue;
+
+// TODO: implement and compile do...while
+dowhileblock: 'do' anyinstruction 'while' '(' rvalue ')' ';';
 
 definition: type (vardefinition|arraydefinition) (','(vardefinition|arraydefinition))*;
 

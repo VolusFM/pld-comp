@@ -18,6 +18,8 @@ using std::vector;
 #include "CInstrExpression.h"
 #include "CInstrIf.h"
 #include "CInstrWhile.h"
+#include "CInstrDoWhile.h"
+#include "CInstrFor.h"
 #include "CFunctionCall.h"
 
 class Visitor: public CodeCBaseVisitor {
@@ -165,6 +167,55 @@ public:
         CInstructions* blockContent = (CInstructions*) visit(
                 ctx->whileblock()->anyinstruction());
         CInstrWhile* instr = new CInstrWhile(condition, *blockContent);
+        delete blockContent;
+        return (CInstruction*) instr;
+    }
+
+    //TODO : check and test it
+    virtual antlrcpp::Any visitDo_while_block(
+            CodeCParser::Do_while_blockContext *ctx) override {
+        CExpression* condition = (CExpression*) visit(
+                ctx->dowhileblock()->rvalue());
+        CInstructions* blockContent = (CInstructions*) visit(
+                ctx->dowhileblock()->anyinstruction());
+        CInstrDoWhile* instr = new CInstrDoWhile(condition, *blockContent);
+        delete blockContent;
+        return (CInstruction*) instr;
+    }
+
+    /*forblock: 'for' '(' forCondition ')' anyinstruction #instr_for;
+     forCondition: forStartCondition? ';' forStopCondition? ';' forEvolution?;
+     forStartCondition: (definition|rvalue);
+     forStopCondition: (definition|rvalue);
+     forEvolution: (definition|rvalue);*/
+    //TODO : check and test it
+    virtual antlrcpp::Any visitFor_block(CodeCParser::For_blockContext *ctx)
+            override {
+        CExpression* forStartCondition = nullptr;
+        auto ctxForStartCondition =
+                ctx->forblock()->forcondition()->forstartcondition();
+        if (ctxForStartCondition != nullptr) {
+            forStartCondition = (CExpression*) visit(
+                        ctxForStartCondition->rvalue());
+        }
+        CExpression* forStopCondition = nullptr;
+        auto ctxForStopCondition =
+                ctx->forblock()->forcondition()->forstopcondition();
+        if (ctxForStopCondition != nullptr) {
+            forStopCondition = (CExpression*) visit(
+                        ctxForStopCondition->rvalue());
+        }
+        CExpression* forEvolution = nullptr;
+        auto ctxForEvolution =
+                ctx->forblock()->forcondition()->forevolution();
+        if (ctxForEvolution != nullptr) {
+            forEvolution = (CExpression*) visit(
+                        ctxForEvolution->rvalue());
+        }
+
+        CInstructions* blockContent = (CInstructions*) visit(
+                ctx->forblock()->anyinstruction());
+        CInstrFor* instr = new CInstrFor(forStartCondition, forStopCondition, forEvolution, *blockContent);
         delete blockContent;
         return (CInstruction*) instr;
     }
