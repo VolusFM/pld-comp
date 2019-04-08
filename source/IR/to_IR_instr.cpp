@@ -14,6 +14,7 @@ using std::to_string;
 #include "../AST/CInstrArray.h"
 #include "../AST/CInstrIf.h"
 #include "../AST/CInstrWhile.h"
+#include "../AST/CInstrFor.h"
 
 void CInstructions::to_IR(CFG* cfg) const {
     for (auto it = instructions.begin(); it != instructions.end(); ++it) {
@@ -116,8 +117,31 @@ void CInstrIf::to_IR(CFG* cfg) const {
 }
 
 void CInstrWhile::to_IR(CFG* cfg) const {
-    //TODO : make two basic blocks : one true one false. Add those to cfg's vector of basic block
-    // the basicblock exit_false will be nullptr (or remove it ?)
-    // run to_ir on condition
-    // run to_ir on the exit_true block
+    BasicBlock* bb = cfg->current_bb;
+
+    // Create new blocks for while statement
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock* bbContent = new BasicBlock(cfg, cfg->new_BB_name());
+
+    // Add condition to the cfg
+    condition->to_IR(cfg);
+
+    // Link current block to the contents of the while
+    bb->exit_true = bbContent;
+    bb->exit_false = bbNext;
+
+    // Prepare the exit_true and exit_false and link them to the next block
+    cfg->current_bb = bbContent;
+    blockContent.to_IR(cfg);
+    bbContent->exit_true = bbContent;
+    bbContent->exit_false = bbNext;
+    cfg->add_bb(bbContent);
+
+    // Add next block to CFG
+    cfg->current_bb = bbNext;
+    cfg->add_bb(bbNext);
+}
+
+void CInstrFor::to_IR(CFG* cfg) const {
+    // TODO
 }
