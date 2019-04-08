@@ -140,7 +140,6 @@ public:
         return new CInstrVariable(name);
     }
 
-    //TODO : check and test it
     virtual antlrcpp::Any visitIf_block(CodeCParser::If_blockContext *ctx)
             override {
         CExpression* condition = (CExpression*) visit(ctx->ifblock()->rvalue());
@@ -159,7 +158,6 @@ public:
         return (CInstruction*) instr;
     }
 
-    //TODO : check and test it
     virtual antlrcpp::Any visitWhile_block(CodeCParser::While_blockContext *ctx)
             override {
         CExpression* condition = (CExpression*) visit(
@@ -171,7 +169,6 @@ public:
         return (CInstruction*) instr;
     }
 
-    //TODO : check and test it
     virtual antlrcpp::Any visitDo_while_block(
             CodeCParser::Do_while_blockContext *ctx) override {
         CExpression* condition = (CExpression*) visit(
@@ -183,11 +180,6 @@ public:
         return (CInstruction*) instr;
     }
 
-    /*forblock: 'for' '(' forCondition ')' anyinstruction #instr_for;
-     forCondition: forStartCondition? ';' forStopCondition? ';' forEvolution?;
-     forStartCondition: (definition|rvalue);
-     forStopCondition: (definition|rvalue);
-     forEvolution: (definition|rvalue);*/
     //TODO : check and test it
     virtual antlrcpp::Any visitFor_block(CodeCParser::For_blockContext *ctx)
             override {
