@@ -5,15 +5,23 @@ main:
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
   ## contenu
-  movl    $1, -4(%rbp)
-  cmpl    $1, -4(%rbp)
-  jne     .L2
-  movl    $1, -8(%rbp)
-  jmp     .L3
-.L2:
-  movl    $2, -8(%rbp)
-.L3:
-  movl    $3, -8(%rbp)
+main_1:
+  movl  $1, -4(%rbp)
+  movl  -4(%rbp), %eax
+  cmpl  $1, %eax
+  sete    %al
+  movzbl  %al, %eax
+  movl  %eax, -12(%rbp)
+  jne main_if2false
+  jmp main_if2true
+main_if2true:
+  movl  $1, -8(%rbp)
+  jmp main_3
+main_if2false:
+  movl  $2, -8(%rbp)
+  jmp main_3
+main_3:
+  movl  $3, -8(%rbp)
   ## epilogue
   popq %rbp # restore %rbp from the stack
   ret
