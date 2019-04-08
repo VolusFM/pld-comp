@@ -194,37 +194,22 @@ public:
         auto ctxForStartCondition =
                 ctx->forblock()->forCondition()->forStartCondition();
         if (ctxForStartCondition != nullptr) {
-            if (ctxForStartCondition->definition() != nullptr) {
-                forStartCondition = (CExpression*) visit(
-                        ctxForStartCondition->definition());
-            } else {
-                forStartCondition = (CExpression*) visit(
+            forStartCondition = (CExpression*) visit(
                         ctxForStartCondition->rvalue());
-            }
         }
         CExpression* forStopCondition = nullptr;
         auto ctxForStopCondition =
                 ctx->forblock()->forCondition()->forStopCondition();
         if (ctxForStopCondition != nullptr) {
-            if (ctxForStopCondition->definition() != nullptr) {
-                forStopCondition = (CExpression*) visit(
-                        ctxForStopCondition->definition());
-            } else {
-                forStopCondition = (CExpression*) visit(
+            forStopCondition = (CExpression*) visit(
                         ctxForStopCondition->rvalue());
-            }
         }
         CExpression* forEvolution = nullptr;
         auto ctxForEvolution =
                 ctx->forblock()->forCondition()->forEvolution();
         if (ctxForEvolution != nullptr) {
-            if (ctxForEvolution->definition() != nullptr) {
-                forEvolution = (CExpression*) visit(
-                        ctxForEvolution->definition());
-            } else {
-                forEvolution = (CExpression*) visit(
+            forEvolution = (CExpression*) visit(
                         ctxForEvolution->rvalue());
-            }
         }
 
         CInstructions* blockContent = (CInstructions*) visit(
