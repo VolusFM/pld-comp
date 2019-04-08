@@ -1,13 +1,5 @@
 #include "CInstruction.h"
 
-CInstruction::~CInstruction() {
-    // Nothing to do.
-}
-
-CInstructions::CInstructions() {
-
-}
-
 CInstructions::CInstructions(vector<CInstruction*>& instructions_) {
     instructions = std::move(instructions_);
 }

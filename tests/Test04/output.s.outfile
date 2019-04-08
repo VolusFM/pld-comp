@@ -5,6 +5,8 @@ main:
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
   ## contenu
+  movl  $1, -4(%rbp)
+  movl  $2, -4(%rbp)
   ## epilogue
   popq %rbp # restore %rbp from the stack
   ret

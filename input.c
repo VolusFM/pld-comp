@@ -1,9 +1,16 @@
-
 int main() {
-  int a = 36;
-  return 4*a+7*1-2;
-}
 
-int test() {
-  return 12;
+  int i = 1;
+  int a = 4;
+  
+  do {
+    i = i + 2;  
+  } while (a > i);
+
+
+  int b = 42;
+
+  i = i;
+
+  return i;
 }

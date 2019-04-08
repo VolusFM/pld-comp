@@ -4,12 +4,14 @@
 using std::string;
 
 #include "CInstruction.h"
-#include "CExpression.h"
+class CExpression;
 
-class CInstrExpression: public CInstruction {
+class CInstrExpression : public CInstruction {
 public:
     CInstrExpression(CExpression* expr);
     ~CInstrExpression();
+    
+    void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;
     
     CExpression* expr;

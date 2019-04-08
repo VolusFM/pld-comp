@@ -1,0 +1,27 @@
+.text
+.global main
+main:
+  ## prologue
+  pushq %rbp # save %rbp on the stack
+  movq %rsp, %rbp # define %rbp for the current function
+  ## contenu
+  movl  $3, -4(%rbp)
+  movl  -4(%rbp), %eax
+  movl  %eax, -8(%rbp)
+  movl  $90, -8(%rbp)
+  movl  -8(%rbp), %eax
+  movl  %eax, -12(%rbp)
+  movl  $4, -12(%rbp)
+  movl  -12(%rbp), %eax
+  movl  %eax, -20(%rbp)
+  movl  $5, -16(%rbp)
+  movl  $3, -20(%rbp)
+  movl  -16(%rbp), %eax
+  addl  -20(%rbp), %eax
+  movl  %eax, -24(%rbp)
+  movl  -24(%rbp), %eax
+  movl  %eax, -28(%rbp)
+  ## epilogue
+  popq %rbp # restore %rbp from the stack
+  ret
+

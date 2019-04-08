@@ -35,6 +35,7 @@ nStrResult="$1 "
 if [ -r "run" ]
 then
   sRun=`cat run`
+  echo $sRun
 else
   echo "No run file found. Exiting."
   exit 2
@@ -135,7 +136,7 @@ then
         resultFiles=0
         resultGlobal=0
       fi  
-      rm $fileName
+     # rm $fileName
     else  
       echo "                                       File #$number     : FAILED"
       resultFiles=0
