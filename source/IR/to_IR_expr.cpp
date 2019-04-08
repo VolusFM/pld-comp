@@ -11,14 +11,13 @@ using std::to_string;
 #include "../AST/CExpression.h"
 #include "../AST/CFunctionCall.h"
 
-
 string CExpressionInt::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-    
+
     string variable = cfg->tos_add_temp("int");
-    
-    bb->add_IRInstr(op_ldconst, "int", {variable, to_string(value)});
-    
+
+    bb->add_IRInstr(op_ldconst, "int", { variable, to_string(value) });
+
     return variable;
 }
 
@@ -32,33 +31,33 @@ string CExpressionVarArray::to_IR(CFG* cfg) const {
     string addressIndex = index->to_IR(cfg);
     int indexBase = cfg->tos_get_index(variable);
 
-    bb->add_IRInstr(op_index, "int", {addressIndex});
+    bb->add_IRInstr(op_index, "int", { addressIndex });
 
-    return "-"+to_string(indexBase)+"(%rbp,%rax,4)";
+    return "-" + to_string(indexBase) + "(%rbp,%rax,4)";
 }
 
 string CExpressionComposed::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-    
+
     string lhsvar = lhs->to_IR(cfg);
     string rhsvar = rhs->to_IR(cfg);
-    
+
     string variable;
-    
+
     if (op == "=") {
         CType type = "int"; //TODO handle other types
 
         // TODO check if it's a pointer
 
-        bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
+        bb->add_IRInstr(op_copy, type, { lhsvar, rhsvar });
         variable = lhsvar;
         // to do
     } else {
         variable = cfg->tos_add_temp("int");
-        
+
         vector<string> params = {variable, lhsvar, rhsvar};
         CType type = "int"; //TODO handle other types
-        
+
         if (op == "+") {
             bb->add_IRInstr(op_add, type, params);
         }
@@ -74,8 +73,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         if (op == "%") {
             bb->add_IRInstr(op_mod, type, params);
         }
-        
-        
+
         //   code += "  cmpl  " + rhsvar + ", %eax\n";
         if (op == "<") {
             bb->add_IRInstr(op_cmp_lt, type, params);
@@ -97,8 +95,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         }
         //    code += "  %al\n";
         //    code += "  movzbl  %al, %eax\n";
-        
-        
+
         if (op == "!") {
             bb->add_IRInstr(op_not, type, params);
         }
@@ -106,32 +103,32 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             bb->add_IRInstr(op_binary_and, type, params);
         }
         if (op == "|") {
-	        bb->add_IRInstr(op_binary_or, type, params);
+            bb->add_IRInstr(op_binary_or, type, params);
         }
         if (op == "^") {
             bb->add_IRInstr(op_binary_xor, type, params);
         }
-        
+
     }
     // to do
-    
+
     return variable;
 }
 
-string CFunctionCall::to_IR(CFG* cfg) const{
+string CFunctionCall::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-    
+
     string variable = cfg->tos_add_temp("int");
-    
-    vector<string> results;
+
+    vector < string > results;
     results.push_back(functionName);
     results.push_back(variable);
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         results.push_back((*it)->to_IR(cfg));
     }
-    
+
     bb->add_IRInstr(op_call, "int", results);
-    
+
     return variable;
 }
 

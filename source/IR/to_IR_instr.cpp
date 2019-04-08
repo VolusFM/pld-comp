@@ -78,7 +78,7 @@ void CInstrReturn::to_IR(CFG* cfg) const {
 void CInstrIf::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
     
-    // Add condition to the cfg
+    // Add condition to the current block
     condition->to_IR(cfg);
     
     bool hasTrue = !blockTrue.instructions.empty();
@@ -118,9 +118,15 @@ void CInstrWhile::to_IR(CFG* cfg) const {
     
     // Create new blocks for while statement
     BasicBlock* bbContent = new BasicBlock(cfg, cfg->new_BB_name(""));
+
+    //bbContent->add_IRInstr(, CType type, vector<string> params)
+
+
+
+
     BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name("while"));
     
-    // Add condition to the cfg
+    // Add condition to the current block
     condition->to_IR(cfg);
     
     // Link current block to the contents of the while
@@ -130,6 +136,8 @@ void CInstrWhile::to_IR(CFG* cfg) const {
     // Prepare the exit_true and exit_false and link them to the next block
     cfg->add_bb(bbContent);
     blockContent.to_IR(cfg);
+    // Add condition to content block to ensure we loop, AFTER writing the block's content
+    condition->to_IR(cfg);
     bbContent->exit_true = bbContent;
     bbContent->exit_false = bbNext;
     
