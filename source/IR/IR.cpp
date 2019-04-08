@@ -59,9 +59,26 @@ void CFG::tos_add_array(string name, CType type, int size) {
 }
 
 string CFG::tos_add_temp(CType type) {
+    for (auto it = tosUsed.begin(); it != tosUsed.end(); ++it) {
+        if (!it->second) {
+            string name = it->first;
+            if (tosType[name] == type) {
+                tosUsed[name] = true;
+                return name;
+            }
+        }
+    }
+    
     string name = "!tmp" + to_string(++tosTempLast);
     tos_add(name, type);
+    tosUsed[name] = true;
     return name;
+}
+
+void CFG::tos_free_temp(string name) {
+    // if (name.at(0) != '!') return;
+    auto it = tosUsed.find(name);
+    if (it != tosUsed.end()) (*it).second = false;
 }
 
 int CFG::tos_get_index(string variable) const {

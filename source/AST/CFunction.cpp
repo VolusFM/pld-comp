@@ -53,13 +53,29 @@ string CFunction::tos_addr(string variable) const {
 }
 
 string CFunction::tos_add_temp(CType type) {
+    for (auto it = tosUsed.begin(); it != tosUsed.end(); ++it) {
+        if (!it->second) {
+            string name = it->first;
+            if (tosType[name] == type) {
+                tosUsed[name] = true;
+                return name;
+            }
+        }
+    }
+    
     temp_id++;
     string name = "temp" + to_string(temp_id);
     
     tos_add(name, type);
     tosOffset -= 4;
     tosAddress[name] = tosOffset;
+    tosUsed[name] = true;
     return name;
+}
+void CFunction::tos_free_temp(string name) {
+    // if (name.at(0) != '!') return;
+    auto it = tosUsed.find(name);
+    if (it != tosUsed.end()) (*it).second = false;
 }
 
 void CFunction::tos_add(string name, CType type) {

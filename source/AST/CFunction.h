@@ -25,6 +25,7 @@ public:
     string name;
     
     vector<string> tos;
+    map<string, bool> tosUsed;
     map<string, CType> tosType;
     map<string, int> tosAddress;
     int tosOffset;
@@ -34,6 +35,7 @@ public:
     
     int temp_id;
     string tos_add_temp(CType type);
+    void tos_free_temp(string name);
     string tos_addr(string variable) const;
     void tos_add(CType type, string name);
     

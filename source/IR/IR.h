@@ -132,6 +132,7 @@ public:
     void tos_add(string name, CType t);
     void tos_add_array(string name, CType t, int size);
     string tos_add_temp(CType t);
+    void tos_free_temp(string name);
     int tos_get_index(string name) const;
     CType tos_get_type(string name) const;
     
@@ -145,6 +146,7 @@ public: // to fix, should be protected
     vector<string> tos; /* part of the symbol table */
     map<string, CType> tosType; /* part of the symbol table */
     map<string, int> tosIndex; /* part of the symbol table */
+    map<string, bool> tosUsed; /* part of the symbol table */
     int tosIndexLast; /* to allocate new symbols in the symbol table */
     int tosTempLast;
     

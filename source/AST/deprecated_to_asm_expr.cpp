@@ -110,6 +110,10 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         }
         code += variable + "\n";
     }
+    
+    f->tos_free_temp(lhsvar);
+    f->tos_free_temp(rhsvar);
+    
     return pair<string, string>(code, variable);
 }
 
