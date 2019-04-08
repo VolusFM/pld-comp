@@ -23,7 +23,7 @@ CFG* CFunction::to_IR() const {
         cfg->tosIndex[*it] = -(tosAddress.at(*it));
     }
 
-    BasicBlock* bb = new BasicBlock(cfg, name + "_body"); // to fix, rename
+    BasicBlock* bb = new BasicBlock(cfg, cfg->new_BB_name());
     bb->exit_true = nullptr;
     bb->exit_false = nullptr;
     

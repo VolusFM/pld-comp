@@ -41,8 +41,9 @@ public:
     CExpressionVarArray(string variable, CExpression* index);
     ~CExpressionVarArray();
     string to_IR(CFG* cfg) const;
+    string to_IR_address(CFG* cfg) const;
     pair<string, string> to_asm(CFunction* f) const;
-
+    
     string variable;
     CExpression* index;
 };
