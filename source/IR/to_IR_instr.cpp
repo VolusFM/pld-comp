@@ -77,70 +77,68 @@ void CInstrReturn::to_IR(CFG* cfg) const {
 
 void CInstrIf::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-    
+
     // Add condition to the current block
     condition->to_IR(cfg);
-    
+
     bool hasTrue = !blockTrue.instructions.empty();
     bool hasFalse = !blockFalse.instructions.empty();
-    if ((!hasTrue) && (!hasFalse)) return;
-    
+    if ((!hasTrue) && (!hasFalse))
+        return;
+
     // Create new blocks for if statement
     string prefix = cfg->new_BB_name("if");
     BasicBlock* bbTrue = new BasicBlock(cfg, prefix + "true"); // hasTrue ? ... : nullptr
-    BasicBlock* bbFalse = hasFalse ? new BasicBlock(cfg, prefix + "false") : nullptr;
+    BasicBlock* bbFalse =
+            hasFalse ? new BasicBlock(cfg, prefix + "false") : nullptr;
     BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name(""));
-    
+
     // Link current block to the content of the if
     bb->exit_true = bbTrue ? bbTrue : bbNext;
     bb->exit_false = bbFalse ? bbFalse : bbNext;
-    
+
     // Prepare the exit_true and link it to the next block
     if (bbTrue != nullptr) {
         cfg->add_bb(bbTrue);
         blockTrue.to_IR(cfg);
         bbTrue->exit_true = bbNext;
     }
-    
+
     // If there is an exit_false, prepare it as well
     if (bbFalse != nullptr) {
         cfg->add_bb(bbFalse);
         blockFalse.to_IR(cfg);
         bbFalse->exit_true = bbNext;
     }
-    
+
     // Add next block to CFG
     cfg->add_bb(bbNext);
 }
 
 void CInstrWhile::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-    
+
     // Create new blocks for while statement
-    BasicBlock* bbContent = new BasicBlock(cfg, cfg->new_BB_name(""));
+    string prefix = cfg->new_BB_name("while");
+    BasicBlock* bbCondition = new BasicBlock(cfg, prefix + "condition");
+    BasicBlock* bbContent = new BasicBlock(cfg, prefix);
 
-    //bbContent->add_IRInstr(, CType type, vector<string> params)
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name(""));
 
+    // Link current block to the contents of the while
+    bb->exit_true = bbCondition;
 
-
-
-    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name("while"));
-    
+    bbCondition->exit_true = bbContent;
+    bbCondition->exit_false = bbNext;
+    cfg->add_bb(bbCondition);
     // Add condition to the current block
     condition->to_IR(cfg);
-    
-    // Link current block to the contents of the while
-    bb->exit_true = bbContent;
-    bb->exit_false = bbNext;
-    
+
     // Prepare the exit_true and exit_false and link them to the next block
     cfg->add_bb(bbContent);
     blockContent.to_IR(cfg);
-    // Add condition to content block to ensure we loop, AFTER writing the block's content
-    condition->to_IR(cfg);
-    bbContent->exit_true = bbContent;
-    bbContent->exit_false = bbNext;
-    
+    bbContent->exit_true = bbCondition;
+
     // Add next block to CFG
     cfg->add_bb(bbNext);
 }
