@@ -1,0 +1,41 @@
+.text
+.global main
+main:
+  ## prologue
+  pushq %rbp # save %rbp on the stack
+  movq %rsp, %rbp # define %rbp for the current function
+  ## contenu
+  movl  $1, -4(%rbp)
+  movl  $2, -12(%rbp)
+  movl  $3, -8(%rbp)
+.L1:
+  movl  -4(%rbp), %eax
+  cmpl  -12(%rbp), %eax
+  jge   .L2
+  jmp   .L1
+.L2:
+  movl  $0, -8(%rbp)
+.L3:
+  cmpl  $9, -8(%rbp)
+  jg    .L4
+  addl  $1, -8(%rbp)
+  jmp   .L3
+.L4:
+  movl  $0, -8(%rbp)
+.L5:
+  cmpl  $9, -8(%rbp)
+  jg    .L6
+  addl  $1, -4(%rbp)
+  addl  $1, -8(%rbp)
+  jmp   .L5
+.L6:
+  movl  $0, -8(%rbp)
+.L7:
+  jmp   .L7
+.L8:
+  addl  $1, -8(%rbp)
+  jmp   .L8
+.L9:
+  jmp   .L9
+.L10:
+  movl  $6, -4(%rbp)
