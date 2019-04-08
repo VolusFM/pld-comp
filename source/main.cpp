@@ -21,13 +21,14 @@ using std::ofstream;
 using namespace antlr4;
 
 typedef struct {
-    bool tmp; /* temporary */
 
     bool opta; // static analysis
     bool opto; // optimize
     bool optc; // assembly generation
     string fi; // input file
     string fo; // output file
+
+    bool tmp; // temporary
 } arguments;
 
 inline bool strequal(const char* str1, const char* str2) {
@@ -35,13 +36,14 @@ inline bool strequal(const char* str1, const char* str2) {
 }
 
 bool argsparse(int argc, const char* argv[], arguments& args) {
-    args.tmp = false; /* temporary */
-
     args.fi.clear();
     args.fo.clear();
     args.opta = false;
     args.opto = false;
     args.optc = false;
+
+    // temporary
+    args.tmp = false;
 
     for (int i = 1; i < argc; ++i) {
         const char* arg = argv[i];
@@ -57,9 +59,11 @@ bool argsparse(int argc, const char* argv[], arguments& args) {
             else if (strequal(arg, "c"))
                 args.optc = true;
 
-            /* temporary */
-            else if (strequal(arg, "dev"))
+            // temporary
+            else if (strequal(arg, "-AST"))
                 args.tmp = true;
+            else if (strequal(arg, "-IR"))
+                args.tmp = false;
 
             else {
                 cerr << "ERROR: unknown argument : '" << arg << "'" << endl;
@@ -146,25 +150,30 @@ int main(int argc, const char* argv[]) {
     Visitor visitor;
     CProg* ast = visitor.visit(tree);
     IProg* ir;
-    if (args.tmp) /* temporary */
+
+    if (!args.tmp) { // temporary
         ir = ast->to_IR();
-    if (args.tmp)
-        delete ast; /* temporary */
+        delete ast;
+    } // temporary
 
     if (args.optc) {
-        if (args.tmp) /* temporary */
+        if (!args.tmp) // temporary
             ir->gen_asm_x86(*os);
+
+        // temporary
         else
-            *os << ast->to_asm(); /* temporary */
+            *os << ast->to_asm();
+
         *os << endl;
         if (!args.fo.empty())
             ofs.close();
     }
-    if (!args.tmp)
+
+    // temporary
+    if (args.tmp)
         delete ast;
-    else
-        /* temporary */
-        delete ir;
+
+    delete ir;
 
     return 0;
 }

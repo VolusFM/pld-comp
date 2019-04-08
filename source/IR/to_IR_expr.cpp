@@ -23,7 +23,7 @@ string CExpressionInt::to_IR(CFG* cfg) const {
 }
 
 string CExpressionVar::to_IR(CFG* cfg) const {
-    return variable;
+    return cfg->tos_get_asm_x86(variable);
 }
 
 string CExpressionVarArray::to_IR(CFG* cfg) const {
@@ -34,8 +34,7 @@ string CExpressionVarArray::to_IR(CFG* cfg) const {
 
     bb->add_IRInstr(op_index, "int", {addressIndex});
 
-    string addressWanted = "-"+to_string(indexBase)+"(%rbp,%rax,4)";
-    return addressWanted;
+    return "-"+to_string(indexBase)+"(%rbp,%rax,4)";
 }
 
 string CExpressionComposed::to_IR(CFG* cfg) const {
@@ -107,7 +106,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             bb->add_IRInstr(op_binary_and, type, params);
         }
         if (op == "|") {
-	    bb->add_IRInstr(op_binary_or, type, params);
+	        bb->add_IRInstr(op_binary_or, type, params);
         }
         if (op == "^") {
             bb->add_IRInstr(op_binary_xor, type, params);
