@@ -71,12 +71,15 @@ void CInstrVariable::to_IR(CFG* cfg) const {
 }
 
 void CInstrReturn::to_IR(CFG* cfg) const {
-    if (expr != nullptr)
-        expr->to_IR(cfg);
-        // s'assurer que le résultat soit dans %eax
+    BasicBlock* bb = cfg->current_bb;
     
-    cfg->current_bb->exit_true = nullptr;
-    cfg->current_bb->exit_false = nullptr;
+    if (expr != nullptr) {
+        string result = expr->to_IR(cfg);
+        bb->add_IRInstr(op_return, "int", {result});
+    }
+    
+    bb->exit_true = nullptr;
+    bb->exit_false = nullptr;
     cfg->add_bb(new BasicBlock(cfg, cfg->new_BB_name()));
 }
 
