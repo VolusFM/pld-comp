@@ -108,6 +108,38 @@ string CFG::new_BB_name(const string& prefix) {
 void CFG::optimize() {
     if (bbs.size() == 0) return;
     
+    // replace empty bbs
+    
+    map<BasicBlock*, BasicBlock*> bbReplace;
+    
+    for (auto it = bbs.begin(); it != bbs.end(); ++it) {
+        BasicBlock* b = (*it);
+        if (b->instrs.empty()) {
+            bbReplace[b] = b->exit_true;
+        }
+    }
+    
+    bool evolves = true;
+    while (evolves) {
+        evolves = false;
+        
+        for (auto it = bbReplace.begin(); it != bbReplace.end(); ++it) {
+            auto itr = bbReplace.find(it->second);
+            if (itr != bbReplace.end() && itr->second != it->second) {
+                bbReplace[it->first] = itr->second;
+                evolves = true;
+            }
+        }
+    }
+    
+    for (auto itr = bbReplace.begin(); itr != bbReplace.end(); ++itr) {
+        for (auto it = bbs.begin(); it != bbs.end(); ++it) {
+            BasicBlock* b = (*it);
+            if (b->exit_true == itr->first) b->exit_true = itr->second;
+            if (b->exit_false == itr->first) b->exit_false = itr->second;
+        }
+    }
+    
     // remove unused bbs
     
     map<BasicBlock*, bool> bbUsed;
@@ -136,5 +168,6 @@ void CFG::optimize() {
             ++it;
         }
     }
+    
 }
 
