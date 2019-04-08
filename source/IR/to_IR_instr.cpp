@@ -76,29 +76,35 @@ void CInstrReturn::to_IR(CFG* cfg) const {
 
 void CInstrIf::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
 
+    // Create new blocks for if statement
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock* bbTrue = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock* bbFalse =
+            blockFalse.instructions.empty() ?
+                    nullptr : new BasicBlock(cfg, cfg->new_BB_name());
+
+    // Add condition to the cfg
     condition->to_IR(cfg);
 
-    BasicBlock* bbTrue = new BasicBlock(cfg, cfg->new_BB_name());
-    BasicBlock* bbFalse = blockFalse.instructions.empty() ? nullptr : new BasicBlock(cfg, cfg->new_BB_name());
-
+    // Link current block to the content of the if
     bb->exit_true = bbTrue;
     bb->exit_false = bbFalse ? bbFalse : bbNext;
 
+    // Prepare the exit_true and link it to the next block
     cfg->current_bb = bbTrue;
     blockTrue.to_IR(cfg);
+    bbTrue->exit_true = bbNext;
     cfg->add_bb(bbTrue);
 
-    bbTrue->exit_true = bbNext;
-    bbFalse->exit_true = bbNext;
-
-    if (!blockFalse.instructions.empty()) {
+    if (bbFalse != nullptr) { // If there is an exit_false, prepare it as well
         cfg->current_bb = bbFalse;
         blockFalse.to_IR(cfg);
+        bbFalse->exit_true = bbNext;
         cfg->add_bb(bbFalse);
     }
 
+    // Add next block to CFG
     cfg->current_bb = bbNext;
     cfg->add_bb(bbNext);
 
