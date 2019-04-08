@@ -1,13 +1,16 @@
-
-#include <stdio.h>
-// currently not needed
-
 int main() {
-  int c = test(4, 8) + 2;
-  return c;
-}
 
-int test(int a, int b) {
-  int c = a*b;
-  return c;
+  int i = 1;
+  int a = 4;
+  
+  do {
+    i = i + 2;  
+  } while (a > i);
+
+
+  int b = 42;
+
+  i = i;
+
+  return i;
 }
