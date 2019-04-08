@@ -11,8 +11,7 @@ using std::ostream;
 #include <initializer_list>
 
 #include "../AST/CType.h"
-#include "./../AST/CFunction.h"
-//class CFunction;
+class CFunction;
 
 static const string registerName[] = { "%rdi", "%rsi", "%rdx", "%rcx", "%r8d", "%r9d" };
 

@@ -1,7 +1,7 @@
 #include "IR.h"
 #include "IProg.h"
-//#include "./../AST/CFunction.h"
 
+#include "../AST/CFunction.h"
 #include "../AST/CInstruction.h"
 #include "../AST/CExpression.h"
 
