@@ -99,7 +99,7 @@ void CInstrIf::to_IR(CFG* cfg) const {
     BasicBlock* bbTrue = new BasicBlock(cfg, prefix + "true"); // hasTrue ? ... : nullptr
     BasicBlock* bbFalse =
             hasFalse ? new BasicBlock(cfg, prefix + "false") : nullptr;
-    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name(""));
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
 
     // Link current block to the content of the if
     bb->exit_true = bbTrue ? bbTrue : bbNext;
@@ -131,7 +131,7 @@ void CInstrWhile::to_IR(CFG* cfg) const {
     BasicBlock* bbCondition = new BasicBlock(cfg, prefix + "condition");
     BasicBlock* bbContent = new BasicBlock(cfg, prefix);
 
-    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name(""));
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
 
     // Link current block to the contents of the while
     bb->exit_true = bbCondition;
@@ -159,7 +159,7 @@ void CInstrDoWhile::to_IR(CFG* cfg) const {
     BasicBlock* bbCondition = new BasicBlock(cfg, prefix + "condition");
     BasicBlock* bbContent = new BasicBlock(cfg, prefix);
 
-    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name(""));
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
 
     // Link current block to the contents of the while
     bb->exit_true = bbContent;
@@ -169,9 +169,9 @@ void CInstrDoWhile::to_IR(CFG* cfg) const {
     bbContent->exit_true = bbCondition;
     blockContent.to_IR(cfg);
 
+    cfg->add_bb(bbCondition);
     bbCondition->exit_true = bbContent;
     bbCondition->exit_false = bbNext;
-    cfg->add_bb(bbCondition);
     // Add condition to the current block
     condition->to_IR(cfg);
 
@@ -184,26 +184,33 @@ void CInstrFor::to_IR(CFG* cfg) const {
 
     // Create new blocks for while statement
     string prefix = cfg->new_BB_name("for");
-    BasicBlock* bbStopCondition = new BasicBlock(cfg, prefix + "condition");
+    BasicBlock* bbStopCondition = 
+        (stopCondition == nullptr ?
+            nullptr :
+            new BasicBlock(cfg, prefix + "condition")
+        );
     BasicBlock* bbContent = new BasicBlock(cfg, prefix);
-    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name(""));
+    BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
 
-    start->to_IR(cfg);
+    bb->exit_true = bbStopCondition != nullptr ? bbStopCondition : bbContent;
+    if (start != nullptr) start->to_IR(cfg);
 
-    // Link current block to the contents of the while
-    bb->exit_true = bbStopCondition;
-    bbStopCondition->exit_true = bbContent;
-    bbStopCondition->exit_false = bbNext;
-    cfg->add_bb(bbStopCondition);
-    // Add condition to the current block
-    stopCondition->to_IR(cfg);
+    if (stopCondition != nullptr) {
+        // Link current block to the contents of the while
+        cfg->add_bb(bbStopCondition);
+        bbStopCondition->exit_true = bbContent;
+        bbStopCondition->exit_false = bbNext;
+        // Add condition to the current block
+        stopCondition->to_IR(cfg);
+    }
 
     // Prepare the exit_true and exit_false and link them to the next block
     cfg->add_bb(bbContent);
-    bbContent->exit_true = bbStopCondition;
+    bbContent->exit_true = bbStopCondition != nullptr ? bbStopCondition : bbContent;
     blockContent.to_IR(cfg);
-    evolution->to_IR(cfg);
+    if (evolution != nullptr) evolution->to_IR(cfg);
 
     // Add next block to CFG
     cfg->add_bb(bbNext);
 }
+

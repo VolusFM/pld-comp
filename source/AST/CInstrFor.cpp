@@ -37,12 +37,17 @@ CInstrFor::CInstrFor(CExpression* start, CExpression* stopCondition,
     blockContent_.instructions.clear();
 }
 
-string CInstrFor::to_asm(const CFunction* f) const {
-    return nullptr; //FIXME : will have to be removed completely
+CInstrFor::~CInstrFor() {
+    if (start != nullptr) {
+        delete start;
+    }
+    
+    if (stopCondition != nullptr) {
+        delete stopCondition;
+    }
+    
+    if (evolution != nullptr) {
+        delete evolution;
+    }
 }
 
-CInstrFor::~CInstrFor() {
-    delete start;
-    delete stopCondition;
-    delete evolution;
-}
