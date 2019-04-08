@@ -23,38 +23,76 @@ string CExpressionInt::to_IR(CFG* cfg) const {
 }
 
 string CExpressionVar::to_IR(CFG* cfg) const {
-    return cfg->tos_get_asm_x86(variable);
+    return variable;
 }
 
 string CExpressionVarArray::to_IR(CFG* cfg) const {
     //TODO : incomplete
+    
     BasicBlock* bb = cfg->current_bb;
     string addressIndex = index->to_IR(cfg);
-    int indexBase = cfg->tos_get_index(variable);
-    bb->add_IRInstr(op_index, "int", {addressIndex});
+    
+    string temp = cfg->tos_add_temp("int");
+    
+    if (addressIndex.at(0) == '$')
+        bb->add_IRInstr(op_index_ldconst, "int", {addressIndex});
+    else
+        bb->add_IRInstr(op_index, "int", {addressIndex});
+    bb->add_IRInstr(op_copy_from_array, "int", {temp,variable});
+    
+    return temp;
+}
 
-    return "-"+to_string(indexBase)+"(%rbp,%rax,4)";
+string CExpressionVarArray::to_IR_address(CFG* cfg) const {
+    BasicBlock* bb = cfg->current_bb;
+    string addressIndex = index->to_IR(cfg);
+    
+    if (addressIndex.at(0) == '$')
+        bb->add_IRInstr(op_index_ldconst, "int", {addressIndex});
+    else
+        bb->add_IRInstr(op_index, "int", {addressIndex});
+    
+    return variable;
 }
 
 string CExpressionComposed::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
     
-    string lhsvar = lhs->to_IR(cfg);
-    string rhsvar = rhs->to_IR(cfg);
-    
     string variable;
     
     if (op == "=") {
+        string lhsvar;
+        
+        CExpressionVarArray* vararray = dynamic_cast<CExpressionVarArray*>(lhs);
+        if (vararray == nullptr)
+            lhsvar = lhs->to_IR(cfg);
+        else
+            lhsvar = vararray->to_IR_address(cfg);
+        string rhsvar = rhs->to_IR(cfg);
+        
         CType type = "int"; //TODO handle other types
 
         // TODO check if it's a pointer
-        if (rhsvar.at(0) == '$')
-            bb->add_IRInstr(op_ldconst, type, {lhsvar, rhsvar});
-        else
-            bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
+
+        if (vararray == nullptr){
+            if (rhsvar.at(0) == '$')
+                bb->add_IRInstr(op_ldconst, type, {lhsvar, rhsvar});
+            else
+                bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
+        }
+        else {
+            if (rhsvar.at(0) == '$')
+                bb->add_IRInstr(op_ldconst_array, type, {lhsvar, rhsvar});
+            else
+                bb->add_IRInstr(op_copy_array, type, {lhsvar, rhsvar});
+        }
+        
         variable = lhsvar;
         // to do
     } else {
+        string lhsvar = lhs->to_IR(cfg);
+        string rhsvar = rhs->to_IR(cfg);
+        
         variable = cfg->tos_add_temp("int");
         
         vector<string> params = {variable, lhsvar, rhsvar};
