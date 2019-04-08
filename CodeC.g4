@@ -30,7 +30,10 @@ whileblock: 'while' '(' rvalue ')' anyinstruction;
 
 //TODO : implement and compile for 
 forblock: 'for' '(' forCondition ')' anyinstruction #instr_for;
-forCondition: (definition|rvalue)? ';' (definition|rvalue)? ';' (definition|rvalue)?;
+forCondition: forStartCondition? ';' forStopCondition? ';' forEvolution?;
+forStartCondition: (definition|rvalue);
+forStopCondition: (definition|rvalue);
+forEvolution: (definition|rvalue);
 
 // TODO: implement and compile do...while
 dowhileblock: 'do' anyinstruction 'while' '(' rvalue ')' ';';
