@@ -59,9 +59,9 @@ void CFG::gen_asm_x86(ostream& o) const {
 
     for (const BasicBlock* b : bbs) {
         b->gen_asm_x86(o);
+        if (b->exit_true == nullptr && b->exit_false == nullptr)
+            gen_asm_x86_epilogue(o);
     }
-
-    gen_asm_x86_epilogue(o);
 }
 
 void CFG::gen_asm_x86_epilogue(ostream& o) const {
