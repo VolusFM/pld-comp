@@ -148,23 +148,17 @@ void IRInstr::gen_asm_x86(ostream& o) const {
             if (++index==6) break;
         }
         }
-        o << "  call " << cfg->tos_get_asm_x86(params[0]) << "\n";
+        o << "  call  " << params[0] << "\n";
         o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[1]) << "\n";
         break;
     
+        // to do
         /*
         case op_rmem:
             break;
         case op_wmem:
             break;
-        case op_cmp_eq:
-            break;
-        case op_cmp_lt:
-            break;
-        case op_cmp_le:
-            break;
         */
-        // to do
     default:
         cerr << "PROBLEM: operator not yet supported" << endl;
         throw;
