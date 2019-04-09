@@ -47,7 +47,8 @@ typedef enum {
     op_not,
     op_binary_and,
     op_binary_or,
-    op_binary_xor
+    op_binary_xor,
+    op_return
 } Operation;
 
 // class for one 3-address instruction
@@ -118,7 +119,8 @@ public:
     
     const CFunction* ast; /**< The AST this CFG comes from */
     
-    void add_bb(BasicBlock* bb); 
+    
+    void optimize();
     
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream& o) const;
@@ -131,19 +133,23 @@ public:
     void tos_add(string name, CType t);
     void tos_add_array(string name, CType t, int size);
     string tos_add_temp(CType t);
+    void tos_free_temp(string name);
     int tos_get_index(string name) const;
     CType tos_get_type(string name) const;
     
     // basic block management
+    void add_bb(BasicBlock* bb); 
     string new_BB_name(const string& prefix = "");
     BasicBlock* current_bb;
     
-public: // to fix, should be protected
+    
+public: // FIXME should be protected
     string name;
     
     vector<string> tos; /* part of the symbol table */
     map<string, CType> tosType; /* part of the symbol table */
     map<string, int> tosIndex; /* part of the symbol table */
+    map<string, bool> tosUsed; /* part of the symbol table */
     int tosIndexLast; /* to allocate new symbols in the symbol table */
     int tosTempLast;
     

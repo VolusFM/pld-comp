@@ -147,7 +147,9 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         if (op == "^") {
             bb->add_IRInstr(op_binary_xor, type, params);
         }
-
+        
+        cfg->tos_free_temp(lhsvar);
+        cfg->tos_free_temp(rhsvar);
     }
     // to do
 

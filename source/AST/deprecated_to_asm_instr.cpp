@@ -4,6 +4,9 @@
 #include "CInstrVariable.h"
 #include "CInstrArray.h"
 #include "CInstrIf.h"
+#include "CInstrFor.h"
+#include "CInstrDoWhile.h"
+#include "CInstrWhile.h"
 
 #include <iostream>
 using std::cerr;
@@ -57,6 +60,21 @@ string CInstrReturn::to_asm(const CFunction* f) const {
 }
 
 string CInstrIf::to_asm(const CFunction* f) const {
+    cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
+    throw;
+}
+
+string CInstrDoWhile::to_asm(const CFunction* f) const {
+    cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
+    throw;
+}
+
+string CInstrFor::to_asm(const CFunction* f) const {
+    cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
+    throw;
+}
+
+string CInstrWhile::to_asm(const CFunction* f) const {
     cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
     throw;
 }

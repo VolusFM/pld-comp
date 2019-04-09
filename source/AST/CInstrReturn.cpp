@@ -2,10 +2,14 @@
 
 #include "CExpression.h"
 
-/*
- * Default constructor - If there is no return (return void),
- * set expr to nullptr to be able to recognize it.
- */
+void CInstrReturn::optimize() {
+    CExpression* opti = expr->optimize();
+    if (opti != nullptr) {
+        delete expr;
+        expr = opti;
+    }
+}
+
 CInstrReturn::CInstrReturn()
 : expr(nullptr)
 {

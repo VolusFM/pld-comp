@@ -11,6 +11,7 @@ class IProg;
 
 class CProg {
 public:
+    void optimize();
     IProg* to_IR() const;
     string to_asm() const;
     

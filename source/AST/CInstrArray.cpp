@@ -4,6 +4,9 @@
 
 #include "CExpression.h"
 
+void CInstrArray::optimize() {
+}
+
 CInstrArray::CInstrArray(string name, int size)
 : name(name), size(size)
 {

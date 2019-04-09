@@ -2,6 +2,17 @@
 
 #include "CExpression.h"
 
+void CInstrVariable::optimize()
+{
+    if (expr != nullptr) {
+        CExpression* opti = expr->optimize();
+        if (opti != nullptr) {
+            delete expr;
+            expr = opti;
+        }
+    }
+}
+
 CInstrVariable::CInstrVariable(string name)
 : name(name), expr(nullptr)
 {

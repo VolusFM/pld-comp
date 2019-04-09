@@ -151,6 +151,9 @@ void IRInstr::gen_asm_x86(ostream& o) const {
         o << "  call  " << params[0] << "\n";
         o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[1]) << "\n";
         break;
+    case op_return:
+        o << "  movl  " << (params[0].at(0) == '$' ? params[0] : cfg->tos_get_asm_x86(params[0])) << ", %eax\n";
+        break;
     
         // to do
         /*

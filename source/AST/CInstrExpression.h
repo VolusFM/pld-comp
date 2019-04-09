@@ -11,6 +11,7 @@ public:
     CInstrExpression(CExpression* expr);
     ~CInstrExpression();
     
+    void optimize();
     void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;
     
