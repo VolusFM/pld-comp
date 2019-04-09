@@ -5,9 +5,24 @@ main:
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
   ## contenu
-  movl    $4, -4(%rbp)
-  movl    $13, -4(%rbp)
-  movl    $9, -4(%rbp)
+main_1:
+  movl  $12, -8(%rbp)
+  movl  $5, -12(%rbp)
+  movl  -8(%rbp), %eax
+  andl  -12(%rbp), %eax
+  movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
+  movl  %eax, -4(%rbp)
+  movl  -8(%rbp), %eax
+  orl   -12(%rbp), %eax
+  movl  %eax, -20(%rbp)
+  movl  -20(%rbp), %eax
+  movl  %eax, -4(%rbp)
+  movl  -8(%rbp), %eax
+  xorl  -12(%rbp), %eax
+  movl  %eax, -24(%rbp)
+  movl  -24(%rbp), %eax
+  movl  %eax, -4(%rbp)
   ## epilogue
   popq %rbp # restore %rbp from the stack
   ret
