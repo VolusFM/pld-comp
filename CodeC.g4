@@ -17,35 +17,37 @@ instructionsblock: '{' instruction* '}';
 
 instruction: instrreturn ';' #return
 	| definition ';' #instr_def
-	| rvalue ';' #instr_expr
+	| expression ';' #instr_expr
 	| ifblock #if_block
 	| whileblock #while_block
         | forblock #for_block
 	| dowhileblock #do_while_block;
 
-ifblock: 'if' '(' rvalue ')' anyinstruction elseblock?;
+ifblock: 'if' '(' expression ')' anyinstruction elseblock?;
 elseblock: 'else' anyinstruction;
 
-whileblock: 'while' '(' rvalue ')' anyinstruction;
+whileblock: 'while' '(' expression ')' anyinstruction;
 
 //TODO : implement and compile for 
 forblock: 'for' '(' forcondition ')' anyinstruction;
 forcondition: forstartcondition? ';' forstopcondition? ';' forevolution?;
-forstartcondition: rvalue;
-forstopcondition: rvalue;
-forevolution: rvalue;
+forstartcondition: expression;
+forstopcondition: expression;
+forevolution: expression;
 
 // TODO: implement and compile do...while
-dowhileblock: 'do' anyinstruction 'while' '(' rvalue ')' ';';
+dowhileblock: 'do' anyinstruction 'while' '(' expression ')' ';';
 
 definition: type (vardefinition|arraydefinition) (','(vardefinition|arraydefinition))*;
 
 vardefinition : IDENT #def_var
-    | IDENT '=' rvalue	#def_var_with_expr;
+    | IDENT '=' expression	#def_var_with_expr;
 
 arraydefinition : IDENT'['intval']'	#def_array
-	| IDENT'['intval']' '=' '{'(rvalue (',' rvalue)*)?'}' #def_array_with_expr;
+	| IDENT'['intval']' '=' '{'(expression (',' expression)*)?'}' #def_array_with_expr;
 
+// useful for encapsulation
+expression: rvalue;
 
 rvalue: (OPNOT|OPADD|OPSUB) rvalue #unary_expr
 	| rvalue (OPMULT|OPDIV|OPMOD) rvalue #mult_expr
@@ -72,14 +74,14 @@ intval : INTDEC #intval_dec
         | INTBIN #intval_bin
         | INTOCT #intval_oct;
 
-instrreturn: 'return' rvalue #return_expr
+instrreturn: 'return' expression #return_expr
 	| 'return' #return_void;
 
 type: 'int' | 'char' ;
 
 parameters: '(' (singleparameter (',' singleparameter)*)? ')';
 singleparameter : type IDENT;
-parametercall : rvalue;
+parametercall : expression;
 
 
 INTDEC : [1-9][0-9]*|'0';

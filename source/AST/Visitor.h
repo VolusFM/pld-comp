@@ -100,7 +100,7 @@ public:
 
     virtual antlrcpp::Any visitReturn_expr(CodeCParser::Return_exprContext *ctx)
             override {
-        CExpression* expr = (CExpression*) visit(ctx->rvalue());
+        CExpression* expr = (CExpression*) visit(ctx->expression());
         CInstrReturn* instr = new CInstrReturn(expr);
         return instr;
     }
@@ -142,7 +142,7 @@ public:
 
     virtual antlrcpp::Any visitIf_block(CodeCParser::If_blockContext *ctx)
             override {
-        CExpression* condition = (CExpression*) visit(ctx->ifblock()->rvalue());
+        CExpression* condition = (CExpression*) visit(ctx->ifblock()->expression());
         CInstructions* blockTrue = (CInstructions*) visit(
                 ctx->ifblock()->anyinstruction());
         auto ctxElse = ctx->ifblock()->elseblock();
@@ -161,7 +161,7 @@ public:
     virtual antlrcpp::Any visitWhile_block(CodeCParser::While_blockContext *ctx)
             override {
         CExpression* condition = (CExpression*) visit(
-                ctx->whileblock()->rvalue());
+                ctx->whileblock()->expression());
         CInstructions* blockContent = (CInstructions*) visit(
                 ctx->whileblock()->anyinstruction());
         CInstrWhile* instr = new CInstrWhile(condition, *blockContent);
@@ -172,7 +172,7 @@ public:
     virtual antlrcpp::Any visitDo_while_block(
             CodeCParser::Do_while_blockContext *ctx) override {
         CExpression* condition = (CExpression*) visit(
-                ctx->dowhileblock()->rvalue());
+                ctx->dowhileblock()->expression());
         CInstructions* blockContent = (CInstructions*) visit(
                 ctx->dowhileblock()->anyinstruction());
         CInstrDoWhile* instr = new CInstrDoWhile(condition, *blockContent);
@@ -188,21 +188,21 @@ public:
                 ctx->forblock()->forcondition()->forstartcondition();
         if (ctxForStartCondition != nullptr) {
             forStartCondition = (CExpression*) visit(
-                        ctxForStartCondition->rvalue());
+                        ctxForStartCondition->expression());
         }
         CExpression* forStopCondition = nullptr;
         auto ctxForStopCondition =
                 ctx->forblock()->forcondition()->forstopcondition();
         if (ctxForStopCondition != nullptr) {
             forStopCondition = (CExpression*) visit(
-                        ctxForStopCondition->rvalue());
+                        ctxForStopCondition->expression());
         }
         CExpression* forEvolution = nullptr;
         auto ctxForEvolution =
                 ctx->forblock()->forcondition()->forevolution();
         if (ctxForEvolution != nullptr) {
             forEvolution = (CExpression*) visit(
-                        ctxForEvolution->rvalue());
+                        ctxForEvolution->expression());
         }
 
         CInstructions* blockContent = (CInstructions*) visit(
@@ -215,7 +215,7 @@ public:
     virtual antlrcpp::Any visitDef_var_with_expr(
             CodeCParser::Def_var_with_exprContext *ctx) override {
         string name = ctx->IDENT()->getText();
-        CExpression* expr = (CExpression*) visit(ctx->rvalue());
+        CExpression* expr = (CExpression*) visit(ctx->expression());
         return new CInstrVariable(name, expr);
     }
 
@@ -232,8 +232,8 @@ public:
         int size = (int) (long) visit(ctx->intval());
 
         list<CExpression *> exprs;
-        for (auto rvalueCtx : ctx->rvalue()) {
-            exprs.push_back((CExpression*) visit(rvalueCtx));
+        for (auto expressionCtx : ctx->expression()) {
+            exprs.push_back((CExpression*) visit(expressionCtx));
         }
 
         return new CInstrArray(name, size, exprs);
@@ -242,7 +242,7 @@ public:
     virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx)
             override
             {
-        CExpression* expr = (CExpression*) visit(ctx->rvalue());
+        CExpression* expr = (CExpression*) visit(ctx->expression());
         CInstrExpression* instr = new CInstrExpression(expr);
         return (CInstruction*) instr;
     }
