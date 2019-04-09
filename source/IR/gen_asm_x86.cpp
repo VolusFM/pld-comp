@@ -85,26 +85,24 @@ void CFG::gen_asm_x86(ostream& o) const {
 void CFG::gen_asm_x86_epilogue(ostream& o) const {
     o << name << "_end:\n"
       << "  ## epilogue\n"
-      << "  popq %rbp # restore %rbp from the stack\n"
+      << "  leave\n"
       << "  ret\n";
 }
 
 void BasicBlock::gen_asm_x86(ostream& o) const {
     o << label << ":\n";
-
+    
     for (auto it = instrs.begin(); it != instrs.end(); ++it) {
         (*it)->gen_asm_x86(o);
     }
-
-    if (exit_false == nullptr) {
-        if (exit_true != nullptr) {
-            o << "  jmp " << exit_true->label << "\n";
-        }
-    } else if (exit_true != nullptr) {
+    
+    if (exit_false != nullptr) {
         // FIXME %eax could be not hardcoded
         o << "  cmpl $0, %eax" << "\n";
-        o << "  jne " << exit_true->label << "\n";
-        o << "  jmp " << exit_false->label << "\n";
+        o << "  je " << exit_false->label << "\n";
+    }
+    if (exit_true != nullptr) {
+        o << "  jmp " << exit_true->label << "\n";
     }
 }
 
