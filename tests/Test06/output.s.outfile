@@ -5,11 +5,12 @@ main:
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
   ## contenu
-main_1:
+main_body:
   movl  $9, -4(%rbp)
   movl  $15, -4(%rbp)
   movl  $16, -4(%rbp)
+main_end:
   ## epilogue
-  popq %rbp # restore %rbp from the stack
+  leave
   ret
 
