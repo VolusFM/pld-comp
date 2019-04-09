@@ -1,7 +1,9 @@
 
 int main() {
     int a;
-    a = 0b1100 & 0b0101;
-    a = 0b1100 | 0b0101;
-    a = 0b1100 ^ 0b0101;
+    int b = 0b1100;
+    int c = 0b0101;
+    a = b & c;
+    a = b | c;
+    a = b ^ c;
 }

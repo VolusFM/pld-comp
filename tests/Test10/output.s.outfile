@@ -5,28 +5,23 @@ main:
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
   ## contenu
-  movl  $2, -4(%rbp)
-  movl  $0, -8(%rbp)
-  movl  $4, -12(%rbp)
-  movl  -8(%rbp), %eax
-  subl  -12(%rbp), %eax
+main_1:
+  movl  $0, %eax
+  subl  $4, %eax
+  movl  %eax, -8(%rbp)
+  movl  $2, %eax
+  imull -8(%rbp), %eax
+  movl  %eax, -12(%rbp)
+  movl  -12(%rbp), %eax
+  addl  $5, %eax
   movl  %eax, -16(%rbp)
-  movl  -4(%rbp), %eax
-  imull -16(%rbp), %eax
+  movl  $0, %eax
+  subl  $6, %eax
   movl  %eax, -20(%rbp)
-  movl  $5, -24(%rbp)
-  movl  -20(%rbp), %eax
-  addl  -24(%rbp), %eax
-  movl  %eax, -28(%rbp)
-  movl  $0, -32(%rbp)
-  movl  $6, -36(%rbp)
-  movl  -32(%rbp), %eax
-  subl  -36(%rbp), %eax
-  movl  %eax, -40(%rbp)
-  movl  -28(%rbp), %eax
-  subl  -40(%rbp), %eax
-  movl  %eax, -44(%rbp)
-  movl  -44(%rbp), %eax
+  movl  -16(%rbp), %eax
+  subl  -20(%rbp), %eax
+  movl  %eax, -24(%rbp)
+  movl  -24(%rbp), %eax
   movl  %eax, -4(%rbp)
   ## epilogue
   popq %rbp # restore %rbp from the stack
