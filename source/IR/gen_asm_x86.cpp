@@ -12,9 +12,6 @@ using std::endl;
 #include <string>
 using std::to_string;
 
-#include "../args.h"
-extern arguments args;
-
 void IProg::gen_asm_x86(ostream& o) const {
     o << ".text\n" << ".global main\n";
 
@@ -28,7 +25,7 @@ void IProg::gen_asm_x86(ostream& o) const {
 }
 
 string CFG::tos_get_asm_x86(string name) const {
-    if(name.at(0)=='$')
+    if (name.at(0) == '$')
         return name;
     int index = tos_get_index(name);
     return "-" + to_string(index) + "(%rbp)";
@@ -114,7 +111,7 @@ void CFG::gen_asm_x86_epilogue(ostream& o) const {
 void BasicBlock::gen_asm_x86(ostream& o) const {
     o << label << ":\n";
     
-    for (auto it = instrs.begin(); it != instrs.end(); ++it) {
+    for (auto it = instrs.cbegin(); it != instrs.cend(); ++it) {
         (*it)->gen_asm_x86(o);
     }
 }
