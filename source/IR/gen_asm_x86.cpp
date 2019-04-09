@@ -12,6 +12,9 @@ using std::endl;
 #include <string>
 using std::to_string;
 
+#include "../args.h"
+extern arguments args;
+
 void IProg::gen_asm_x86(ostream& o) const {
     o << ".text\n" << ".global main\n";
 
@@ -57,26 +60,45 @@ void CFG::gen_asm_x86_prologue(ostream& o) const {
 void CFG::gen_asm_x86(ostream& o) const {
     gen_asm_x86_prologue(o);
     
-    vector<const BasicBlock*> nullbbs;
+    // merge all basic blocks at the end that are empty and terminating
     
-    for (const BasicBlock* b : bbs) {
-        if (b->exit_true == nullptr && b->exit_false == nullptr) {
-            if (b->instrs.empty()) {
-                nullbbs.push_back(b);
-                continue;
-            }
-            
-            b->gen_asm_x86(o);
-            o << "  jmp " << name << "_end\n";
-        } else {
-            b->gen_asm_x86(o);
+    auto nullbbs = bbs.cbegin();
+    for (auto it = bbs.cbegin(); it != bbs.cend(); ++it) {
+	    const BasicBlock* b = (*it);
+        if (b->exit_true != nullptr || b->exit_false != nullptr || !b->instrs.empty()) {
+            nullbbs = it+1;
         }
     }
     
-    if (!nullbbs.empty()) {
-        for (auto it = nullbbs.cbegin(); it != nullbbs.cend() ; ++it) {
-            o << (*it)->label << ":\n";
+    // remove unnecessary basic block jumps
+    
+	for (auto it = bbs.cbegin(); it != nullbbs; ++it) {
+	    const BasicBlock* b = (*it);
+        
+	    auto itn = it+1;
+	    const BasicBlock* bn = nullptr;
+	    if (itn != bbs.cend() && !(*it)->instrs.empty()) bn = (*itn);
+	    
+        // generate basic block code and necessary jumps
+        
+        b->gen_asm_x86(o);
+        
+        if (b->exit_false != nullptr) {
+            o << "  cmpl $0, %eax" << "\n";
+            o << "  je " << b->exit_false->label << "\n";
         }
+        if (b->exit_true != nullptr) {
+            if (bn != b->exit_true)
+            o << "  jmp " << b->exit_true->label << "\n";
+        }
+        if (b->exit_true == nullptr && b->exit_false == nullptr) {
+            if (itn != nullbbs)
+            o << "  jmp " << name << "_end\n";
+        }
+	}
+    
+    for (auto it = nullbbs; it != bbs.cend(); ++it) {
+        o << (*it)->label << ":\n";
     }
     
     gen_asm_x86_epilogue(o);
@@ -94,15 +116,6 @@ void BasicBlock::gen_asm_x86(ostream& o) const {
     
     for (auto it = instrs.begin(); it != instrs.end(); ++it) {
         (*it)->gen_asm_x86(o);
-    }
-    
-    if (exit_false != nullptr) {
-        // FIXME %eax could be not hardcoded
-        o << "  cmpl $0, %eax" << "\n";
-        o << "  je " << exit_false->label << "\n";
-    }
-    if (exit_true != nullptr) {
-        o << "  jmp " << exit_true->label << "\n";
     }
 }
 

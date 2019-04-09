@@ -8,6 +8,9 @@ using std::endl;
 using std::string;
 using std::to_string;
 
+#include <utility>
+using std::swap;
+
 IRInstr::IRInstr(BasicBlock* bb, Operation op, CType type,
         vector<string> params) :
         bb(bb), op(op), type(type), params(params) {
@@ -169,6 +172,26 @@ void CFG::optimize() {
             ++it;
         }
     }
+    
+    // move empty bbs at the back
+    
+    vector<BasicBlock*> bbsmoved;
+    bool moved = false;
+    
+    bbsmoved.reserve(bbs.size());
+    for (auto it = bbs.begin(); it != bbs.end(); ++it) {
+        if (!(*it)->instrs.empty()) {
+            bbsmoved.push_back(*it);
+        }
+    }
+    for (auto it = bbs.begin(); it != bbs.end(); ++it) {
+        if ((*it)->instrs.empty()) {
+            bbsmoved.push_back(*it);
+            moved = true;
+        }
+    }
+    
+    if (moved) std::swap(bbs, bbsmoved);
     
 }
 
