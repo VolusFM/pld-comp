@@ -18,6 +18,7 @@ main_for1condition:
   movl  %eax, -16(%rbp)
   cmpl $0, %eax
   je main_2
+main_for1:
   jmp main_for1condition
 main_2:
   movl  $0, -12(%rbp)
@@ -62,6 +63,8 @@ main_6:
   movl  $0, -12(%rbp)
 main_for7:
   jmp main_for7
+main_8:
+  movl  $6, -4(%rbp)
 main_end:
   ## epilogue
   leave

@@ -24,6 +24,7 @@ main_body:
   addl  -16(%rbp), %eax
   movl  %eax, -24(%rbp)
   movl  -24(%rbp), %eax
+main_1:
 main_end:
   ## epilogue
   leave
