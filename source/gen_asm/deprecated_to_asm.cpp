@@ -1,6 +1,6 @@
-#include "CProg.h"
-#include "CFunction.h"
-#include "CFunctionHeader.h"
+#include "../AST/CProg.h"
+#include "../AST/CFunction.h"
+#include "../AST/CFunctionHeader.h"
 
 #include <string>
 using std::to_string;

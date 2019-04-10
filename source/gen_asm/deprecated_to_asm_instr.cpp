@@ -1,12 +1,12 @@
-#include "CInstruction.h"
-#include "CInstrExpression.h"
-#include "CInstrReturn.h"
-#include "CInstrVariable.h"
-#include "CInstrArray.h"
-#include "CInstrIf.h"
-#include "CInstrFor.h"
-#include "CInstrDoWhile.h"
-#include "CInstrWhile.h"
+#include "../AST/CInstruction.h"
+#include "../AST/CInstrExpression.h"
+#include "../AST/CInstrReturn.h"
+#include "../AST/CInstrVariable.h"
+#include "../AST/CInstrArray.h"
+#include "../AST/CInstrIf.h"
+#include "../AST/CInstrFor.h"
+#include "../AST/CInstrDoWhile.h"
+#include "../AST/CInstrWhile.h"
 
 #include <iostream>
 using std::cerr;
@@ -16,7 +16,7 @@ using std::to_string;
 #include <utility>
 using std::pair;
 
-#include "CExpression.h"
+#include "../AST/CExpression.h"
 
 string CInstructions::to_asm(const CFunction* f) const {
     string code = "";

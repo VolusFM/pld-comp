@@ -33,8 +33,8 @@ void CFunction::fill_tos() {
     for (const string& i : tos) {
         //code += "  # variable " + tosType.at(i) + " " + i + "\n";
         //une fois qu'on aura d'autres tailles de variables, faudra changer ça
-        tosOffset -= 4;
-        tosAddress[i] = tosOffset;
+/**/    tosOffset -= 4;
+/**/    tosAddress[i] = tosOffset;
     }
     
     // code += "sub rsp, "
@@ -46,7 +46,7 @@ string CFunction::tos_addr(string variable) const {
     try {
         int addr = tosAddress.at(variable);
         return to_string(addr) + "(%rbp)";
-    } catch(...) {
+    } catch (...) {
         cerr << "ERROR: reference to undeclared variable '" << variable << "'" << endl;
         throw;
     }

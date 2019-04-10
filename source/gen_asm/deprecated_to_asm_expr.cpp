@@ -1,5 +1,5 @@
-#include "CExpression.h"
-#include "CExpressionCall.h"
+#include "../AST/CExpression.h"
+#include "../AST/CExpressionCall.h"
 
 #include <string>
 using std::to_string;
@@ -7,7 +7,7 @@ using std::to_string;
 using std::cerr;
 using std::endl;
 
-#include "CFunction.h"
+#include "../AST/CFunction.h"
 
 
 pair<string, string> CExpression::to_asm(const CFunction* f) const {

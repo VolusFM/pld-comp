@@ -12,15 +12,17 @@ SOURCEDIR=source
 SOURCE_ANTLR=source/antlr
 SOURCE_AST=source/AST
 SOURCE_IR=source/IR
+SOURCE_X86=source/gen_asm
 
-SOURCEDIRS=$(SOURCEDIR) $(SOURCE_ANTLR) $(SOURCE_AST) $(SOURCE_IR)
+SOURCEDIRS=$(SOURCEDIR) $(SOURCE_ANTLR) $(SOURCE_AST) $(SOURCE_IR) $(SOURCE_X86)
 
 OBJSDIR=objects
 OBJS_ANTLR=objects/antlr
 #OBJS_AST=objects/AST
 #OBJS_IR=objects/IR
+#OBJS_X86=objects/gen_asm
 
-OBJSDIRS=$(OBJSDIR) $(OBJS_ANTLR)# $(OBJS_AST) $(OBJS_IR)
+OBJSDIRS=$(OBJSDIR) $(OBJS_ANTLR)# $(OBJS_AST) $(OBJS_IR) $(OBJS_X86)
 
 BINARY=yottacompilatron9001
 
@@ -79,7 +81,7 @@ endif
 
 .PHONY : $(GRAM) $(OBJECTS) $(EXE) $(CLEAN)
 
-srcfiles=$(wildcard $(SOURCE_AST)/*.cpp $(SOURCE_IR)/*.cpp)
+srcfiles=$(wildcard $(SOURCE_AST)/*.cpp $(SOURCE_IR)/*.cpp $(SOURCE_X86)/*.cpp)
 objfiles:=$(srcfiles:.cpp=.o)
 depfiles:=$(srcfiles:.cpp=.d)
 gchfiles:=$(srcfiles:.cpp=.gch)
@@ -118,7 +120,7 @@ $(BINARY) : $(objfiles) $(OBJS_FILECHECK) $(SOURCEDIR)/*.cpp
 %.d: %.cpp
 	@$(CPPC) $(COMPFLAGS) $< -MM -MT $(@:.d=.o) >$@
 
-WORKDIRS=$(SOURCE_AST) $(SOURCE_IR)
+WORKDIRS=$(SOURCE_AST) $(SOURCE_IR) $(SOURCE_X86)
 
 $(CLEAN) :
 	$(ECHO) "CLEANING"
