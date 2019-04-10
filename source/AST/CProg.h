@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+using std::ostream;
 #include <string>
 using std::string;
 #include <vector>
@@ -14,7 +16,7 @@ class CProg {
 public:
     void optimize();
     IProg* to_IR() const;
-    string to_asm() const;
+    void gen_asm(ostream& o) const;
     
     TOS tos;
     vector<CFunction> functions;

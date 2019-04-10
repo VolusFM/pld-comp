@@ -90,7 +90,7 @@ int main(int argc, const char* argv[]) {
 
         // temporary
         else
-            *os << ast->to_asm();
+            ast->gen_asm(*os);
 
         *os << endl;
         if (!args.fo.empty())

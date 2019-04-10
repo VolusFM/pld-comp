@@ -5,40 +5,37 @@
 #include <string>
 using std::to_string;
 #include <iostream>
+using std::ostream;
 using std::cerr;
 using std::endl;
 
 
-string CProg::to_asm() const {
-    string code;
-    code += ".text\n";
-    code += ".global main\n";
+void CProg::gen_asm(ostream& o) const {
+    o << ".text\n";
+    o << ".global main\n";
+    
     try {
         for (const CFunction& f : functions) {
             TOS* tos = const_cast<TOS*>(&f.tos);
             tos->fill_address_x86();
-            code += f.to_asm();
+            f.gen_asm(o);
             tos->clear_temp();
         }
     } catch (...) {
         cerr << "ERROR: couldn't generate assembly code" << endl;
     }
-    return code;
 }
 
-string CParameter::to_asm(const CFunction* f, int index) const {
+void CParameter::gen_asm(ostream& o, const CFunction* f, int index) const {
     static const string registerName[] = { "%edi", "%esi", "%edx", "%ecx", "%e8d", "%e9d" };
     
     string variable = f->tos.get_address_x86(name);
     
-    // move the parameter to one of the function registers
-    string code = "  movl " + registerName[index] + ", " + variable;
-    return code;
+    o << "  movl " << registerName[index] << ", " << variable << "\n";
 }
 
-string CFunction::to_asm() const {
-    string code;
-    code += name;
+void CFunction::gen_asm(ostream& o) const {
+    o << name;
     
     /*
         string params = "";
@@ -51,28 +48,26 @@ string CFunction::to_asm() const {
         code += params;
     */
     
-    code += ":\n";
-
-    code += "  ## prologue\n";
-    code += "  pushq %rbp # save %rbp on the stack\n";
-    code += "  movq %rsp, %rbp # define %rbp for the current function\n";
-
+    o << ":\n";
+    
+    o << "  ## prologue\n";
+    o << "  pushq %rbp # save %rbp on the stack\n";
+    o << "  movq %rsp, %rbp # define %rbp for the current function\n";
+    
     int index = 0;
     for (auto it = parameters.cbegin() ; it != parameters.cend() ; ++it) {
-        code += it->to_asm(this, index);
+        it->gen_asm(o, this, index);
         index++;
     }
-
-    code += "  ## contenu\n";
-
+    
+    o << "  ## contenu\n";
+    
     for (const CInstruction* it : block.instructions) {
-        code += it->to_asm(this);
+        it->gen_asm(o, this);
     }
-
-    code += "  ## epilogue\n";
-    code += "  popq %rbp # restore %rbp from the stack\n";
-    code += "  ret\n";
-
-    return code;
+    
+    o << "  ## epilogue\n";
+    o << "  popq %rbp # restore %rbp from the stack\n";
+    o << "  ret\n";
 }
 

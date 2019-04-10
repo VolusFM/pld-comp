@@ -1,8 +1,9 @@
 #pragma once
 
+#include <iostream>
+using std::ostream;
 #include <string>
 using std::string;
-
 #include <utility>
 using std::pair;
 #include <vector>
@@ -17,7 +18,7 @@ class CExpressionCall: public CExpression {
 public:
     CExpressionCall(string name, vector<CExpression*> parameters);
     string to_IR(CFG* cfg) const;
-    pair<string, string> to_asm(CFunction* f) const;
+    string gen_asm(ostream& o, CFunction* f) const;
     ~CExpressionCall();
 
     string functionName;

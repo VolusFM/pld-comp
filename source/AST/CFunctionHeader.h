@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+using std::ostream;
 #include <string>
 using std::string;
 #include <vector>
@@ -13,7 +15,7 @@ class CFunctionHeader {
 public:
     CFunctionHeader(string name, CType  type, vector<CParameter>& parameters);
     ~CFunctionHeader() = default;
-    string to_asm(const CFunction* f) const;
+    void gen_asm(ostream& o, const CFunction* f) const;
     
     string name;
     CType type;
@@ -25,7 +27,7 @@ public:
     CParameter(string name, CType type);
     ~CParameter() = default;
     
-    string to_asm(const CFunction* f, int index) const;
+    void gen_asm(ostream& o, const CFunction* f, int index) const;
     
     CType type;
     string name;

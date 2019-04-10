@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+using std::ostream;
 #include <string>
 using std::string;
 #include <vector>
@@ -14,6 +16,8 @@ class CProg;
 
 class CFG;
 
+
+
 class CFunction {
 public:
     CFunction(const CProg* prog, string name, CType type, vector<CParameter>& parameters, CInstructions& block);
@@ -21,7 +25,7 @@ public:
     
     void optimize();
     CFG* to_IR() const;
-    string to_asm() const;
+    void gen_asm(ostream& o) const;
     
     const CProg* prog;
     string name;
@@ -33,9 +37,6 @@ public:
     CInstructions block;
     
     void explore_tos();
-private:
-    void block_explore_tos(TOS& tos);
-    
     
 public:
     // enable move semantics

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+using std::ostream;
 #include <string>
 using std::string;
 #include <utility>
@@ -13,8 +15,7 @@ public:
     virtual ~CExpression() = default;
     virtual CExpression* optimize();
     virtual string to_IR(CFG* cfg) const = 0;
-    virtual pair<string, string> to_asm(CFunction* f) const = 0;
-    pair<string, string> to_asm(const CFunction* f) const;
+    virtual string gen_asm(ostream& o, CFunction* f) const = 0;
 };
 
 class CExpressionInt: public CExpression {
@@ -22,7 +23,7 @@ public:
     CExpressionInt(int value);
     ~CExpressionInt() = default;
     string to_IR(CFG* cfg) const;
-    pair<string, string> to_asm(CFunction* f) const;
+    string gen_asm(ostream& o, CFunction* f) const;
     
     int value;
 };
@@ -32,7 +33,7 @@ public:
     CExpressionVar(string variable);
     ~CExpressionVar() = default;
     string to_IR(CFG* cfg) const;
-    pair<string, string> to_asm(CFunction* f) const;
+    string gen_asm(ostream& o, CFunction* f) const;
 
     string variable;
 };
@@ -43,7 +44,7 @@ public:
     ~CExpressionVarArray();
     string to_IR(CFG* cfg) const;
     string to_IR_address(CFG* cfg) const;
-    pair<string, string> to_asm(CFunction* f) const;
+    string gen_asm(ostream& o, CFunction* f) const;
     
     string variable;
     CExpression* index;
@@ -55,7 +56,7 @@ public:
     ~CExpressionComposed();
     CExpression* optimize();
     string to_IR(CFG* cfg) const;
-    pair<string, string> to_asm(CFunction* f) const;
+    string gen_asm(ostream& o, CFunction* f) const;
 
     CExpression* lhs;
     string op;

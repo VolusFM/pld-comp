@@ -10,40 +10,30 @@ using std::endl;
 #include "../AST/CFunction.h"
 
 
-pair<string, string> CExpression::to_asm(const CFunction* f) const {
-    return this->to_asm(const_cast<CFunction*>(f));
-}
-
-pair<string, string> CExpressionInt::to_asm(CFunction* f) const {
+string CExpressionInt::gen_asm(ostream& o, CFunction* f) const {
     string variable = f->tos.add_temp("int");
     string varaddr = f->tos.get_address_x86(variable);
-    string code = "  movl  $" + to_string(value) + ", " + varaddr + "\n";
-    return pair<string, string>(code, varaddr);
+    o << "  movl  $" << value << ", " << varaddr << "\n";
+    return varaddr;
 }
 
-pair<string, string> CExpressionVar::to_asm(CFunction* f) const {
+string CExpressionVar::gen_asm(ostream& o, CFunction* f) const {
     string varaddr = f->tos.get_address_x86(variable);
-    return pair<string, string>("", varaddr);
+    return varaddr;
 }
 
-pair<string, string> CExpressionVarArray::to_asm(CFunction* f) const {
-    cerr << "PROBLEM: to_asm unimplemented for array expressions" << endl;
+string CExpressionVarArray::gen_asm(ostream& o, CFunction* f) const {
+    cerr << "PROBLEM: gen_asm unimplemented for array expressions" << endl;
     throw;
 }
 
-pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
+string CExpressionComposed::gen_asm(ostream& o, CFunction* f) const {
     string code;
     string variable;
-
-    auto reslhs = lhs->to_asm(f);
-    auto resrhs = rhs->to_asm(f);
-
-    code += reslhs.first;
-    code += resrhs.first;
-
-    string lhsvar = reslhs.second;
-    string rhsvar = resrhs.second;
-
+    
+    string lhsvar = lhs->gen_asm(o, f);
+    string rhsvar = rhs->gen_asm(o, f);
+    
     if (op == "=") {
         code += "  movl  " + rhsvar + ", %eax\n";
         code += "  movl  %eax, " + lhsvar + "\n";
@@ -109,11 +99,12 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
     f->tos.free_temp(lhsvar);
     f->tos.free_temp(rhsvar);
     
-    return pair<string, string>(code, variable);
+    o << code; //FIXME
+    return variable;
 }
 
-pair<string, string> CExpressionCall::to_asm(CFunction* f) const {
-    cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
+string CExpressionCall::gen_asm(ostream& o, CFunction* f) const {
+    cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
     throw;
 }
 

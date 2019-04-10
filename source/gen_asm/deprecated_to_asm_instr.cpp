@@ -16,66 +16,62 @@ using std::to_string;
 #include <utility>
 using std::pair;
 
+#include "../AST/CFunction.h"
 #include "../AST/CExpression.h"
 
-string CInstructions::to_asm(const CFunction* f) const {
-    string code = "";
-    for (auto instruction : instructions){
-        code += instruction->to_asm(f);
+void CInstructions::gen_asm(ostream& o, const CFunction* f) const {
+    for (CInstruction* instruction : instructions){
+        instruction->gen_asm(o, f);
     }
-    return code;
 }
 
-string CInstrExpression::to_asm(const CFunction* f) const
+void CInstrExpression::gen_asm(ostream& o, const CFunction* f) const
 {
     CFunction* fm = const_cast<CFunction*>(f);
-    return expr->to_asm(fm).first;
+    fm->tos.free_temp(expr->gen_asm(o, fm));
 }
 
-string CInstrArray::to_asm(const CFunction* f) const
+void CInstrArray::gen_asm(ostream& o, const CFunction* f) const
 {
-    //to do
-    return "todo";
+    cerr << "PROBLEM: gen_asm unimplemented for arrays" << endl;
+    throw;
 }
 
-string CInstrVariable::to_asm(const CFunction* f) const {
-    if (expr == nullptr) {
-        return "";
-    } else {
-        return expr->to_asm(f).first;
-    }
-}
-
-string CInstrReturn::to_asm(const CFunction* f) const {
-    string code;
-    
+void CInstrVariable::gen_asm(ostream& o, const CFunction* f) const {
     if (expr != nullptr) {
-        pair<string, string> res = expr->to_asm(f);
-        code += res.first;
-        code += "  movl " + res.second + ", %eax\n";
+        CFunction* fm = const_cast<CFunction*>(f);
+        fm->tos.free_temp(expr->gen_asm(o, fm));
     }
-    code += "  popq %rbp\n";
-    code += "  ret\n";
-    return code;
 }
 
-string CInstrIf::to_asm(const CFunction* f) const {
-    cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
+void CInstrReturn::gen_asm(ostream& o, const CFunction* f) const {
+    if (expr != nullptr) {
+        CFunction* fm = const_cast<CFunction*>(f);
+        string res = expr->gen_asm(o, fm);
+        o << "  movl " + res + ", %eax\n";
+        fm->tos.free_temp(res);
+    }
+    o << "  leave\n";
+    o << "  ret\n";
+}
+
+void CInstrIf::gen_asm(ostream& o, const CFunction* f) const {
+    cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
     throw;
 }
 
-string CInstrDoWhile::to_asm(const CFunction* f) const {
-    cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
+void CInstrDoWhile::gen_asm(ostream& o, const CFunction* f) const {
+    cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
     throw;
 }
 
-string CInstrFor::to_asm(const CFunction* f) const {
-    cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
+void CInstrFor::gen_asm(ostream& o, const CFunction* f) const {
+    cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
     throw;
 }
 
-string CInstrWhile::to_asm(const CFunction* f) const {
-    cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
+void CInstrWhile::gen_asm(ostream& o, const CFunction* f) const {
+    cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
     throw;
 }
 
