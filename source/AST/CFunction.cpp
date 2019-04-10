@@ -36,7 +36,7 @@ void CFunction::fill_tos() {
         tosOffset -= 4;
         tosAddress[i] = tosOffset;
     }
-
+    
     // code += "sub rsp, "
     // arrondi supérieur ou égal de offset
     // pour obtenir un multiple de 16, pour appel de fonction
@@ -67,8 +67,8 @@ string CFunction::tos_add_temp(CType type) {
     string name = "temp" + to_string(temp_id);
     
     tos_add(name, type);
-    tosOffset -= 4;
-    tosAddress[name] = tosOffset;
+/**/tosOffset -= 4;
+/**/tosAddress[name] = tosOffset;
     tosUsed[name] = true;
     return name;
 }
@@ -87,6 +87,7 @@ void CFunction::tos_add(string name, CType type) {
     
     tos.push_back(name);
     tosType[name] = type;
+    tosCount[name] = 1;
 }
 
 void CFunction::fill_tos(const CInstructions& block) {

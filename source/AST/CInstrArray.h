@@ -1,8 +1,8 @@
 #pragma once
 
 #include <string>
-#include <list>
 using std::string;
+#include <list>
 using std::list;
 
 #include "CInstruction.h"

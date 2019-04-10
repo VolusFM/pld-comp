@@ -1,8 +1,8 @@
+#include "CInstrArray.h"
+
 #include <iostream>
 using std::cerr;
 using std::endl;
-
-#include "CInstrArray.h"
 
 #include "CExpression.h"
 

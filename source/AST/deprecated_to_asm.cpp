@@ -24,13 +24,12 @@ string CProg::to_asm() const {
 }
 
 string CParameter::to_asm(const CFunction* f, int index) const {
-    static const string registerName[] = { "rdi", "rsi", "rdx", "rcx", "r8d", "r9d" };
+    static const string registerName[] = { "%edi", "%esi", "%edx", "%ecx", "%e8d", "%e9d" };
     
-    cerr << "  ICIDESUKA : " << name << endl;
     string variable = f->tos_addr(name);
-    cerr << "  ICIDESUKA : " << name << endl;
-
-    string code = "  movl %" + registerName[index] + ", " + variable + " # Move the parameter to one of the function registers\n";
+    
+    // move the parameter to one of the function registers
+    string code = "  movl " + registerName[index] + ", " + variable;
     return code;
 }
 
@@ -47,7 +46,7 @@ string CFunction::to_asm() const {
         }
         params += ")";
         code += params;
-    } */
+    */
     
     code += ":\n";
 

@@ -27,18 +27,20 @@ public:
     CType type;
     
     vector<string> tos;
-    map<string, bool> tosUsed;
     map<string, CType> tosType;
-    map<string, int> tosAddress;
-    int tosOffset;
+    map<string, int> tosCount;
+    
+/**/map<string, int> tosAddress;
+/**/map<string, bool> tosUsed;
+/**/int tosOffset;
     
     vector<CParameter> parameters;
     CInstructions block;
     
-    int temp_id;
-    string tos_add_temp(CType type);
-    void tos_free_temp(string name);
-    string tos_addr(string variable) const;
+/**/int temp_id;
+/**/string tos_add_temp(CType type);
+/**/void tos_free_temp(string name);
+/**/string tos_addr(string variable) const;
     void tos_add(CType type, string name);
     
     void fill_tos();
