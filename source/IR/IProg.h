@@ -5,7 +5,8 @@ using std::ostream;
 #include <vector>
 using std::vector;
 
-#include "IR.h"
+#include "../TOS.h"
+class CFG;
 
 class IProg {
 public:
@@ -14,6 +15,7 @@ public:
     void optimize();
     void gen_asm_x86(ostream &o) const;
     
+    TOS tos;
     vector<CFG*> functions;
 };
 
