@@ -254,6 +254,27 @@ public:
         return (CInstruction*) instr;
     }
 
+    virtual antlrcpp::Any visitAnyinstrs(CodeCParser::AnyinstrsContext *ctx)
+            override
+            {
+        return (CInstructions*) visit(ctx->instructionsblock());
+    }
+    virtual antlrcpp::Any visitAnyinstr(CodeCParser::AnyinstrContext *ctx)
+            override
+            {
+        vector<CInstruction*> instructionsBlock;
+        instructionsBlock.push_back((CInstruction*) visit(ctx->instruction()));
+        CInstructions* block = new CInstructions(instructionsBlock);
+        return block;
+    }
+    virtual antlrcpp::Any visitNoinstr(CodeCParser::NoinstrContext *ctx)
+            override
+            {
+        vector<CInstruction*> instructionsBlock;
+        CInstructions* block = new CInstructions(instructionsBlock);
+        return block;
+    }
+
     virtual antlrcpp::Any visitVariable(CodeCParser::VariableContext *ctx)
             override
             {

@@ -8,9 +8,9 @@ function: functionheader instructionsblock;
 functionheader: (type|VOID) IDENT parameters;
 
 
-anyinstruction: instructionsblock // some instructions
-	| instruction // one instruction
-	| ';'; // no instructions
+anyinstruction: instructionsblock #anyinstrs // some instructions
+	| instruction #anyinstr // one instruction
+	| ';' #noinstr; // no instructions
 
 instructionsblock: '{' instruction* '}';
 
