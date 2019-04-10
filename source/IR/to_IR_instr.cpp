@@ -65,7 +65,7 @@ void CInstrArray::to_IR(CFG* cfg) const {
 }
 
 void CInstrVariable::to_IR(CFG* cfg) const {
-    cfg->tos_add(name, type);
+    // cfg->tos_add(name, type);
     if (expr != nullptr)
         expr->to_IR(cfg);
 }

@@ -17,8 +17,8 @@ IProg* CProg::to_IR() const {
 CFG* CFunction::to_IR() const {
     CFG* cfg = new CFG(this, name);
     
+    cfg->tos = tos;
     cfg->tosType = tosType;
-    
     for (auto it = tos.cbegin(); it != tos.cend(); ++it) {
         cfg->tosIndex[*it] = -(tosAddress.at(*it));
     }
