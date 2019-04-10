@@ -321,6 +321,12 @@ public:
 				8);
 	}
 
+	virtual antlrcpp::Any visitIntval_char(CodeCParser::Intval_charContext *ctx)
+			override
+			{
+		return (long) ((char) (*(ctx->INTCHAR()->getText().c_str() + 1)));
+	}
+
 	virtual antlrcpp::Any visitType(CodeCParser::TypeContext *ctx) override
 	{
 		return visitChildren(ctx);

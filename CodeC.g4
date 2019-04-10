@@ -72,7 +72,8 @@ lvalue : IDENT #simple_variable
 intval : INTDEC #intval_dec
         | INTHEX #intval_hex
         | INTBIN #intval_bin
-        | INTOCT #intval_oct;
+        | INTOCT #intval_oct
+        | INTCHAR #intval_char;
 
 instrreturn: 'return' expression #return_expr
 	| 'return' #return_void;
@@ -89,6 +90,7 @@ INTDEC : [1-9][0-9]*|'0';
 INTHEX : '0x'[0-9A-F]+;
 INTBIN : '0b'[01]+;
 INTOCT :'0'[0-7]+;
+INTCHAR : ['].['];
 IDENT : [a-zA-Z][a-zA-Z0-9_]*;
 
 OPMULT : '*';
