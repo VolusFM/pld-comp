@@ -20,7 +20,7 @@ int main() {
   return a*b;
 }*/
 
-int test(int a){
+int test(int a, int b){
   if(a==1){
     return 1;
   } else {

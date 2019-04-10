@@ -51,7 +51,7 @@ void CFG::gen_asm_x86_prologue(ostream& o) const {
     
     int index = 0;
     for (auto it = ast->parameters.cbegin(); it != ast->parameters.cend() ; ++it) {
-        o << "  movl " << registerName[index++] << ", " << ast->tos_addr(it->name) << "\n";
+        o << "  movq " << registerName[index++] << ", " << ast->tos_addr(it->name) << "\n";
     }
     
     o << "  ## contenu\n";
