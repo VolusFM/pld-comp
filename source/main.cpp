@@ -6,98 +6,23 @@ using std::endl;
 using std::ifstream;
 using std::ofstream;
 
-#include <cstring>
-
 #include "antlr4-runtime.h"
 #include "antlr/CodeCLexer.h"
 #include "antlr/CodeCParser.h"
 #include "antlr/CodeCVisitor.h"
+using namespace antlr4;
 
+#include "args.h"
 #include "AST/Visitor.h"
 #include "AST/CProg.h"
 #include "IR/IR.h"
 #include "IR/IProg.h"
 
-using namespace antlr4;
-
-typedef struct {
-    bool opta; // static analysis
-    bool opto; // optimize
-    bool optc; // assembly generation
-    string fi; // input file
-    string fo; // output file
-
-    bool tmp; // temporary
-} arguments;
-
-inline bool strequal(const char* str1, const char* str2) {
-    return strcmp(str1, str2) == 0;
-}
-
-bool argsparse(int argc, const char* argv[], arguments& args) {
-    args.fi.clear();
-    args.fo.clear();
-    args.opta = false;
-    args.opto = false;
-    args.optc = false;
-
-    // temporary
-    args.tmp = false;
-
-    for (int i = 1; i < argc; ++i) {
-        const char* arg = argv[i];
-        const char* val;
-
-        if (*arg == '-') {
-            arg++;
-
-            if (strequal(arg, "a"))
-                args.opta = true;
-            else if (strequal(arg, "o"))
-                args.opto = true;
-            else if (strequal(arg, "c"))
-                args.optc = true;
-
-            // temporary
-            else if (strequal(arg, "-AST"))
-                args.tmp = true;
-            else if (strequal(arg, "-IR"))
-                args.tmp = false;
-
-            else {
-                cerr << "ERROR: unknown argument : '" << arg << "'." << endl;
-                return false;
-            }
-        } else {
-            if (args.fi.empty())
-                args.fi = arg;
-            else if (args.fo.empty())
-                args.fo = arg;
-            else {
-                cerr << "ERROR: too many arguments." << endl;
-                return false;
-            }
-        }
-    }
-
-    if (args.fi.empty()) {
-        cerr << "ERROR: missing file input argument." << endl;
-        return false;
-    }
-
-    if (!args.optc && !args.fo.empty()) {
-        cerr << "ERROR: too many arguments." << endl;
-        return false;
-    }
-
-    return true;
-}
+arguments args;
 
 int main(int argc, const char* argv[]) {
 
     // ANALYSE DES ARGUMENTS EN LIGNE DE COMMANDE
-
-    arguments args;
 
     if (!argsparse(argc, argv, args)) {
         cerr << "Syntax: ./yottacompilatron9001 <input_file> [-o] [-a] [-c [<output_file>]]" << endl;
@@ -156,7 +81,7 @@ int main(int argc, const char* argv[]) {
     if (!args.tmp) // temporary
     {
         ir = ast->to_IR();
-        if (args.opto) ir->optimize();
+        ir->optimize();
     }
     
     if (args.opta && !args.optc) {

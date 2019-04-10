@@ -12,13 +12,14 @@ using std::to_string;
 #include "../AST/CFunctionCall.h"
 
 string CExpressionInt::to_IR(CFG* cfg) const {
-    //BasicBlock* bb = cfg->current_bb;
+    /*
+    BasicBlock* bb = cfg->current_bb;
+    string variable = cfg->tos_add_temp("int");
+    bb->add_IRInstr(op_ldconst, "int", {variable, to_string(value)});
+    return variable;
+    */
     
-    //string variable = cfg->tos_add_temp("int");
-    
-    //bb->add_IRInstr(op_ldconst, "int", {variable, to_string(value)});
-    
-    return '$'+to_string(value);
+    return '$' + to_string(value);
 }
 
 string CExpressionVar::to_IR(CFG* cfg) const {

@@ -8,6 +8,9 @@ using std::endl;
 using std::string;
 using std::to_string;
 
+#include <utility>
+using std::swap;
+
 IRInstr::IRInstr(BasicBlock* bb, Operation op, CType type,
         vector<string> params) :
         bb(bb), op(op), type(type), params(params) {
@@ -115,7 +118,7 @@ void CFG::optimize() {
     
     for (auto it = bbs.begin(); it != bbs.end(); ++it) {
         BasicBlock* b = (*it);
-        if (b->instrs.empty()) {
+        if (b->instrs.empty() && b->exit_false == nullptr) {
             bbReplace[b] = b->exit_true;
         }
     }
@@ -124,21 +127,21 @@ void CFG::optimize() {
     while (evolves) {
         evolves = false;
         
-        for (auto it = bbReplace.begin(); it != bbReplace.end(); ++it) {
-            auto itr = bbReplace.find(it->second);
-            if (itr != bbReplace.end() && itr->second != it->second) {
-                bbReplace[it->first] = itr->second;
-                evolves = true;
+        for (auto itr = bbReplace.begin(); itr != bbReplace.end(); ++itr) {
+            if (itr->first != itr->second) {
+                for (auto it = bbs.begin(); it != bbs.end(); ++it) {
+                    BasicBlock* b = (*it);
+                    if (b->exit_false != nullptr && itr->second == nullptr) continue;
+                    if (b->exit_true == itr->first) {
+                        b->exit_true = itr->second;
+                        evolves = true;
+                    }
+                    if (b->exit_false == itr->first) {
+                        b->exit_false = itr->second;
+                        evolves = true;
+                    }
+                }
             }
-        }
-    }
-    
-    for (auto itr = bbReplace.begin(); itr != bbReplace.end(); ++itr) {
-        for (auto it = bbs.begin(); it != bbs.end(); ++it) {
-            BasicBlock* b = (*it);
-            if (b->exit_false != nullptr && itr->second == nullptr) continue;
-            if (b->exit_true == itr->first) b->exit_true = itr->second;
-            if (b->exit_false == itr->first) b->exit_false = itr->second;
         }
     }
     
@@ -170,6 +173,26 @@ void CFG::optimize() {
             ++it;
         }
     }
+    
+    // move empty bbs at the back
+    
+    vector<BasicBlock*> bbsmoved;
+    bool moved = false;
+    
+    bbsmoved.reserve(bbs.size());
+    for (auto it = bbs.begin(); it != bbs.end(); ++it) {
+        if (!(*it)->instrs.empty()) {
+            bbsmoved.push_back(*it);
+        }
+    }
+    for (auto it = bbs.begin(); it != bbs.end(); ++it) {
+        if ((*it)->instrs.empty()) {
+            bbsmoved.push_back(*it);
+            moved = true;
+        }
+    }
+    
+    if (moved) std::swap(bbs, bbsmoved);
     
 }
 
