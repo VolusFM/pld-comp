@@ -17,12 +17,11 @@ IProg* CProg::to_IR() const {
 CFG* CFunction::to_IR() const {
     CFG* cfg = new CFG(this, name);
     
-    cfg->tos = tos;
-    cfg->tosType = tosType;
-    for (auto it = tos.cbegin(); it != tos.cend(); ++it) {
-        cfg->tosIndex[*it] = -(tosAddress.at(*it));
-    }
-    cfg->tosIndexLast = -tosOffset;
+    //TODO can be improved
+    cfg->tos = tos.tos;
+    cfg->tosType = tos.tosType;
+    cfg->tosIndex = tos.tosIndex;
+    cfg->tosIndexLast = tos.tosOffset;
     
     BasicBlock* bb = new BasicBlock(cfg, name + "_body");
     bb->exit_true = nullptr;

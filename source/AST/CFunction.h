@@ -4,53 +4,46 @@
 using std::string;
 #include <vector>
 using std::vector;
-#include <map>
-using std::map;
 
 #include "CType.h"
 #include "CInstruction.h"
-//class CParameter;
 #include "CFunctionHeader.h"
+#include "../TOS.h"
+
+class CProg;
 
 class CFG;
 
 class CFunction {
 public:
-    CFunction(string name, CType type, vector<CParameter>& parameters, CInstructions& block);
+    CFunction(const CProg* prog, string name, CType type, vector<CParameter>& parameters, CInstructions& block);
     ~CFunction() = default;
     
     void optimize();
     CFG* to_IR() const;
     string to_asm() const;
     
+    const CProg* prog;
     string name;
     CType type;
     
-    vector<string> tos;
-    map<string, CType> tosType;
-    map<string, int> tosCount;
-    
-/**/map<string, int> tosAddress;
-/**/map<string, bool> tosUsed;
-/**/int tosOffset;
+    TOS tos;
     
     vector<CParameter> parameters;
     CInstructions block;
     
-/**/int temp_id;
-/**/string tos_add_temp(CType type);
-/**/void tos_free_temp(string name);
-/**/string tos_addr(string variable) const;
-    void tos_add(CType type, string name);
-    
-    void fill_tos();
+    void explore_tos();
 private:
-    void fill_tos(const CInstructions& block);
-    void fill_tos(const vector<CParameter>& parameters);
+    void block_explore_tos(TOS& tos);
+    
     
 public:
     // enable move semantics
     CFunction(CFunction&&) = default;
     CFunction& operator=(CFunction&&) = default;
+private:
+    // no copy wanted
+    CFunction(const CFunction&); // no implementation
+    CFunction& operator=(const CFunction&); // no implementation
 };
 

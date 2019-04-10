@@ -15,26 +15,20 @@ pair<string, string> CExpression::to_asm(const CFunction* f) const {
 }
 
 pair<string, string> CExpressionInt::to_asm(CFunction* f) const {
-    string variable = f->tos_add_temp("int");
-    string varaddr = f->tos_addr(variable);
+    string variable = f->tos.add_temp("int");
+    string varaddr = f->tos.get_address_x86(variable);
     string code = "  movl  $" + to_string(value) + ", " + varaddr + "\n";
     return pair<string, string>(code, varaddr);
 }
 
 pair<string, string> CExpressionVar::to_asm(CFunction* f) const {
-    string ret;
-    try{
-        ret = f->tos_addr(variable);
-    }catch(std::exception const& e){
-        cerr << "ERROR : reference to undeclared variable " << variable << endl;
-        throw e;
-    }
-    return pair<string, string>("", ret);
+    string varaddr = f->tos.get_address_x86(variable);
+    return pair<string, string>("", varaddr);
 }
 
 pair<string, string> CExpressionVarArray::to_asm(CFunction* f) const {
-    //to do
-    return pair<string,string>("todo","todo");
+    cerr << "PROBLEM: to_asm unimplemented for array expressions" << endl;
+    throw;
 }
 
 pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
@@ -55,7 +49,7 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         code += "  movl  %eax, " + lhsvar + "\n";
         variable = lhsvar;
     } else {
-        variable = f->tos_addr(f->tos_add_temp("int"));
+        variable = f->tos.get_address_x86(f->tos.add_temp("int"));
         code += "  movl  " + lhsvar + ", %eax\n";
         if (op == "*") {
             code += "  imull " + rhsvar + ", %eax\n";
@@ -112,8 +106,8 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
         code += variable + "\n";
     }
     
-    f->tos_free_temp(lhsvar);
-    f->tos_free_temp(rhsvar);
+    f->tos.free_temp(lhsvar);
+    f->tos.free_temp(rhsvar);
     
     return pair<string, string>(code, variable);
 }

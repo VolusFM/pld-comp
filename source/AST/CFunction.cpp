@@ -11,14 +11,12 @@ using std::to_string;
 #include "CInstrExpression.h"
 #include "CExpression.h"
 #include "CInstruction.h"
+#include "CProg.h"
 
 
-CFunction::CFunction(string name, CType type, vector<CParameter>& parameters_, CInstructions& block_)
-: name(name)
+CFunction::CFunction(const CProg* prog, string name, CType type, vector<CParameter>& parameters_, CInstructions& block_)
+: prog(prog), name(name), tos(prog != nullptr ? &prog->tos : nullptr)
 {
-    temp_id = 0;
-    tosOffset = 0;
-    
     parameters = std::move(parameters_);
     parameters_.clear();
     
@@ -26,88 +24,28 @@ CFunction::CFunction(string name, CType type, vector<CParameter>& parameters_, C
     block_.instructions.clear();
 }
 
-void CFunction::fill_tos() {
-    fill_tos(parameters);
-    fill_tos(block);
-    
-    for (const string& i : tos) {
-        //code += "  # variable " + tosType.at(i) + " " + i + "\n";
-        //une fois qu'on aura d'autres tailles de variables, faudra changer ça
-/**/    tosOffset -= 4;
-/**/    tosAddress[i] = tosOffset;
+void CFunction::explore_tos() {
+    for (auto it = parameters.cbegin(); it != parameters.cend(); ++it) {
+        const CParameter& param = *it;
+        tos.add(param.name, param.type);
     }
     
-    // code += "sub rsp, "
-    // arrondi supérieur ou égal de offset
-    // pour obtenir un multiple de 16, pour appel de fonction
+    block_explore_tos(tos);
 }
 
-string CFunction::tos_addr(string variable) const {
-    try {
-        int addr = tosAddress.at(variable);
-        return to_string(addr) + "(%rbp)";
-    } catch (...) {
-        cerr << "ERROR: reference to undeclared variable '" << variable << "'" << endl;
-        throw;
-    }
-}
-
-string CFunction::tos_add_temp(CType type) {
-    for (auto it = tosUsed.begin(); it != tosUsed.end(); ++it) {
-        if (!it->second) {
-            string name = it->first;
-            if (tosType[name] == type) {
-                tosUsed[name] = true;
-                return name;
-            }
-        }
-    }
-    
-    temp_id++;
-    string name = "temp" + to_string(temp_id);
-    
-    tos_add(name, type);
-/**/tosOffset -= 4;
-/**/tosAddress[name] = tosOffset;
-    tosUsed[name] = true;
-    return name;
-}
-void CFunction::tos_free_temp(string name) {
-    // if (name.at(0) != '!') return;
-    auto it = tosUsed.find(name);
-    if (it != tosUsed.end()) (*it).second = false;
-}
-
-void CFunction::tos_add(string name, CType type) {
-    auto it = tosType.find(name);
-    if (it != tosType.end()) {
-        cerr << "ERROR: already declared variable '" << name << "'" << endl;
-        throw;
-    }
-    
-    tos.push_back(name);
-    tosType[name] = type;
-    tosCount[name] = 1;
-}
-
-void CFunction::fill_tos(const CInstructions& block) {
+void CFunction::block_explore_tos(TOS& tos) {
     for (auto it = block.instructions.cbegin();
               it != block.instructions.cend(); ++it) {
         const CInstruction* i = *it;
         
-        const CInstructions* instrlist = dynamic_cast<const CInstructions*>(i);
-        if (instrlist != nullptr) fill_tos(*instrlist);
+        // FIXME
+        // const CInstructions* instrlist = dynamic_cast<const CInstructions*>(i);
+        // if (instrlist != nullptr) fill_tos(*instrlist);
         
+        // FIXME
         const CInstrVariable* instrvar = dynamic_cast<const CInstrVariable*>(i);
-        if (instrvar != nullptr) tos_add(instrvar->name, instrvar->type);
+        if (instrvar != nullptr) tos.add(instrvar->name, instrvar->type);
     }
-}
-
-void CFunction::fill_tos(const vector<CParameter>& parameters) {
-    for (auto it = parameters.cbegin(); it != parameters.cend(); ++it) {
-        const CParameter& param = *it;
-        tos_add(param.name, param.type);
-    }    
 }
 
 void CFunction::optimize() {

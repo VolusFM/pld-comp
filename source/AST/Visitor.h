@@ -28,13 +28,15 @@ public:
 	virtual antlrcpp::Any visitProg(CodeCParser::ProgContext *ctx) override
 	{
 		CProg* prog = new CProg();
-
+        
 		for (auto ctx_func : ctx->function()) {
 			CFunction* func = (CFunction*) visit(ctx_func);
+            func->prog = prog; func->tos.parent = &prog->tos;
+		    func->explore_tos();
 			prog->functions.push_back(std::move(*func));
 			delete func;
 		}
-
+        
 		return prog;
 	}
 
@@ -42,18 +44,17 @@ public:
 			override {
 		CFunctionHeader* functionHeader = visit(ctx->functionheader());
 		CInstructions* block = (CInstructions*) visit(ctx->instructionsblock());
-		CFunction* func = new CFunction(functionHeader->name,
+		CFunction* func = new CFunction(nullptr, functionHeader->name,
 				functionHeader->type, functionHeader->parameters, *block);
 		delete functionHeader;
 		delete block;
-		func->fill_tos();
 		return func;
 	}
 
 	virtual antlrcpp::Any visitFunctionheader(
 			CodeCParser::FunctionheaderContext *ctx) override {
 		string name = ctx->IDENT()->getText();
-		;
+		
 		string type;
 		if (ctx->type() != nullptr) {
 			type = ctx->type()->getText();

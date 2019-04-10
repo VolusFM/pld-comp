@@ -15,6 +15,9 @@ string CProg::to_asm() const {
     code += ".global main\n";
     try {
         for (const CFunction& f : functions) {
+            TOS* tos = const_cast<TOS*>(&f.tos);
+            tos->clear_temp();
+            tos->fill_address_x86();
             code += f.to_asm();
         }
     } catch(...) {
@@ -26,7 +29,7 @@ string CProg::to_asm() const {
 string CParameter::to_asm(const CFunction* f, int index) const {
     static const string registerName[] = { "%edi", "%esi", "%edx", "%ecx", "%e8d", "%e9d" };
     
-    string variable = f->tos_addr(name);
+    string variable = f->tos.get_address_x86(name);
     
     // move the parameter to one of the function registers
     string code = "  movl " + registerName[index] + ", " + variable;
