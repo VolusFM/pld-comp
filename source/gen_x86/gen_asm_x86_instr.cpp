@@ -1,4 +1,4 @@
-#include "IR.h"
+#include "../IR/IR.h"
 
 #include <iostream>
 using std::ostream;

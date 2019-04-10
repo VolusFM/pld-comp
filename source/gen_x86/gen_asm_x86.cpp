@@ -1,5 +1,5 @@
-#include "IR.h"
-#include "IProg.h"
+#include "../IR/IR.h"
+#include "../IR/IProg.h"
 
 #include "../AST/CFunction.h"
 #include "../AST/CInstruction.h"
