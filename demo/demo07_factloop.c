@@ -1,10 +1,9 @@
 
 int fact(int n) {
-    int i;
-    
     int res = 1;
     
-    for (i = n; i != 0; i=i-1) {
+    int i;
+    for (i = 1; i <= n; i=i+1) {
         res = res * i;
     }
     
