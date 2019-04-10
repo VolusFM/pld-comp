@@ -20,7 +20,7 @@ instruction: instrreturn ';' #return
 	| expression ';' #instr_expr
 	| ifblock #if_block
 	| whileblock #while_block
-    | forblock #for_block
+        | forblock #for_block
 	| dowhileblock #do_while_block;
 
 ifblock: 'if' '(' expression ')' anyinstruction elseblock?;

@@ -171,18 +171,16 @@ string CFunctionCall::to_IR(CFG* cfg) const {
 
     vector < string > results;
 
+    /*
     bool functionExist = false;
-    /*for(auto fName:func){
-        std::cout << fName + " : " + functionName << endl;
-        if (functionName.compare(fName)==0){
-            functionExist = true;
-            break;
-        }
+    
+    // ...
+    
+    if (!functionExist) {
+        cerr << "ERROR: reference to undefined function '" << functionName << "'" << endl;
+        throw;
     }
-
-    if (!functionExist){
-        cerr << "ERROR : function " << functionName << " is not declared" << endl;
-    }*/
+    */
 
     results.push_back(functionName);
     results.push_back(variable);
