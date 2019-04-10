@@ -78,12 +78,33 @@ void TOS::clear_temp() {
 }
 
 
+void TOS::fill_address_z80() {
+    tosOffset = 0;
+    
+    for (const string& name : tos) {
+        tosOffset += 2 * tosCount[name]; //FIXME
+        tosIndex[name] = tosOffset;
+    }
+}
+
 void TOS::fill_address_x86() {
     tosOffset = 0;
     
     for (const string& name : tos) {
         tosOffset += 4 * tosCount[name]; //FIXME
         tosIndex[name] = tosOffset;
+    }
+}
+
+string TOS::get_address_z80(string name) const {
+    if (has(name)) {
+        int addr = tosIndex.at(name);
+        return to_string(addr);
+    } else if (parent != nullptr) {
+        return parent->get_address_z80(name);
+    } else {
+        cerr << "ERROR: reference to undeclared variable '" << name << "'" << endl;
+        throw;
     }
 }
 

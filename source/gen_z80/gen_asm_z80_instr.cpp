@@ -33,7 +33,7 @@ void CInstrExpression::gen_asm_z80(ostream& o, const CFunction* f) const
 
 void CInstrArray::gen_asm_z80(ostream& o, const CFunction* f) const
 {
-    cerr << "PROBLEM: gen_asm unimplemented for arrays" << endl;
+    cerr << "PROBLEM: gen_asm_z80 unimplemented for arrays" << endl;
     throw;
 }
 
@@ -47,31 +47,29 @@ void CInstrVariable::gen_asm_z80(ostream& o, const CFunction* f) const {
 void CInstrReturn::gen_asm_z80(ostream& o, const CFunction* f) const {
     if (expr != nullptr) {
         CFunction* fm = const_cast<CFunction*>(f);
-        string res = expr->gen_asm_z80(o, fm);
-        o << "  movl " + res + ", %eax\n";
-        fm->tos.free_temp(res);
+        fm->tos.free_temp(expr->gen_asm_z80(o, fm));
     }
-    o << "  leave\n";
+ // o << "  pop   ix\n";
     o << "  ret\n";
 }
 
 void CInstrIf::gen_asm_z80(ostream& o, const CFunction* f) const {
-    cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
+    cerr << "PROBLEM: gen_asm_z80 unimplemented for control statements" << endl;
     throw;
 }
 
 void CInstrDoWhile::gen_asm_z80(ostream& o, const CFunction* f) const {
-    cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
+    cerr << "PROBLEM: gen_asm_z80 unimplemented for control statements" << endl;
     throw;
 }
 
 void CInstrFor::gen_asm_z80(ostream& o, const CFunction* f) const {
-    cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
+    cerr << "PROBLEM: gen_asm_z80 unimplemented for control statements" << endl;
     throw;
 }
 
 void CInstrWhile::gen_asm_z80(ostream& o, const CFunction* f) const {
-    cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
+    cerr << "PROBLEM: gen_asm_z80 unimplemented for control statements" << endl;
     throw;
 }
 

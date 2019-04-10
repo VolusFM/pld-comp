@@ -11,13 +11,20 @@ using std::endl;
 
 
 void CProg::gen_asm_z80(ostream& o) const {
-    o << ".text\n";
-    o << ".global main\n";
+ /* o << ".nolist\n";
+    o << "#include \"ti83plusOS.inc\"";
+    o << ".org $9D93";
+    o << ".db $BB,$6D";
+    o << "\n";
+ */ o << ".list";
+    o << "\n";
+    
+ // o << "  ld   ix, $NNNN\n"
     
     try {
         for (const CFunction& f : functions) {
             TOS* tos = const_cast<TOS*>(&f.tos);
-            tos->fill_address_x86();
+            tos->fill_address_z80();
             f.gen_asm_z80(o);
             tos->clear_temp();
         }
@@ -27,47 +34,32 @@ void CProg::gen_asm_z80(ostream& o) const {
 }
 
 void CParameter::gen_asm_z80(ostream& o, const CFunction* f, int index) const {
-    static const string registerName[] = { "%edi", "%esi", "%edx", "%ecx", "%e8d", "%e9d" };
+    string variable = f->tos.get_address_z80(name);
     
-    string variable = f->tos.get_address_x86(name);
-    
-    o << "  movl " << registerName[index] << ", " << variable << "\n";
+    o << "  pop   hl\n";
+    o << "  ld    (" << variable << "), hl\n";
 }
 
 void CFunction::gen_asm_z80(ostream& o) const {
-    o << name;
+    o << name << ":\n";
     
-    /*
-        string params = "";
-        params += "(";
-        for(auto it = parameters.begin(); it != parameters.end(); ++it) {
-            if (!params.empty()) params += ", ";
-            params += it->type;
-        }
-        params += ")";
-        code += params;
-    */
+ // o << "  push  ix\n";
+ // o << "  lb    bc, NNNN\n";
+ // o << "  add   ix, bc\n";
     
-    o << ":\n";
-    
-    o << "  ## prologue\n";
-    o << "  pushq %rbp # save %rbp on the stack\n";
-    o << "  movq %rsp, %rbp # define %rbp for the current function\n";
-    
+ // o << "  pop   de\n";
     int index = 0;
     for (auto it = parameters.cbegin() ; it != parameters.cend() ; ++it) {
         it->gen_asm_z80(o, this, index);
         index++;
     }
-    
-    o << "  ## contenu\n";
+ // o << "  push  de\n";
     
     for (const CInstruction* it : block.instructions) {
         it->gen_asm_z80(o, this);
     }
     
-    o << "  ## epilogue\n";
-    o << "  popq %rbp # restore %rbp from the stack\n";
+ // o << "  pop   ix\n";
     o << "  ret\n";
 }
 

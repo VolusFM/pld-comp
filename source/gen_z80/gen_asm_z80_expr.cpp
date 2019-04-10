@@ -11,100 +11,113 @@ using std::endl;
 
 
 string CExpressionInt::gen_asm_z80(ostream& o, CFunction* f) const {
-    string variable = f->tos.add_temp("int");
-    string varaddr = f->tos.get_address_x86(variable);
-    o << "  movl  $" << value << ", " << varaddr << "\n";
-    return varaddr;
+    o << "  ld    hl, " << value << "\n";
+    return "hl";
 }
 
 string CExpressionVar::gen_asm_z80(ostream& o, CFunction* f) const {
-    string varaddr = f->tos.get_address_x86(variable);
+    string varaddr = f->tos.get_address_z80(variable);
+    o << "  ld    hl, (" << varaddr << ")\n";
     return varaddr;
 }
 
-string CExpressionVarArray::gen_asm_z80(ostream& o, CFunction* f) const {
-    cerr << "PROBLEM: gen_asm unimplemented for array expressions" << endl;
-    throw;
-}
-
 string CExpressionComposed::gen_asm_z80(ostream& o, CFunction* f) const {
-    string code;
     string variable;
     
     string lhsvar = lhs->gen_asm_z80(o, f);
     string rhsvar = rhs->gen_asm_z80(o, f);
     
     if (op == "=") {
-        code += "  movl  " + rhsvar + ", %eax\n";
-        code += "  movl  %eax, " + lhsvar + "\n";
-        variable = lhsvar;
+        o << "  ld    (hl), e\n";
+        o << "  inc   hl\n";
+        o << "  ld    (hl), d\n";
+     // o << "  dec   hl\n";
+        o << "  ex    de, hl\n";
     } else {
-        variable = f->tos.get_address_x86(f->tos.add_temp("int"));
-        code += "  movl  " + lhsvar + ", %eax\n";
+        /*
         if (op == "*") {
-            code += "  imull " + rhsvar + ", %eax\n";
+            o << "  mul   hl, de\n";
         }
-        if (op == "/" || op == "%") {
-            code += "  cltd\n"; // convert values to long double
-            code += "  idivl " + rhsvar + "\n"; // do the division
+        if (op == "/") {
+            o << "  div   hl, de\n";
         }
+        if (op == "%") {
+            o << "  cltd\n"; // convert values to long double
+            o << "  idivl " << rhsvar << "\n"; // do the division
+        }
+        */
         if (op == "+") {
-            code += "  addl " + rhsvar + ", %eax \n";
+            o << "  add   hl, de\n";
         }
         if (op == "-") {
-            code += "  subl  " + rhsvar + ", %eax\n";
+            o << "  or    a\n";
+            o << "  sbc   hl, de\n";
         }
-        if (op == "<" || op == "<=" || op == ">" || op == ">=" || op == "=="
-                || op == "!=") {
-            code += "  cmpl  " + rhsvar + ", %eax\n";
+        if (op == "<" || op == "<=" || op == ">" || op == ">=" || op == "==" || op == "!=") {
+            o << "  or    a\n";
+            o << "  sbc   hl, de\n";
+            /*
             if (op == "<") {
-                code += "  setl";
+                o << "  setl";
             }
             if (op == "<=") {
-                code += "  setle";
+                o << "  setle";
             }
             if (op == ">") {
-                code += "  setg";
+                o << "  setg";
             }
             if (op == ">=") {
-                code += "  setge";
+                o << "  setge";
             }
             if (op == "==") {
-                code += "  sete";
+                o << "  sete";
             }
             if (op == "!=") {
-                code += "  setne";
+                o << "  setne";
             }
-            code += "  %al\n";
-            code += "  movzbl  %al, %eax\n";
+            o << "  %al\n";
+            o << "  movzbl  %al, %eax\n";
+            */
         }
         if (op == "&") {
-            code += "  andl  " + rhsvar + ", %eax\n";
+            o << "  ld    a, h";
+            o << "  and   d";
+            o << "  ld    h, a";
+            o << "  ld    a, l";
+            o << "  and   e";
+            o << "  ld    l, a";
         }
         if (op == "|") {
-            code += "  orl  " + rhsvar + ", %eax\n";
+            o << "  ld    a, h";
+            o << "  or    d";
+            o << "  ld    h, a";
+            o << "  ld    a, l";
+            o << "  or    e";
+            o << "  ld    l, a";
         }
         if (op == "^") {
-            code += "  xorl  " + rhsvar + ", %eax\n";
+            o << "  ld    a, h";
+            o << "  xor   d";
+            o << "  ld    h, a";
+            o << "  ld    a, l";
+            o << "  xor   e";
+            o << "  ld    l, a";
         }
-
-        if (op == "%") {
-            code += "  movl  %edx, ";
-        } else {
-            code += "  movl  %eax, ";
-        }
-        code += variable + "\n";
     }
     
     f->tos.free_temp(lhsvar);
     f->tos.free_temp(rhsvar);
     
-    o << code; //FIXME
     return variable;
 }
 
+string CExpressionVarArray::gen_asm_z80(ostream& o, CFunction* f) const {
+    cerr << "PROBLEM: gen_asm_z80 unimplemented for array expressions" << endl;
+    throw;
+}
+
 string CExpressionCall::gen_asm_z80(ostream& o, CFunction* f) const {
-    cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
+    cerr << "PROBLEM: gen_asm_z80 unimplemented for control statements" << endl;
     throw;
 }
 
