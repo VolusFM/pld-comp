@@ -26,6 +26,7 @@ main_body:
   movl  -8(%rbp), %eax
   movl  %eax, -4(%rbp)
   movl  -4(%rbp), %eax
+main_1:
 main_end:
   ## epilogue
   leave

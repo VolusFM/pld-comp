@@ -8,6 +8,7 @@ function:
   ## contenu
 function_body:
   movl  $2, %eax
+function_1:
 function_end:
   ## epilogue
   leave
