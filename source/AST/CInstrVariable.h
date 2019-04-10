@@ -12,8 +12,8 @@ class CExpression;
 
 class CInstrVariable : public CInstruction {
 public:
-    CInstrVariable(string name);
-    CInstrVariable(string name, CExpression* expr);
+    CInstrVariable(string name, CType type);
+    CInstrVariable(string name, CType type, CExpression* expr);
     ~CInstrVariable();
     
     void explore_tos(TOS& tos) const;
@@ -21,8 +21,8 @@ public:
     void to_IR(CFG* cfg) const;
     void gen_asm_z80(ostream& o, const CFunction* f) const;
     
-    CType type;
     string name;
+    CType type;
     CExpression* expr;
     
 private:

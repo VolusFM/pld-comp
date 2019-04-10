@@ -19,13 +19,13 @@ void CInstrVariable::optimize()
     }
 }
 
-CInstrVariable::CInstrVariable(string name)
-: name(name), expr(nullptr)
+CInstrVariable::CInstrVariable(string name, CType type)
+: name(name), type(type), expr(nullptr)
 {
 }
 
-CInstrVariable::CInstrVariable(string name, CExpression* expr_)
-: name(name)
+CInstrVariable::CInstrVariable(string name, CType type, CExpression* expr_)
+: name(name), type(type)
 {
     CExpressionVar* exprVar = new CExpressionVar(name);
     expr = new CExpressionComposed(exprVar, "=", expr_);

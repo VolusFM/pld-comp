@@ -28,14 +28,7 @@ void CInstrExpression::to_IR(CFG* cfg) const {
 }
 
 void CInstrArray::to_IR(CFG* cfg) const {
-    if (exprs.size() > size) {
-        cerr << "ERROR: too many initializers for '"
-             << type << "[" << to_string(size) << "]'" << endl;
-        throw;
-    }
-    
     BasicBlock* bb = cfg->current_bb;
-    
     // cfg->tos.add(name, type, size);
     
     int index = 0;
@@ -52,7 +45,7 @@ void CInstrArray::to_IR(CFG* cfg) const {
         }
         index++;
     }
-    for (; index < size; index++) {
+    for (; index < count; index++) {
         bb->add_IRInstr(op_ldconst_to_array_index, type,
                         { name, to_string(index), "$0" });
     }
@@ -60,6 +53,7 @@ void CInstrArray::to_IR(CFG* cfg) const {
 
 void CInstrVariable::to_IR(CFG* cfg) const {
     // cfg->tos_add(name, type);
+    
     if (expr != nullptr) {
         string temp = expr->to_IR(cfg);
         cfg->tos.free_temp(temp);

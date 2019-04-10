@@ -126,9 +126,9 @@ public:
 
 	virtual antlrcpp::Any visitDefinition(CodeCParser::DefinitionContext *ctx)
 			override {
-		string type = ctx->type()->getText();
+		CType type = ctx->type()->getText();
 		vector<CInstruction*> instructionsVariables;
-
+        
 		for (auto ctx_varDef : ctx->vardefinition()) {
 			CInstrVariable* instrVar = (CInstrVariable*) visit(ctx_varDef);
 			instrVar->type = type;
@@ -139,14 +139,41 @@ public:
 			instrArray->type = type;
 			instructionsVariables.push_back(instrArray);
 		}
-
+        
 		return new CInstructions(instructionsVariables);
 	}
-
+    
 	virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx)
 			override {
 		string name = ctx->IDENT()->getText();
-		return new CInstrVariable(name);
+		return new CInstrVariable(name, CType());
+	}
+    
+	virtual antlrcpp::Any visitDef_var_with_expr(
+			CodeCParser::Def_var_with_exprContext *ctx) override {
+		string name = ctx->IDENT()->getText();
+		CExpression* expr = (CExpression*) visit(ctx->expression());
+		return new CInstrVariable(name, CType(), expr);
+	}
+    
+	virtual antlrcpp::Any visitDef_array(CodeCParser::Def_arrayContext *ctx)
+			override {
+		string name = ctx->IDENT()->getText();
+		int count = (int) (long) visit(ctx->intval());
+		return new CInstrArray(name, CType(), count);
+	}
+    
+	virtual antlrcpp::Any visitDef_array_with_expr(
+			CodeCParser::Def_array_with_exprContext *ctx) override {
+		string name = ctx->IDENT()->getText();
+		int count = (int) (long) visit(ctx->intval());
+        
+		list<CExpression *> exprs;
+		for (auto expressionCtx : ctx->expression()) {
+			exprs.push_back((CExpression*) visit(expressionCtx));
+		}
+        
+		return new CInstrArray(name, CType(), count, exprs);
 	}
 
 	virtual antlrcpp::Any visitIf_block(CodeCParser::If_blockContext *ctx)
@@ -224,33 +251,6 @@ public:
 				forEvolution, *blockContent);
 		delete blockContent;
 		return (CInstruction*) instr;
-	}
-
-	virtual antlrcpp::Any visitDef_var_with_expr(
-			CodeCParser::Def_var_with_exprContext *ctx) override {
-		string name = ctx->IDENT()->getText();
-		CExpression* expr = (CExpression*) visit(ctx->expression());
-		return new CInstrVariable(name, expr);
-	}
-
-	virtual antlrcpp::Any visitDef_array(CodeCParser::Def_arrayContext *ctx)
-			override {
-		string name = ctx->IDENT()->getText();
-		int size = (int) (long) visit(ctx->intval());
-		return new CInstrArray(name, size);
-	}
-
-	virtual antlrcpp::Any visitDef_array_with_expr(
-			CodeCParser::Def_array_with_exprContext *ctx) override {
-		string name = ctx->IDENT()->getText();
-		int size = (int) (long) visit(ctx->intval());
-
-		list<CExpression *> exprs;
-		for (auto expressionCtx : ctx->expression()) {
-			exprs.push_back((CExpression*) visit(expressionCtx));
-		}
-
-		return new CInstrArray(name, size, exprs);
 	}
 
 	virtual antlrcpp::Any visitInstr_expr(CodeCParser::Instr_exprContext *ctx)

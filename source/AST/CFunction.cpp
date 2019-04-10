@@ -15,7 +15,7 @@ using std::to_string;
 
 
 CFunction::CFunction(const CProg* prog, string name, CType type, vector<CParameter>& parameters_, CInstructions& block_)
-: prog(prog), name(name), tos(prog != nullptr ? &prog->tos : nullptr)
+: prog(prog), name(name), type(type), tos(prog != nullptr ? &prog->tos : nullptr)
 {
     parameters = std::move(parameters_);
     parameters_.clear();

@@ -14,8 +14,8 @@ using std::to_string;
 string CExpressionInt::to_IR(CFG* cfg) const {
     /*
     BasicBlock* bb = cfg->current_bb;
-    string variable = cfg->tos.add_temp("int");
-    bb->add_IRInstr(op_ldconst, "int", {variable, to_string(value)});
+    string variable = cfg->tos.add_temp(type);
+    bb->add_IRInstr(op_ldconst, type, {variable, to_string(value)});
     return variable;
     */
     
@@ -27,20 +27,22 @@ string CExpressionVar::to_IR(CFG* cfg) const {
 }
 
 string CExpressionVarArray::to_IR(CFG* cfg) const {
-    //TODO : incomplete
-
     BasicBlock* bb = cfg->current_bb;
     string addressIndex = index->to_IR(cfg);
     
-    string temp = cfg->tos.add_temp("int");
+    //FIXME find type of array
+    CType type = "int";
     
     if (addressIndex.at(0) == '$')
-        bb->add_IRInstr(op_index_ldconst, "int", {addressIndex});
+        bb->add_IRInstr(op_index_ldconst, type, {addressIndex});
     else
-        bb->add_IRInstr(op_index, "int", {addressIndex});
-    bb->add_IRInstr(op_copy_from_array, "int", {temp,variable});
+        bb->add_IRInstr(op_index, type, {addressIndex});
+    
+    string temp = cfg->tos.add_temp(type);
+    bb->add_IRInstr(op_copy_from_array, type, {temp,variable});
     
     cfg->tos.free_temp(addressIndex);
+    
     return temp;
 }
 
@@ -48,10 +50,13 @@ string CExpressionVarArray::to_IR_address(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
     string addressIndex = index->to_IR(cfg);
     
+    //FIXME find type
+    CType type = "int";
+    
     if (addressIndex.at(0) == '$')
-        bb->add_IRInstr(op_index_ldconst, "int", {addressIndex});
+        bb->add_IRInstr(op_index_ldconst, type, {addressIndex});
     else
-        bb->add_IRInstr(op_index, "int", {addressIndex});
+        bb->add_IRInstr(op_index, type, {addressIndex});
     
     cfg->tos.free_temp(addressIndex);
     return variable;
@@ -59,26 +64,26 @@ string CExpressionVarArray::to_IR_address(CFG* cfg) const {
 
 string CExpressionComposed::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-
+    
     string variable;
-
+    
     if (op == "=") {
         string lhsvar;
-
+        
         CExpressionVarArray* vararray = dynamic_cast<CExpressionVarArray*>(lhs);
         //CExpressionCall* functionCall = dynamic_cast<CExpressionCall*>(rhs);
-
+        
         if (vararray == nullptr)
             lhsvar = lhs->to_IR(cfg);
         else
             lhsvar = vararray->to_IR_address(cfg);
         
         string rhsvar = rhs->to_IR(cfg);
-
+        
         CType type = "int"; //TODO handle other types
-
+        
         // TODO check if it's a pointer
-
+        
         if (vararray == nullptr){
             if (rhsvar.at(0) == '$')
                 bb->add_IRInstr(op_ldconst, type, {lhsvar, rhsvar});
@@ -95,18 +100,18 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             //else
             //    cerr << "ERROR : " << functionCall->functionName << " does not return anything";
         }
-
+        
         variable = lhsvar;
         // to do
     } else {
         string lhsvar = lhs->to_IR(cfg);
         string rhsvar = rhs->to_IR(cfg);
-
-        variable = cfg->tos.add_temp("int");
-
+        
+        CType type = "int"; //FIXME find type
+        variable = cfg->tos.add_temp(type);
+        
         vector<string> params = {variable, lhsvar, rhsvar};
-        CType type = "int"; //TODO handle other types
-
+        
         if (op == "+") {
             bb->add_IRInstr(op_add, type, params);
         }
@@ -117,11 +122,10 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             bb->add_IRInstr(op_mul, type, params);
         }
         if (op == "/") {
-            CExpressionInt* exprInt = dynamic_cast<CExpressionInt*> (rhs);
-            if (exprInt!=nullptr){
-                BasicBlock* bb = cfg->current_bb;
-                string var = cfg->tos.add_temp("int");
-                bb->add_IRInstr(op_ldconst, "int", {var, rhsvar});
+            CExpressionInt* exprint = dynamic_cast<CExpressionInt*>(rhs);
+            if (exprint != nullptr) {
+                string var = cfg->tos.add_temp(type);
+                bb->add_IRInstr(op_ldconst, type, {var, rhsvar});
                 rhsvar = var;
             }
             bb->add_IRInstr(op_div, type, {variable,lhsvar,rhsvar});
@@ -129,7 +133,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         if (op == "%") {
             bb->add_IRInstr(op_mod, type, params);
         }
-
+        
         //   code += "  cmpl  " + rhsvar + ", %eax\n";
         if (op == "<") {
             bb->add_IRInstr(op_cmp_lt, type, params);
@@ -151,7 +155,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         }
         //    code += "  %al\n";
         //    code += "  movzbl  %al, %eax\n";
-
+        
         if (op == "!") {
             bb->add_IRInstr(op_not, type, params);
         }
@@ -169,14 +173,17 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         cfg->tos.free_temp(rhsvar);
     }
     // to do
-
+    
     return variable;
 }
 
 string CExpressionCall::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
     
-    string variable = cfg->tos.add_temp("int");
+    //FIXME find type of function
+    CType functype = "int";
+    
+    string variable = cfg->tos.add_temp(functype);
     
     vector<string> results;
     
@@ -197,7 +204,7 @@ string CExpressionCall::to_IR(CFG* cfg) const {
         results.push_back((*it)->to_IR(cfg));
     }
     
-    bb->add_IRInstr(op_call, "int", results);
+    bb->add_IRInstr(op_call, functype, results);
     
     for (const string& result : results) {
         cfg->tos.free_temp(result);

@@ -14,8 +14,8 @@ class CExpression;
 
 class CInstrArray : public CInstruction {
 public:
-    CInstrArray(string name, int size);
-    CInstrArray(string name, int size, list<CExpression*> exprs);
+    CInstrArray(string name, CType type, int count);
+    CInstrArray(string name, CType type, int count, list<CExpression*> exprs);
     ~CInstrArray();
     
     void explore_tos(TOS& tos) const;
@@ -23,10 +23,10 @@ public:
     void to_IR(CFG* cfg) const;
     void gen_asm_z80(ostream& o, const CFunction* f) const;
     
-    CType type;
     string name;
-    int size;
-    list <CExpression*> exprs;
+    CType type;
+    int count;
+    list<CExpression*> exprs;
     
 private:
     // no copy wanted
