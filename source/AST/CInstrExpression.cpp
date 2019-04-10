@@ -2,6 +2,9 @@
 
 #include "CExpression.h"
 
+void CInstrExpression::explore_tos(TOS& tos) const {
+}
+
 CInstrExpression::CInstrExpression(CExpression* expr)
 : expr(expr)
 {

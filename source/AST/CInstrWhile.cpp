@@ -1,5 +1,9 @@
 #include "CInstrWhile.h"
 
+void CInstrWhile::explore_tos(TOS& tos) const {
+    blockContent.explore_tos(tos);
+}
+
 void CInstrWhile::optimize() {
     blockContent.optimize();
     

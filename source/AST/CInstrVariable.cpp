@@ -2,6 +2,12 @@
 
 #include "CExpression.h"
 
+#include "../TOS.h"
+
+void CInstrVariable::explore_tos(TOS& tos) const {
+    tos.add(name, type);
+}
+
 void CInstrVariable::optimize()
 {
     if (expr != nullptr) {

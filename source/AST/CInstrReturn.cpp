@@ -2,6 +2,9 @@
 
 #include "CExpression.h"
 
+void CInstrReturn::explore_tos(TOS& tos) const {
+}
+
 void CInstrReturn::optimize() {
     CExpression* opti = expr->optimize();
     if (opti != nullptr) {

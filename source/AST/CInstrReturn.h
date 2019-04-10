@@ -5,6 +5,7 @@ using std::string;
 
 #include "CInstruction.h"
 class CExpression;
+class TOS;
 
 class CInstrReturn: public CInstruction {
 public:
@@ -12,6 +13,7 @@ public:
     CInstrReturn(CExpression* expr);
     ~CInstrReturn();
     
+    void explore_tos(TOS& tos) const;
     void optimize();
     void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;

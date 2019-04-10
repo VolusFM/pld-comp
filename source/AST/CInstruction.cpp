@@ -16,3 +16,9 @@ void CInstructions::optimize() {
     }
 }
 
+void CInstructions::explore_tos(TOS& tos) const {
+    for (auto it = instructions.cbegin(); it != instructions.cend(); ++it) {
+        (*it)->explore_tos(tos);
+    }
+}
+

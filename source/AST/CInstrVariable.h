@@ -6,6 +6,7 @@ using std::string;
 #include "CInstruction.h"
 #include "CType.h"
 class CExpression;
+class TOS;
 
 class CInstrVariable : public CInstruction {
 public:
@@ -13,6 +14,7 @@ public:
     CInstrVariable(string name, CExpression* expr);
     ~CInstrVariable();
     
+    void explore_tos(TOS& tos) const;
     void optimize();
     void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;

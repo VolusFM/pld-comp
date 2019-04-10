@@ -18,10 +18,10 @@ using namespace antlr4;
 #include "IR/IR.h"
 #include "IR/IProg.h"
 
-arguments args;
-
 int main(int argc, const char* argv[]) {
-
+    
+    arguments args;
+    
     // ANALYSE DES ARGUMENTS EN LIGNE DE COMMANDE
 
     if (!argsparse(argc, argv, args)) {
@@ -76,13 +76,8 @@ int main(int argc, const char* argv[]) {
     
     if (args.opto) ast->optimize();
     
-    IProg* ir;
-    
-    if (!args.tmp) // temporary
-    {
-        ir = ast->to_IR();
-        if (args.opto) ir->optimize();
-    }
+    IProg* ir = ast->to_IR();
+    if (args.opto) ir->optimize();
     
     if (args.opta && !args.optc) {
         args.optc = true;

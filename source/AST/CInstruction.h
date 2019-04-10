@@ -6,12 +6,13 @@ using std::vector;
 using std::string;
 
 class CFunction;
-
+class TOS;
 class CFG;
 
 class CInstruction {
 public:
     virtual ~CInstruction() = default;
+    virtual void explore_tos(TOS& tos) const = 0;
     virtual void optimize() = 0;
     virtual void to_IR(CFG* cfg) const = 0;
     virtual string to_asm(const CFunction* f) const = 0;
@@ -24,6 +25,7 @@ public:
     CInstructions(vector<CInstruction*>& instructions);
     ~CInstructions();
     
+    void explore_tos(TOS& tos) const;
     void optimize();
     void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;

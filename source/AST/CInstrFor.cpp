@@ -1,5 +1,9 @@
 #include "CInstrFor.h"
 
+void CInstrFor::explore_tos(TOS& tos) const {
+    blockContent.explore_tos(tos);
+}
+
 void CInstrFor::optimize() {
     blockContent.optimize();
     

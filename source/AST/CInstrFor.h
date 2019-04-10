@@ -5,8 +5,7 @@ using std::string;
 
 #include "CExpression.h"
 #include "CInstruction.h"
-
-//whileblock: 'while' '(' rvalue ')' anyinstruction;
+class TOS;
 
 class CInstrFor: public CInstruction {
 public:
@@ -16,6 +15,7 @@ public:
             CExpression* evolution, CInstructions& blockContent);
     ~CInstrFor();
     
+    void explore_tos(TOS& tos) const;
     void optimize();
     void to_IR(CFG* cfg) const;
     string to_asm(const CFunction* f) const;

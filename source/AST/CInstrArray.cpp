@@ -6,6 +6,10 @@ using std::endl;
 
 #include "CExpression.h"
 
+void CInstrArray::explore_tos(TOS& tos) const {
+    cerr << "WARNING: CInstrArray::explore_tos isn't implemented" << endl;
+}
+
 void CInstrArray::optimize() {
 }
 

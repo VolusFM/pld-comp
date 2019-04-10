@@ -30,22 +30,7 @@ void CFunction::explore_tos() {
         tos.add(param.name, param.type);
     }
     
-    block_explore_tos(tos);
-}
-
-void CFunction::block_explore_tos(TOS& tos) {
-    for (auto it = block.instructions.cbegin();
-              it != block.instructions.cend(); ++it) {
-        const CInstruction* i = *it;
-        
-        // FIXME
-        // const CInstructions* instrlist = dynamic_cast<const CInstructions*>(i);
-        // if (instrlist != nullptr) fill_tos(*instrlist);
-        
-        // FIXME
-        const CInstrVariable* instrvar = dynamic_cast<const CInstrVariable*>(i);
-        if (instrvar != nullptr) tos.add(instrvar->name, instrvar->type);
-    }
+    block.explore_tos(tos);
 }
 
 void CFunction::optimize() {

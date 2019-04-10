@@ -17,30 +17,30 @@ bool argsparse(int argc, const char* argv[], arguments& args) {
     args.opta = false;
     args.opto = false;
     args.optc = false;
-
+    
     // temporary
     args.tmp = false;
-
+    
     for (int i = 1; i < argc; ++i) {
         const char* arg = argv[i];
         const char* val;
-
+        
         if (*arg == '-') {
             arg++;
-
+            
             if (strequal(arg, "a"))
                 args.opta = true;
             else if (strequal(arg, "o"))
                 args.opto = true;
             else if (strequal(arg, "c"))
                 args.optc = true;
-
+            
             // temporary
             else if (strequal(arg, "-AST"))
                 args.tmp = true;
             else if (strequal(arg, "-IR"))
                 args.tmp = false;
-
+            
             else {
                 cerr << "ERROR: unknown argument : '" << arg << "'." << endl;
                 return false;
@@ -56,16 +56,16 @@ bool argsparse(int argc, const char* argv[], arguments& args) {
             }
         }
     }
-
+    
     if (args.fi.empty()) {
         cerr << "ERROR: missing file input argument." << endl;
         return false;
     }
-
+    
     if (!args.optc && !args.fo.empty()) {
         cerr << "ERROR: too many arguments." << endl;
         return false;
     }
-
+    
     return true;
 }

@@ -23,8 +23,6 @@ bool TOS::has(string name) const {
 }
 
 void TOS::add(string name, CType type, int count) {
-    cerr << "TOS.add(" << name << ")" << endl; //FIXME
-    
     if (has(name)) {
         cerr << "ERROR: already declared variable '" << name << "'" << endl;
         throw;

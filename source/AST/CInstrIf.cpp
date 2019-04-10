@@ -1,5 +1,10 @@
 #include "CInstrIf.h"
 
+void CInstrIf::explore_tos(TOS& tos) const {
+    blockTrue.explore_tos(tos);
+    blockFalse.explore_tos(tos);
+}
+
 void CInstrIf::optimize() {
     CExpression* opti = condition->optimize();
     if (opti != nullptr) {
