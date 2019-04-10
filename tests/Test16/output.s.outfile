@@ -4,6 +4,7 @@ main:
   ## prologue
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
+  subq $16, %rsp
   ## contenu
 main_body:
   movl  $1, -4(%rbp)
@@ -12,8 +13,8 @@ main_body:
   sete    %al
   movzbl  %al, %eax
   movl  %eax, -12(%rbp)
-  jne main_if1false
-  jmp main_if1true
+  cmpl $0, %eax
+  je main_if1false
 main_if1true:
   movl  $1, -8(%rbp)
   jmp main_2
