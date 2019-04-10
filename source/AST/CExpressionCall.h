@@ -18,7 +18,7 @@ class CExpressionCall: public CExpression {
 public:
     CExpressionCall(string name, vector<CExpression*> parameters);
     string to_IR(CFG* cfg) const;
-    string gen_asm(ostream& o, CFunction* f) const;
+    string gen_asm_z80(ostream& o, CFunction* f) const;
     ~CExpressionCall();
 
     string functionName;

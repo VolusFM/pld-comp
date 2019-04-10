@@ -15,7 +15,7 @@ public:
     virtual ~CExpression() = default;
     virtual CExpression* optimize();
     virtual string to_IR(CFG* cfg) const = 0;
-    virtual string gen_asm(ostream& o, CFunction* f) const = 0;
+    virtual string gen_asm_z80(ostream& o, CFunction* f) const = 0;
 };
 
 class CExpressionInt: public CExpression {
@@ -23,7 +23,7 @@ public:
     CExpressionInt(int value);
     ~CExpressionInt() = default;
     string to_IR(CFG* cfg) const;
-    string gen_asm(ostream& o, CFunction* f) const;
+    string gen_asm_z80(ostream& o, CFunction* f) const;
     
     int value;
 };
@@ -33,7 +33,7 @@ public:
     CExpressionVar(string variable);
     ~CExpressionVar() = default;
     string to_IR(CFG* cfg) const;
-    string gen_asm(ostream& o, CFunction* f) const;
+    string gen_asm_z80(ostream& o, CFunction* f) const;
 
     string variable;
 };
@@ -44,7 +44,7 @@ public:
     ~CExpressionVarArray();
     string to_IR(CFG* cfg) const;
     string to_IR_address(CFG* cfg) const;
-    string gen_asm(ostream& o, CFunction* f) const;
+    string gen_asm_z80(ostream& o, CFunction* f) const;
     
     string variable;
     CExpression* index;
@@ -56,7 +56,7 @@ public:
     ~CExpressionComposed();
     CExpression* optimize();
     string to_IR(CFG* cfg) const;
-    string gen_asm(ostream& o, CFunction* f) const;
+    string gen_asm_z80(ostream& o, CFunction* f) const;
 
     CExpression* lhs;
     string op;

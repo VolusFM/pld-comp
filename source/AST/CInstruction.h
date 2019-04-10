@@ -17,7 +17,7 @@ public:
     virtual void explore_tos(TOS& tos) const = 0;
     virtual void optimize() = 0;
     virtual void to_IR(CFG* cfg) const = 0;
-    virtual void gen_asm(ostream& o, const CFunction* f) const = 0;
+    virtual void gen_asm_z80(ostream& o, const CFunction* f) const = 0;
 };
 
 // Wrapper for a vector of instructions
@@ -30,7 +30,7 @@ public:
     void explore_tos(TOS& tos) const;
     void optimize();
     void to_IR(CFG* cfg) const;
-    void gen_asm(ostream& o, const CFunction* f) const;
+    void gen_asm_z80(ostream& o, const CFunction* f) const;
     
     vector<CInstruction*> instructions;
     

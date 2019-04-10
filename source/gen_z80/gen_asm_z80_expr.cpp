@@ -10,29 +10,29 @@ using std::endl;
 #include "../AST/CFunction.h"
 
 
-string CExpressionInt::gen_asm(ostream& o, CFunction* f) const {
+string CExpressionInt::gen_asm_z80(ostream& o, CFunction* f) const {
     string variable = f->tos.add_temp("int");
     string varaddr = f->tos.get_address_x86(variable);
     o << "  movl  $" << value << ", " << varaddr << "\n";
     return varaddr;
 }
 
-string CExpressionVar::gen_asm(ostream& o, CFunction* f) const {
+string CExpressionVar::gen_asm_z80(ostream& o, CFunction* f) const {
     string varaddr = f->tos.get_address_x86(variable);
     return varaddr;
 }
 
-string CExpressionVarArray::gen_asm(ostream& o, CFunction* f) const {
+string CExpressionVarArray::gen_asm_z80(ostream& o, CFunction* f) const {
     cerr << "PROBLEM: gen_asm unimplemented for array expressions" << endl;
     throw;
 }
 
-string CExpressionComposed::gen_asm(ostream& o, CFunction* f) const {
+string CExpressionComposed::gen_asm_z80(ostream& o, CFunction* f) const {
     string code;
     string variable;
     
-    string lhsvar = lhs->gen_asm(o, f);
-    string rhsvar = rhs->gen_asm(o, f);
+    string lhsvar = lhs->gen_asm_z80(o, f);
+    string rhsvar = rhs->gen_asm_z80(o, f);
     
     if (op == "=") {
         code += "  movl  " + rhsvar + ", %eax\n";
@@ -103,7 +103,7 @@ string CExpressionComposed::gen_asm(ostream& o, CFunction* f) const {
     return variable;
 }
 
-string CExpressionCall::gen_asm(ostream& o, CFunction* f) const {
+string CExpressionCall::gen_asm_z80(ostream& o, CFunction* f) const {
     cerr << "PROBLEM: gen_asm unimplemented for control statements" << endl;
     throw;
 }

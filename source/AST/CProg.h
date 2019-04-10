@@ -16,7 +16,7 @@ class CProg {
 public:
     void optimize();
     IProg* to_IR() const;
-    void gen_asm(ostream& o) const;
+    void gen_asm_z80(ostream& o) const;
     
     TOS tos;
     vector<CFunction> functions;

@@ -18,8 +18,7 @@ bool argsparse(int argc, const char* argv[], arguments& args) {
     args.opto = false;
     args.optc = false;
     
-    // temporary
-    args.tmp = false;
+    args.lo = "x86";
     
     for (int i = 1; i < argc; ++i) {
         const char* arg = argv[i];
@@ -35,11 +34,10 @@ bool argsparse(int argc, const char* argv[], arguments& args) {
             else if (strequal(arg, "c"))
                 args.optc = true;
             
-            // temporary
-            else if (strequal(arg, "-AST"))
-                args.tmp = true;
-            else if (strequal(arg, "-IR"))
-                args.tmp = false;
+            else if (strequal(arg, "-x86"))
+                args.lo = arg+1;
+            else if (strequal(arg, "-z80"))
+                args.lo = arg+1;
             
             else {
                 cerr << "ERROR: unknown argument : '" << arg << "'." << endl;

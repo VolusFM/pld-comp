@@ -10,7 +10,7 @@ using std::cerr;
 using std::endl;
 
 
-void CProg::gen_asm(ostream& o) const {
+void CProg::gen_asm_z80(ostream& o) const {
     o << ".text\n";
     o << ".global main\n";
     
@@ -18,7 +18,7 @@ void CProg::gen_asm(ostream& o) const {
         for (const CFunction& f : functions) {
             TOS* tos = const_cast<TOS*>(&f.tos);
             tos->fill_address_x86();
-            f.gen_asm(o);
+            f.gen_asm_z80(o);
             tos->clear_temp();
         }
     } catch (...) {
@@ -26,7 +26,7 @@ void CProg::gen_asm(ostream& o) const {
     }
 }
 
-void CParameter::gen_asm(ostream& o, const CFunction* f, int index) const {
+void CParameter::gen_asm_z80(ostream& o, const CFunction* f, int index) const {
     static const string registerName[] = { "%edi", "%esi", "%edx", "%ecx", "%e8d", "%e9d" };
     
     string variable = f->tos.get_address_x86(name);
@@ -34,7 +34,7 @@ void CParameter::gen_asm(ostream& o, const CFunction* f, int index) const {
     o << "  movl " << registerName[index] << ", " << variable << "\n";
 }
 
-void CFunction::gen_asm(ostream& o) const {
+void CFunction::gen_asm_z80(ostream& o) const {
     o << name;
     
     /*
@@ -56,14 +56,14 @@ void CFunction::gen_asm(ostream& o) const {
     
     int index = 0;
     for (auto it = parameters.cbegin() ; it != parameters.cend() ; ++it) {
-        it->gen_asm(o, this, index);
+        it->gen_asm_z80(o, this, index);
         index++;
     }
     
     o << "  ## contenu\n";
     
     for (const CInstruction* it : block.instructions) {
-        it->gen_asm(o, this);
+        it->gen_asm_z80(o, this);
     }
     
     o << "  ## epilogue\n";
