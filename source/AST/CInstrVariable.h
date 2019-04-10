@@ -9,11 +9,12 @@ using std::string;
 class TOS;
 #include "CInstruction.h"
 class CExpression;
+class CExpressionPart;
 
 class CInstrVariable : public CInstruction {
 public:
     CInstrVariable(string name, CType type);
-    CInstrVariable(string name, CType type, CExpression* expr);
+    CInstrVariable(string name, CType type, CExpressionPart* expr);
     ~CInstrVariable();
     
     void explore_tos(TOS& tos) const;

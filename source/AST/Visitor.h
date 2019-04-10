@@ -109,7 +109,7 @@ public:
 
 	virtual antlrcpp::Any visitReturn_expr(CodeCParser::Return_exprContext *ctx)
 			override {
-		CExpression* expr = (CExpression*) visit(ctx->expression());
+		CExpressionPart* expr = (CExpressionPart*) visit(ctx->expressionpart());
 		CInstrReturn* instr = new CInstrReturn(expr);
 		return instr;
 	}
@@ -152,7 +152,7 @@ public:
 	virtual antlrcpp::Any visitDef_var_with_expr(
 			CodeCParser::Def_var_with_exprContext *ctx) override {
 		string name = ctx->IDENT()->getText();
-		CExpression* expr = (CExpression*) visit(ctx->expression());
+		CExpressionPart* expr = (CExpressionPart*) visit(ctx->expressionpart());
 		return new CInstrVariable(name, CType(), expr);
 	}
     
@@ -168,9 +168,9 @@ public:
 		string name = ctx->IDENT()->getText();
 		int count = (int) (long) visit(ctx->intval());
         
-		list<CExpression *> exprs;
-		for (auto expressionCtx : ctx->expression()) {
-			exprs.push_back((CExpression*) visit(expressionCtx));
+		list<CExpressionPart*> exprs;
+		for (auto ctx_expr : ctx->expressionpart()) {
+			exprs.push_back((CExpressionPart*) visit(ctx_expr));
 		}
         
 		return new CInstrArray(name, CType(), count, exprs);
@@ -282,17 +282,24 @@ public:
 		return block;
 	}
 
+	virtual antlrcpp::Any visitExpression(CodeCParser::ExpressionContext *ctx)
+			override
+			{
+        CExpressionPart* part = (CExpressionPart*) visit(ctx->expressionpart());
+		return (CExpression*) new CExpression(part);
+	}
+
 	virtual antlrcpp::Any visitVariable(CodeCParser::VariableContext *ctx)
 			override
 			{
-		return (CExpression *) visit(ctx->lvalue());
+		return (CExpressionPart*) visit(ctx->lvalue());
 	}
 
 	virtual antlrcpp::Any visitConst(CodeCParser::ConstContext *ctx) override
 	{
 		CExpressionInt *expr = new CExpressionInt(
 				(int) (long) visit(ctx->intval()));
-		return (CExpression *) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitIntval_dec(CodeCParser::Intval_decContext *ctx)
@@ -335,12 +342,12 @@ public:
 
 	virtual antlrcpp::Any visitAffect_expr(CodeCParser::Affect_exprContext *ctx)
 			override {
-		CExpression* lhs = (CExpression*) visit(ctx->lvalue());
-		CExpression* rhs = (CExpression*) visit(ctx->rvalue());
+		CExpressionPart* lhs = (CExpressionPart*) visit(ctx->lvalue());
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue());
 
 		string op = ctx->OPAFF()->getText();
 		CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitParenth_expr(
@@ -352,21 +359,21 @@ public:
 	virtual antlrcpp::Any visitFunction_call(
 			CodeCParser::Function_callContext *ctx) override {
 		string functionName = ctx->IDENT()->getText();
-		vector<CExpression*>* parameters = new vector<CExpression*>;
+		vector<CExpressionPart*>* parameters = new vector<CExpressionPart*>;
         
-		for (auto ctx_param : ctx->expression()) {
-			parameters->push_back((CExpression*) visit(ctx_param));
+		for (auto ctx_param : ctx->expressionpart()) {
+			parameters->push_back((CExpressionPart*) visit(ctx_param));
 		}
         
 		CExpressionCall* function = new CExpressionCall(functionName, *parameters);
 		delete parameters;
-		return (CExpression*) function;
+		return (CExpressionPart*) function;
 	}
 
 	virtual antlrcpp::Any visitAdd_expr(CodeCParser::Add_exprContext *ctx)
 			override {
-		CExpression* lhs = (CExpression*) visit(ctx->rvalue()[0]);
-		CExpression* rhs = (CExpression*) visit(ctx->rvalue()[1]);
+		CExpressionPart* lhs = (CExpressionPart*) visit(ctx->rvalue()[0]);
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue()[1]);
 		string op;
 
 		if (ctx->OPADD() != nullptr)
@@ -375,13 +382,13 @@ public:
 			op = '-';
 
 		CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitMult_expr(CodeCParser::Mult_exprContext *ctx)
 			override {
-		CExpression* lhs = (CExpression*) visit(ctx->rvalue()[0]);
-		CExpression* rhs = (CExpression*) visit(ctx->rvalue()[1]);
+		CExpressionPart* lhs = (CExpressionPart*) visit(ctx->rvalue()[0]);
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue()[1]);
 		string op;
 
 		if (ctx->OPMULT() != nullptr) {
@@ -393,13 +400,13 @@ public:
 		}
 
 		CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitUnary_expr(CodeCParser::Unary_exprContext *ctx)
 			override {
-		CExpression *rhs = (CExpression*) visit(ctx->rvalue());
-		CExpression *lhs = new CExpressionInt(0);
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue());
+		CExpressionPart* lhs = new CExpressionInt(0);
 		string op;
 
 		if (ctx->OPADD() != nullptr)
@@ -409,14 +416,14 @@ public:
 		else if (ctx->OPNOT() != nullptr)
 			op = '!';
 
-		CExpressionComposed *expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		CExpressionPart* expr = new CExpressionComposed(lhs, op, rhs);
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitRelational_expr(
 			CodeCParser::Relational_exprContext *ctx) override {
-		CExpression* lhs = (CExpression*) visit(ctx->rvalue()[0]);
-		CExpression* rhs = (CExpression*) visit(ctx->rvalue()[1]);
+		CExpressionPart* lhs = (CExpressionPart*) visit(ctx->rvalue()[0]);
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue()[1]);
 		string op;
 
 		if (ctx->OPRELATIONINF() != nullptr)
@@ -429,13 +436,13 @@ public:
 			op = ">=";
 
 		CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitEquality_expr(
 			CodeCParser::Equality_exprContext *ctx) override {
-		CExpression* lhs = (CExpression*) visit(ctx->rvalue()[0]);
-		CExpression* rhs = (CExpression*) visit(ctx->rvalue()[1]);
+		CExpressionPart* lhs = (CExpressionPart*) visit(ctx->rvalue()[0]);
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue()[1]);
 		string op;
 
 		if (ctx->OPEQUALITY() != nullptr)
@@ -444,70 +451,70 @@ public:
 			op = "!=";
 
 		CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitBinary_and_expr(
 			CodeCParser::Binary_and_exprContext *ctx) override {
-		CExpression* lhs = (CExpression*) visit(ctx->rvalue()[0]);
-		CExpression* rhs = (CExpression*) visit(ctx->rvalue()[1]);
+		CExpressionPart* lhs = (CExpressionPart*) visit(ctx->rvalue()[0]);
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue()[1]);
 		string op = "&";
 
 		CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitBinary_exclusive_or_expr(
 			CodeCParser::Binary_exclusive_or_exprContext *ctx) override {
-		CExpression* lhs = (CExpression*) visit(ctx->rvalue()[0]);
-		CExpression* rhs = (CExpression*) visit(ctx->rvalue()[1]);
+		CExpressionPart* lhs = (CExpressionPart*) visit(ctx->rvalue()[0]);
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue()[1]);
 		string op = "^";
 
 		CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitBinary_or_expr(
 			CodeCParser::Binary_or_exprContext *ctx) override {
-		CExpression* lhs = (CExpression*) visit(ctx->rvalue()[0]);
-		CExpression* rhs = (CExpression*) visit(ctx->rvalue()[1]);
+		CExpressionPart* lhs = (CExpressionPart*) visit(ctx->rvalue()[0]);
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue()[1]);
 		string op = "|";
 
 		CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitLogical_and_expr(
 			CodeCParser::Logical_and_exprContext *ctx) override {
-		CExpression* lhs = (CExpression*) visit(ctx->rvalue()[0]);
-		CExpression* rhs = (CExpression*) visit(ctx->rvalue()[1]);
+		CExpressionPart* lhs = (CExpressionPart*) visit(ctx->rvalue()[0]);
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue()[1]);
 		string op = "&&";
 
 		CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitLogical_or_expr(
 			CodeCParser::Logical_or_exprContext *ctx) override {
-		CExpression* lhs = (CExpression*) visit(ctx->rvalue()[0]);
-		CExpression* rhs = (CExpression*) visit(ctx->rvalue()[1]);
+		CExpressionPart* lhs = (CExpressionPart*) visit(ctx->rvalue()[0]);
+		CExpressionPart* rhs = (CExpressionPart*) visit(ctx->rvalue()[1]);
 		string op = "||";
 
 		CExpressionComposed* expr = new CExpressionComposed(lhs, op, rhs);
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitSimple_variable(
 			CodeCParser::Simple_variableContext *ctx) override {
 		CExpressionVar* expr = new CExpressionVar(ctx->IDENT()->getText());
-		return (CExpression*) expr;
+		return (CExpressionPart*) expr;
 	}
 
 	virtual antlrcpp::Any visitVariable_in_array(
 			CodeCParser::Variable_in_arrayContext *ctx) override {
 		CExpressionVarArray* expr = new CExpressionVarArray(
-				ctx->IDENT()->getText(), (CExpression*) visit(ctx->rvalue()));
-		return (CExpression*) expr;
+				ctx->IDENT()->getText(), (CExpressionPart*) visit(ctx->rvalue()));
+		return (CExpressionPart*) expr;
 	}
 };
 

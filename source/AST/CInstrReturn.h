@@ -7,12 +7,12 @@ using std::string;
 
 class TOS;
 #include "CInstruction.h"
-class CExpression;
+class CExpressionPart;
 
 class CInstrReturn: public CInstruction {
 public:
     CInstrReturn();
-    CInstrReturn(CExpression* expr);
+    CInstrReturn(CExpressionPart* expr);
     ~CInstrReturn();
     
     void explore_tos(TOS& tos) const;
@@ -20,7 +20,7 @@ public:
     void to_IR(CFG* cfg) const;
     void gen_asm_z80(ostream& o, const CFunction* f) const;
 
-    CExpression* expr;
+    CExpressionPart* expr;
 
 private:
     // no copy wanted

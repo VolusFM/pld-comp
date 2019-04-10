@@ -10,12 +10,12 @@ using std::list;
 #include "../CType.h"
 class TOS;
 #include "CInstruction.h"
-class CExpression;
+class CExpressionPart;
 
 class CInstrArray : public CInstruction {
 public:
     CInstrArray(string name, CType type, int count);
-    CInstrArray(string name, CType type, int count, list<CExpression*> exprs);
+    CInstrArray(string name, CType type, int count, list<CExpressionPart*> exprs);
     ~CInstrArray();
     
     void explore_tos(TOS& tos) const;
@@ -26,7 +26,7 @@ public:
     string name;
     CType type;
     int count;
-    list<CExpression*> exprs;
+    list<CExpressionPart*> exprs;
     
 private:
     // no copy wanted

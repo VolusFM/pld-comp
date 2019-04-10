@@ -9,6 +9,10 @@ using std::endl;
 
 #include "../AST/CFunction.h"
 
+void CExpression::gen_asm_z80_full(ostream& o, const CFunction* f) const {
+    CFunction* fm = const_cast<CFunction*>(f);
+    expr->gen_asm_z80(o, fm);
+}
 
 string CExpressionInt::gen_asm_z80(ostream& o, CFunction* f) const {
     o << "  ld    hl, " << value << "\n";
@@ -22,7 +26,7 @@ string CExpressionVar::gen_asm_z80(ostream& o, CFunction* f) const {
 }
 
 string CExpressionComposed::gen_asm_z80(ostream& o, CFunction* f) const {
-    string variable;
+    string variable = "hl"; //FIXME or a
     
     string lhsvar = lhs->gen_asm_z80(o, f);
     string rhsvar = rhs->gen_asm_z80(o, f);

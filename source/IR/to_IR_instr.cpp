@@ -25,7 +25,7 @@ void CInstructions::to_IR(CFG* cfg) const {
 }
 
 void CInstrExpression::to_IR(CFG* cfg) const {
-    expr->to_IR(cfg);
+    expr->to_IR_full(cfg);
 }
 
 void CInstrArray::to_IR(CFG* cfg) const {
@@ -33,16 +33,16 @@ void CInstrArray::to_IR(CFG* cfg) const {
     // cfg->tos.add(name, type, size);
     
     int index = 0;
-    for (CExpression* expr : exprs) {
+    for (CExpressionPart* expr : exprs) {
         CExpressionInt* exprint = dynamic_cast<CExpressionInt*>(expr); 
         if (exprint != nullptr) {
             bb->add_IRInstr(op_ldconst_to_array_index, type,
                             { name, to_string(index), '$'+to_string(exprint->value) });
         } else {
-            string temp = expr->to_IR(cfg);
+            string result = expr->to_IR(cfg);
             bb->add_IRInstr(op_copy_to_array_index, type,
-                            { name, to_string(index), temp });
-            cfg->tos.free_temp(temp);
+                            { name, to_string(index), result });
+            cfg->tos.free_temp(result);
         }
         index++;
     }
@@ -56,8 +56,7 @@ void CInstrVariable::to_IR(CFG* cfg) const {
     // cfg->tos_add(name, type);
     
     if (expr != nullptr) {
-        string temp = expr->to_IR(cfg);
-        cfg->tos.free_temp(temp);
+        expr->to_IR_full(cfg);
     }
 }
 
@@ -91,7 +90,7 @@ void CInstrIf::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
 
     // Add condition to the current block
-    cfg->tos.free_temp(condition->to_IR(cfg));
+    condition->to_IR_bool(cfg);
 
     bool hasTrue = !blockTrue.instructions.empty();
     bool hasFalse = !blockFalse.instructions.empty();
@@ -144,7 +143,7 @@ void CInstrWhile::to_IR(CFG* cfg) const {
     bbCondition->exit_false = bbNext;
     cfg->add_bb(bbCondition);
     // Add condition to the current block
-    cfg->tos.free_temp(condition->to_IR(cfg));
+    condition->to_IR_bool(cfg);
 
     // Prepare the exit_true and exit_false and link them to the next block
     cfg->add_bb(bbContent);
@@ -177,7 +176,7 @@ void CInstrDoWhile::to_IR(CFG* cfg) const {
     bbCondition->exit_true = bbContent;
     bbCondition->exit_false = bbNext;
     // Add condition to the current block
-    cfg->tos.free_temp(condition->to_IR(cfg));
+    condition->to_IR_bool(cfg);
 
     // Add next block to CFG
     cfg->add_bb(bbNext);
@@ -197,7 +196,7 @@ void CInstrFor::to_IR(CFG* cfg) const {
     BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
 
     bb->exit_true = bbStopCondition != nullptr ? bbStopCondition : bbContent;
-    if (start != nullptr) cfg->tos.free_temp(start->to_IR(cfg));
+    if (start != nullptr) start->to_IR_full(cfg);
 
     if (stopCondition != nullptr) {
         // Link current block to the contents of the while
@@ -205,14 +204,14 @@ void CInstrFor::to_IR(CFG* cfg) const {
         bbStopCondition->exit_true = bbContent;
         bbStopCondition->exit_false = bbNext;
         // Add condition to the current block
-        cfg->tos.free_temp(stopCondition->to_IR(cfg));
+        stopCondition->to_IR_bool(cfg);
     }
 
     // Prepare the exit_true and exit_false and link them to the next block
     cfg->add_bb(bbContent);
     bbContent->exit_true = bbStopCondition != nullptr ? bbStopCondition : bbContent;
     blockContent.to_IR(cfg);
-    if (evolution != nullptr) cfg->tos.free_temp(evolution->to_IR(cfg));
+    if (evolution != nullptr) evolution->to_IR_full(cfg);
 
     // Add next block to CFG
     cfg->add_bb(bbNext);

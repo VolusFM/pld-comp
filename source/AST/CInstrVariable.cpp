@@ -8,14 +8,9 @@ void CInstrVariable::explore_tos(TOS& tos) const {
     tos.add(name, type);
 }
 
-void CInstrVariable::optimize()
-{
+void CInstrVariable::optimize() {
     if (expr != nullptr) {
-        CExpression* opti = expr->optimize();
-        if (opti != nullptr) {
-            delete expr;
-            expr = opti;
-        }
+        expr->optimize();
     }
 }
 
@@ -24,11 +19,12 @@ CInstrVariable::CInstrVariable(string name, CType type)
 {
 }
 
-CInstrVariable::CInstrVariable(string name, CType type, CExpression* expr_)
+CInstrVariable::CInstrVariable(string name, CType type, CExpressionPart* expr_)
 : name(name), type(type)
 {
-    CExpressionVar* exprVar = new CExpressionVar(name);
-    expr = new CExpressionComposed(exprVar, "=", expr_);
+    CExpressionVar* exprvar = new CExpressionVar(name);
+    CExpressionPart* affect = new CExpressionComposed(exprvar, "=", expr_);
+    expr = new CExpression(affect);
 }
 
 CInstrVariable::~CInstrVariable() {

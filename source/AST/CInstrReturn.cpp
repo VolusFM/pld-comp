@@ -6,10 +6,12 @@ void CInstrReturn::explore_tos(TOS& tos) const {
 }
 
 void CInstrReturn::optimize() {
-    CExpression* opti = expr->optimize();
-    if (opti != nullptr) {
-        delete expr;
-        expr = opti;
+    if (expr != nullptr) {
+        CExpressionPart* opti = expr->optimize();
+        if (opti != nullptr) {
+            delete expr;
+            expr = opti;
+        }
     }
 }
 
@@ -18,7 +20,7 @@ CInstrReturn::CInstrReturn()
 {
 }
 
-CInstrReturn::CInstrReturn(CExpression* expr)
+CInstrReturn::CInstrReturn(CExpressionPart* expr)
 : expr(expr)
 {
 }

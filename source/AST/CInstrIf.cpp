@@ -6,12 +6,7 @@ void CInstrIf::explore_tos(TOS& tos) const {
 }
 
 void CInstrIf::optimize() {
-    CExpression* opti = condition->optimize();
-    if (opti != nullptr) {
-        delete condition;
-        condition = opti;
-    }
-    
+    condition->optimize();
     blockTrue.optimize();
     blockFalse.optimize();
 }

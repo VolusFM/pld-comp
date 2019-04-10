@@ -10,33 +10,22 @@ void CInstrFor::optimize() {
     CExpression* opti;
     
     if (start != nullptr) {
-        opti = start->optimize();
-        if (opti != nullptr) {
-            delete start;
-            start = opti;
-        }
+        start->optimize();
     }
     
     if (stopCondition != nullptr) {
-        opti = stopCondition->optimize();
-        if (opti != nullptr) {
-            delete stopCondition;
-            stopCondition = opti;
-        }
+        stopCondition->optimize();
     }
     
     if (evolution != nullptr) {
-        opti = evolution->optimize();
-        if (opti != nullptr) {
-            delete evolution;
-            evolution = opti;
-        }
+        evolution->optimize();
     }
 }
 
 CInstrFor::CInstrFor(CExpression* start, CExpression* stopCondition,
-        CExpression* evolution, CInstructions& blockContent_) :
-        start(start), stopCondition(stopCondition), evolution(evolution) {
+        CExpression* evolution, CInstructions& blockContent_)
+: start(start), stopCondition(stopCondition), evolution(evolution)
+{
     blockContent = std::move(blockContent_);
     blockContent_.instructions.clear();
 }

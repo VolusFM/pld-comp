@@ -2,6 +2,23 @@
 
 #include "CFunction.h"
 
+void CExpression::optimize() {
+    CExpressionPart* opti = expr->optimize();
+    if (opti != nullptr) {
+        delete expr;
+        expr = opti;
+    }
+}
+
+CExpression::CExpression(CExpressionPart* expr)
+: expr(expr)
+{
+}
+
+CExpression::~CExpression() {
+    delete expr;
+}
+
 CExpressionInt::CExpressionInt(int value)
 : value(value)
 {
@@ -12,7 +29,7 @@ CExpressionVar::CExpressionVar(string variable)
 {
 }
 
-CExpressionVarArray::CExpressionVarArray(string variable, CExpression* index)
+CExpressionVarArray::CExpressionVarArray(string variable, CExpressionPart* index)
 : variable(variable), index(index)
 {
 }
@@ -21,7 +38,7 @@ CExpressionVarArray::~CExpressionVarArray() {
     delete index;
 }
 
-CExpressionComposed::CExpressionComposed(CExpression* lhs, string op, CExpression* rhs)
+CExpressionComposed::CExpressionComposed(CExpressionPart* lhs, string op, CExpressionPart* rhs)
 : lhs(lhs), op(op), rhs(rhs)
 {
 }
@@ -31,15 +48,15 @@ CExpressionComposed::~CExpressionComposed() {
     delete rhs;
 }
 
-CExpression* CExpression::optimize() {
+CExpressionPart* CExpressionPart::optimize() {
     return nullptr;
 }
 
-CExpression* CExpressionComposed::optimize()
+CExpressionPart* CExpressionComposed::optimize()
 {
     // optimize each subexpression
     
-    CExpression* opti;
+    CExpressionPart* opti;
     
     opti = lhs->optimize();
     if (opti != nullptr) {

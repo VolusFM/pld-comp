@@ -11,14 +11,37 @@ using std::to_string;
 #include "../AST/CExpression.h"
 #include "../AST/CExpressionCall.h"
 
-string CExpressionInt::to_IR(CFG* cfg) const {
-    /*
-    BasicBlock* bb = cfg->current_bb;
-    string variable = cfg->tos.add_temp(type);
-    bb->add_IRInstr(op_ldconst, type, {variable, to_string(value)});
-    return variable;
-    */
+void CExpression::to_IR_full(CFG* cfg) const {
+    cfg->tos.free_temp(expr->to_IR(cfg));
+}
+
+string CExpression::to_IR_part(CFG* cfg) const {
+    string result = expr->to_IR(cfg);
     
+    //FIXME add type to CExpressionPart
+    CType type = "int"; // expr->type
+    
+    if (result.at(0) != '$') {
+        return result;
+    } else {
+        BasicBlock* bb = cfg->current_bb;
+        string variable = cfg->tos.add_temp(type);
+        bb->add_IRInstr(op_ldconst, type, {variable, result.c_str()+1});
+        return variable;
+    }
+}
+
+void CExpression::to_IR_bool(CFG* cfg) const {
+    string result = expr->to_IR(cfg);
+    
+    //FIXME add type to CExpressionPart
+    CType type = "int"; // expr->type
+    
+    cfg->current_bb->add_IRInstr(op_return, type, {result});
+    cfg->tos.free_temp(result);
+}
+
+string CExpressionInt::to_IR(CFG* cfg) const {
     return '$' + to_string(value);
 }
 
@@ -67,11 +90,13 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
     
     string variable;
     
+    // TODO check if lhs or rhs are function call
+    // then the functions musn't return type void
+    
     if (op == "=") {
         string lhsvar;
         
         CExpressionVarArray* vararray = dynamic_cast<CExpressionVarArray*>(lhs);
-        //CExpressionCall* functionCall = dynamic_cast<CExpressionCall*>(rhs);
         
         if (vararray == nullptr)
             lhsvar = lhs->to_IR(cfg);
@@ -80,29 +105,22 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         
         string rhsvar = rhs->to_IR(cfg);
         
-        CType type = "int"; //TODO handle other types
-        
-        // TODO check if it's a pointer
+        CType type = "int"; //FIXME find type
         
         if (vararray == nullptr){
             if (rhsvar.at(0) == '$')
                 bb->add_IRInstr(op_ldconst, type, {lhsvar, rhsvar});
-            else //if(functionCall==nullptr || funcType[functionCall->functionName].compare("void") == 0)
+            else
                 bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
-            //else
-            //    cerr << "ERROR : " << functionCall->functionName << " does not return anything";
         }
         else {
             if (rhsvar.at(0) == '$')
                 bb->add_IRInstr(op_ldconst_array, type, {lhsvar, rhsvar});
-            else //if(functionCall==nullptr || funcType[functionCall->functionName].compare("void") == 0)
+            else
                 bb->add_IRInstr(op_copy_array, type, {lhsvar, rhsvar});
-            //else
-            //    cerr << "ERROR : " << functionCall->functionName << " does not return anything";
         }
         
         variable = lhsvar;
-        // to do
     } else {
         string lhsvar = lhs->to_IR(cfg);
         string rhsvar = rhs->to_IR(cfg);

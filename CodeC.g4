@@ -24,10 +24,10 @@ instruction: instrreturn ';' #return
 	| expression ';' #instr_expr
 	| ifblock #if_block
 	| whileblock #while_block
-        | forblock #for_block
+	| forblock #for_block
 	| dowhileblock #do_while_block;
 
-instrreturn: 'return' expression #return_expr
+instrreturn: 'return' expressionpart #return_expr
 	| 'return' #return_void;
 
 
@@ -48,14 +48,15 @@ dowhileblock: 'do' anyinstruction 'while' '(' expression ')' ';';
 definition: type (vardefinition|arraydefinition) (','(vardefinition|arraydefinition))*;
 
 vardefinition : IDENT #def_var
-    | IDENT '=' expression	#def_var_with_expr;
+	| IDENT '=' expressionpart #def_var_with_expr;
 
 arraydefinition : IDENT'['intval']'	#def_array
-	| IDENT'['intval']' '=' '{'(expression (',' expression)*)?'}' #def_array_with_expr;
+	| IDENT'['intval']' '=' '{'(expressionpart (',' expressionpart)*)?'}' #def_array_with_expr;
 
 
-// useful for encapsulation
-expression: rvalue;
+// needed for encapsulation
+expression: expressionpart;
+expressionpart: rvalue;
 
 rvalue: (OPNOT|OPADD|OPSUB) rvalue #unary_expr
 	| rvalue (OPMULT|OPDIV|OPMOD) rvalue #mult_expr
@@ -70,7 +71,7 @@ rvalue: (OPNOT|OPADD|OPSUB) rvalue #unary_expr
 	| lvalue OPAFF rvalue #affect_expr
 	| lvalue #variable
 	| intval #const
-	| IDENT '(' (expression (',' expression)*)? ')' #function_call
+	| IDENT '(' (expressionpart (',' expressionpart)*)? ')' #function_call
 	| '('rvalue')' #parenth_expr;
 
 lvalue: IDENT #simple_variable

@@ -12,6 +12,13 @@ void CInstrArray::explore_tos(TOS& tos) const {
 }
 
 void CInstrArray::optimize() {
+    for (auto it = exprs.begin(); it != exprs.end(); ++it) {
+        CExpressionPart* opti = (*it)->optimize();
+        if (opti != nullptr) {
+            delete (*it);
+            (*it) = opti;
+        }
+    }
 }
 
 CInstrArray::CInstrArray(string name, CType type, int count)
@@ -19,7 +26,7 @@ CInstrArray::CInstrArray(string name, CType type, int count)
 {
 }
 
-CInstrArray::CInstrArray(string name, CType type, int count, list<CExpression*> exprs)
+CInstrArray::CInstrArray(string name, CType type, int count, list<CExpressionPart*> exprs)
 : name(name), type(type), count(count), exprs(exprs)
 {
     if (exprs.size() > count) {
@@ -29,7 +36,7 @@ CInstrArray::CInstrArray(string name, CType type, int count, list<CExpression*> 
 }
 
 CInstrArray::~CInstrArray() {
-    for (CExpression* expr : exprs){
+    for (CExpressionPart* expr : exprs){
         delete expr;
     }
 }

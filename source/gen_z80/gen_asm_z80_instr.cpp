@@ -27,8 +27,7 @@ void CInstructions::gen_asm_z80(ostream& o, const CFunction* f) const {
 
 void CInstrExpression::gen_asm_z80(ostream& o, const CFunction* f) const
 {
-    CFunction* fm = const_cast<CFunction*>(f);
-    fm->tos.free_temp(expr->gen_asm_z80(o, fm));
+    expr->gen_asm_z80_full(o, f);
 }
 
 void CInstrArray::gen_asm_z80(ostream& o, const CFunction* f) const
@@ -39,15 +38,24 @@ void CInstrArray::gen_asm_z80(ostream& o, const CFunction* f) const
 
 void CInstrVariable::gen_asm_z80(ostream& o, const CFunction* f) const {
     if (expr != nullptr) {
-        CFunction* fm = const_cast<CFunction*>(f);
-        fm->tos.free_temp(expr->gen_asm_z80(o, fm));
+        expr->gen_asm_z80_full(o, f);
     }
 }
 
 void CInstrReturn::gen_asm_z80(ostream& o, const CFunction* f) const {
     if (expr != nullptr) {
         CFunction* fm = const_cast<CFunction*>(f);
-        fm->tos.free_temp(expr->gen_asm_z80(o, fm));
+        string result = expr->gen_asm_z80(o, fm);
+        
+        if (result != "hl" && result != "a") {
+            if (result.at(0) != '$') {
+                o << "  ld    hl, (" << result << ")\n";
+                fm->tos.free_temp(result);
+            } else {
+                o << "  ld    hl, " << result.c_str()+1 << "\n";
+            }
+        }
+        
     }
  // o << "  pop   ix\n";
     o << "  ret\n";
