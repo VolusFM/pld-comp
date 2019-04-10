@@ -13,7 +13,7 @@ using std::ostream;
 #include "../AST/CType.h"
 class CFunction;
 
-static const string registerName[] = { "%rdi", "%rsi", "%rdx", "%rcx", "%r8d", "%r9d" };
+static const string registerName[] = { "%edi", "%esi", "%edx", "%ecx", "%e8d", "%e9d" };
 
 class IRInstr;
 class BasicBlock;

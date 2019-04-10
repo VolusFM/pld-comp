@@ -144,7 +144,7 @@ void IRInstr::gen_asm_x86(ostream& o) const {
         {
         int index = 0;
         for (auto it = params.begin()+2 ; it != params.end() ; ++it) {
-            o << "  movq " << cfg->tos_get_asm_x86(*it) << ", " << registerName[index] << "\n";
+            o << "  movl " << cfg->tos_get_asm_x86(*it) << ", " << registerName[index] << "\n";
             if (++index==6) break;
         }
         }
