@@ -352,11 +352,11 @@ public:
 			CodeCParser::Function_callContext *ctx) override {
 		string functionName = ctx->IDENT()->getText();
 		vector<CExpression*>* parameters = new vector<CExpression*>;
-
-		for (auto ctx_param : ctx->parametercall()) {
-			parameters->push_back(((CExpression*) visit(ctx_param)));
+        
+		for (auto ctx_param : ctx->expression()) {
+			parameters->push_back((CExpression*) visit(ctx_param));
 		}
-
+        
 		CExpressionCall* function = new CExpressionCall(functionName, *parameters);
 		delete parameters;
 		return (CExpression*) function;

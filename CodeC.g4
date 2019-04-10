@@ -3,9 +3,13 @@ grammar CodeC;
 
 prog: function*;
 
+
 function: functionheader instructionsblock;
 
 functionheader: (type|VOID) IDENT parameters;
+
+parameters: '(' (singleparameter (',' singleparameter)*)? ')';
+singleparameter : type IDENT;
 
 
 anyinstruction: instructionsblock #anyinstrs // some instructions
@@ -23,20 +27,23 @@ instruction: instrreturn ';' #return
         | forblock #for_block
 	| dowhileblock #do_while_block;
 
+instrreturn: 'return' expression #return_expr
+	| 'return' #return_void;
+
+
 ifblock: 'if' '(' expression ')' anyinstruction elseblock?;
 elseblock: 'else' anyinstruction;
 
 whileblock: 'while' '(' expression ')' anyinstruction;
-
-//TODO : implement and compile for 
+ 
 forblock: 'for' '(' forcondition ')' anyinstruction;
 forcondition: forstartcondition? ';' forstopcondition? ';' forevolution?;
 forstartcondition: expression;
 forstopcondition: expression;
 forevolution: expression;
 
-// TODO: implement and compile do...while
 dowhileblock: 'do' anyinstruction 'while' '(' expression ')' ';';
+
 
 definition: type (vardefinition|arraydefinition) (','(vardefinition|arraydefinition))*;
 
@@ -46,13 +53,13 @@ vardefinition : IDENT #def_var
 arraydefinition : IDENT'['intval']'	#def_array
 	| IDENT'['intval']' '=' '{'(expression (',' expression)*)?'}' #def_array_with_expr;
 
+
 // useful for encapsulation
 expression: rvalue;
 
 rvalue: (OPNOT|OPADD|OPSUB) rvalue #unary_expr
 	| rvalue (OPMULT|OPDIV|OPMOD) rvalue #mult_expr
 	| rvalue (OPADD|OPSUB) rvalue #add_expr
-	// In C, boolean type doesn't exist and we use integers instead
 	| rvalue (OPRELATIONINF|OPRELATIONINFEQUAL|OPRELATIONSUP|OPRELATIONSUPEQUAL) rvalue #relational_expr
 	| rvalue (OPEQUALITY|OPINEQUALITY) rvalue #equality_expr
 	| rvalue OPBINARYAND rvalue #binary_and_expr
@@ -63,26 +70,22 @@ rvalue: (OPNOT|OPADD|OPSUB) rvalue #unary_expr
 	| lvalue OPAFF rvalue #affect_expr
 	| lvalue #variable
 	| intval #const
-	| IDENT '(' (parametercall (',' parametercall)*)? ')' #function_call
+	| IDENT '(' (expression (',' expression)*)? ')' #function_call
 	| '('rvalue')' #parenth_expr;
 
-lvalue : IDENT #simple_variable
+lvalue: IDENT #simple_variable
 	| IDENT'['rvalue']' #variable_in_array;
 
-intval : INTDEC #intval_dec
+intval: INTDEC #intval_dec
         | INTHEX #intval_hex
         | INTBIN #intval_bin
         | INTOCT #intval_oct
         | INTCHAR #intval_char;
 
-instrreturn: 'return' expression #return_expr
-	| 'return' #return_void;
 
 type: 'int' | 'char' ;
 
-parameters: '(' (singleparameter (',' singleparameter)*)? ')';
-singleparameter : type IDENT;
-parametercall : expression;
+
 
 VOID : 'void';
 
@@ -114,7 +117,7 @@ OPAFF : '=';
 
 
 COMMENTMULT : '/*' .*? '*/' -> skip;
-COMMENT: '//' ~('\n')* -> skip;
+COMMENT : '//' ~('\n')* -> skip;
 INCLUDE : '#' ~('\n')* -> skip;
 
-WS: [ \n\t\r] -> skip; 
+WS : [ \n\t\r] -> skip; 
