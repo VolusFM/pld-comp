@@ -16,13 +16,18 @@ public:
     void set(string name);
     
 protected:
-    friend bool operator==(const CType& lhs, const CType& rhs);
+    friend bool operator == (const CType& lhs, const CType& rhs);
+    friend bool operator != (const CType& lhs, const CType& rhs);
     
 private:
     string base;
 };
 
-inline bool operator==(const CType& lhs, const CType& rhs) {
+inline bool operator == (const CType& lhs, const CType& rhs) {
     return lhs.base == rhs.base;
+}
+
+inline bool operator != (const CType& lhs, const CType& rhs) {
+    return lhs.base != rhs.base;
 }
 

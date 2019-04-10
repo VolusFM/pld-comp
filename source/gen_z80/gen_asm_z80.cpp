@@ -24,9 +24,9 @@ void CProg::gen_asm_z80(ostream& o) const {
     try {
         for (const CFunction& f : functions) {
             TOS* tos = const_cast<TOS*>(&f.tos);
+            tos->clear_temp();
             tos->fill_address_z80();
             f.gen_asm_z80(o);
-            tos->clear_temp();
         }
     } catch (...) {
         cerr << "ERROR: couldn't generate assembly code" << endl;

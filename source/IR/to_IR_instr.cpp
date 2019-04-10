@@ -7,6 +7,7 @@ using std::endl;
 using std::to_string;
 
 #include "../AST/CExpression.h"
+#include "../AST/CFunction.h"
 #include "../AST/CInstruction.h"
 #include "../AST/CInstrExpression.h"
 #include "../AST/CInstrVariable.h"
@@ -63,9 +64,21 @@ void CInstrVariable::to_IR(CFG* cfg) const {
 void CInstrReturn::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
     
-    if (expr != nullptr) {
+    CType type = cfg->ast->type;
+    
+    if (expr == nullptr) {
+        if (type != "void") {
+            cerr << "ERROR: return without value in non-void function" << endl;
+            throw;
+        }
+    } else {
+        if (type == "void") {
+            cerr << "ERROR: return with value in void function" << endl;
+            throw;
+        }
+        
         string result = expr->to_IR(cfg);
-        bb->add_IRInstr(op_return, "int", {result});
+        bb->add_IRInstr(op_return, type, {result});
         cfg->tos.free_temp(result);
     }
     

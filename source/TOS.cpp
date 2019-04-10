@@ -8,12 +8,12 @@ using std::to_string;
 
 
 TOS::TOS(const TOS* parent)
-: parent(parent)
+: parent(parent), tosOffset(0), tosTemps(0)
 {
 }
 
 TOS::TOS()
-: parent(nullptr)
+: parent(nullptr), tosOffset(0), tosTemps(0)
 {
 }
 
@@ -47,8 +47,22 @@ string TOS::add_temp(CType type) {
     string name = "temp" + to_string(++tosTemps);
     
     add(name, type);
-    tosOffset += 4; //FIXME
-    tosIndex[name] = tosOffset;
+    
+    if (platform == "z80") {
+        tosOffset += type.size_z80();
+    } else if (platform == "x86") {
+        int size = type.size_x86();
+        int shift = tosOffset % size;
+        if (shift) {
+            // align to multiple of size
+            tosOffset += size - shift;
+        }
+        tosOffset += size;
+    }
+    if (platform != "") {
+        tosIndex[name] = tosOffset;
+    }
+    
     tosUsed[name] = true;
     return name;
 }
@@ -71,6 +85,11 @@ void TOS::clear_temp() {
         }
     }
     
+    clear_address();
+}
+
+void TOS::clear_address() {
+    platform.clear();
     tosIndex.clear();
     tosUsed.clear();
     tosOffset = 0;
@@ -80,18 +99,29 @@ void TOS::clear_temp() {
 
 void TOS::fill_address_z80() {
     tosOffset = 0;
+    platform = "z80";
     
     for (const string& name : tos) {
-        tosOffset += 2 * tosCount[name]; //FIXME
+        int size = tosType.at(name).size_z80();
+        tosOffset += size * tosCount[name];
         tosIndex[name] = tosOffset;
     }
 }
 
 void TOS::fill_address_x86() {
     tosOffset = 0;
+    platform = "x86";
     
     for (const string& name : tos) {
-        tosOffset += 4 * tosCount[name]; //FIXME
+        int size = tosType.at(name).size_x86();
+        
+        int shift = tosOffset % size;
+        if (shift) {
+            // align to multiple of size
+            tosOffset += size - shift;
+        }
+        
+        tosOffset += size * tosCount[name];
         tosIndex[name] = tosOffset;
     }
 }

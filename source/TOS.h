@@ -34,6 +34,7 @@ public:
     string get_address_z80(string name) const;
     int get_index(string name) const;
     CType get_type(string name) const;
+    void clear_address();
     
     map<string, int> tosIndex;
     map<string, bool> tosUsed;
@@ -46,5 +47,6 @@ public:
     
 private:
     bool has(string name) const;
+    string platform;
 };
 

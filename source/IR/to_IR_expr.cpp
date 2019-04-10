@@ -180,13 +180,6 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
 string CExpressionCall::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
     
-    //FIXME find type of function
-    CType functype = "int";
-    
-    string variable = cfg->tos.add_temp(functype);
-    
-    vector<string> results;
-    
     /*
     bool functionExist = false;
     
@@ -197,6 +190,13 @@ string CExpressionCall::to_IR(CFG* cfg) const {
         throw;
     }
     */
+    
+    //FIXME find type of called function
+    CType functype = "int";
+    
+    string variable = cfg->tos.add_temp(functype);
+    
+    vector<string> results;
     
     results.push_back(functionName);
     results.push_back(variable);

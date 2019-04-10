@@ -25,7 +25,7 @@ int main(int argc, const char* argv[]) {
     // ANALYSE DES ARGUMENTS EN LIGNE DE COMMANDE
     
     if (!argsparse(argc, argv, args)) {
-        cerr << "Syntax: ./yottacompilatron9001 <input_file> [-o] [-a] [-c [<output_file>]]" << endl;
+        cerr << "Syntax: ./yottacompilatron9001 <input_file> [-a] [-o] [-c [<output_file>]]" << endl;
         exit (EXIT_FAILURE);
     }
     

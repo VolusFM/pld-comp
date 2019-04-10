@@ -18,9 +18,9 @@ void IProg::gen_asm_x86(ostream& o) const {
     try {
         for (const CFG* f : functions) {
             TOS* tos = const_cast<TOS*>(&f->tos);
+            tos->clear_address();
             tos->fill_address_x86();
             f->gen_asm_x86(o);
-            tos->clear_temp();
         }
     } catch (...) {
         cerr << "ERROR: couldn't generate assembly code" << endl;
