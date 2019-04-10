@@ -81,7 +81,7 @@ int main(int argc, const char* argv[]) {
     if (!args.tmp) // temporary
     {
         ir = ast->to_IR();
-        ir->optimize();
+        if (args.opto) ir->optimize();
     }
     
     if (args.opta && !args.optc) {
