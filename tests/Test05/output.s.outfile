@@ -7,8 +7,8 @@ main:
   subq $16, %rsp
   ## contenu
 main_body:
-  movl  $7, -4(%rbp)
-  movl  $8, -4(%rbp)
+  movl  $7, -8(%rbp)
+  movl  $8, -8(%rbp)
 main_end:
   ## epilogue
   leave

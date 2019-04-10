@@ -10,13 +10,13 @@ function:
 function_body:
   movl  -4(%rbp), %eax
   subl  $1, %eax
-  movl  %eax, -12(%rbp)
-  movl -12(%rbp), %edi
+  movl  %eax, -20(%rbp)
+  movl -20(%rbp), %edi
   call  function
-  movl  %eax, -8(%rbp)
-  movl  -8(%rbp), %eax
-  movl  %eax, -4(%rbp)
-  movl  -4(%rbp), %eax
+  movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
+  movl  %eax, -12(%rbp)
+  movl  -12(%rbp), %eax
 function_1:
 function_end:
   ## epilogue
@@ -29,12 +29,12 @@ main:
   subq $16, %rsp
   ## contenu
 main_body:
-  movl  $5, -4(%rbp)
-  movl -4(%rbp), %edi
+  movl  $5, -8(%rbp)
+  movl -8(%rbp), %edi
   call  function
+  movl  %eax, -12(%rbp)
+  movl  -12(%rbp), %eax
   movl  %eax, -8(%rbp)
-  movl  -8(%rbp), %eax
-  movl  %eax, -4(%rbp)
 main_end:
   ## epilogue
   leave
