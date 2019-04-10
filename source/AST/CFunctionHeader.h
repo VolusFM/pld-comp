@@ -5,14 +5,10 @@ using std::string;
 #include <vector>
 using std::vector;
 
-#include "CType.h"
+#include "../CType.h"
 class CFunction;
 class CParameter;
 
-/**
- * FunctionHeader contains the name and the wrapper of parameters for a 
- * new function
- */
 class CFunctionHeader {
 public:
     CFunctionHeader(string name, CType  type, vector<CParameter>& parameters);
@@ -30,9 +26,8 @@ public:
     ~CParameter() = default;
     
     string to_asm(const CFunction* f, int index) const;
-   
+    
     CType type;
     string name;
-    
 };
 

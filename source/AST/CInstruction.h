@@ -5,8 +5,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-class CFunction;
 class TOS;
+class CFunction;
 class CFG;
 
 class CInstruction {

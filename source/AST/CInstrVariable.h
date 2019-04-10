@@ -3,10 +3,10 @@
 #include <string>
 using std::string;
 
-#include "CInstruction.h"
-#include "CType.h"
-class CExpression;
+#include "../CType.h"
 class TOS;
+#include "CInstruction.h"
+class CExpression;
 
 class CInstrVariable : public CInstruction {
 public:

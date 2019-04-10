@@ -7,7 +7,7 @@ using std::vector;
 #include <map>
 using std::map;
 
-#include "AST/CType.h"
+#include "CType.h"
 
 class TOS;
 

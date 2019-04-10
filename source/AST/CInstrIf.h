@@ -3,9 +3,9 @@
 #include <string>
 using std::string;
 
+class TOS;
 #include "CExpression.h"
 #include "CInstruction.h"
-class TOS;
 
 class CInstrIf: public CInstruction {
 public:

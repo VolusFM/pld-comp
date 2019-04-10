@@ -10,7 +10,7 @@ using std::string;
 using std::ostream;
 #include <initializer_list>
 
-#include "../AST/CType.h"
+#include "../CType.h"
 #include "../TOS.h"
 class CFunction;
 

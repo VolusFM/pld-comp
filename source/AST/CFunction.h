@@ -5,10 +5,10 @@ using std::string;
 #include <vector>
 using std::vector;
 
-#include "CType.h"
+#include "../CType.h"
+#include "../TOS.h"
 #include "CInstruction.h"
 #include "CFunctionHeader.h"
-#include "../TOS.h"
 
 class CProg;
 
