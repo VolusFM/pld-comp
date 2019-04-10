@@ -4,10 +4,11 @@
 using std::cerr;
 using std::endl;
 
+#include "../TOS.h"
 #include "CExpression.h"
 
 void CInstrArray::explore_tos(TOS& tos) const {
-    cerr << "WARNING: CInstrArray::explore_tos isn't implemented" << endl;
+    tos.add(name, type, size);
 }
 
 void CInstrArray::optimize() {
