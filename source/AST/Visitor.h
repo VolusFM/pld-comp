@@ -502,6 +502,5 @@ public:
 				ctx->IDENT()->getText(), (CExpression*) visit(ctx->rvalue()));
 		return (CExpression*) expr;
 	}
-
 };
 
