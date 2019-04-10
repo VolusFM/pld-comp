@@ -1,7 +1,5 @@
 
 int fact(int n) {
-    int n_; // ...
-    
     if (n == 0)
         return 1;
     else {
