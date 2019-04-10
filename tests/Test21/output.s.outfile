@@ -5,9 +5,13 @@ function:
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
   subq $16, %rsp
+  movl %rdi, -4(%rbp)
   ## contenu
 function_body:
-  movl  $2, %eax
+  movl  -4(%rbp), %eax
+  subl  $1, %eax
+  movl  %eax, -4(%rbp)
+  movl  -4(%rbp), %eax
 function_end:
   ## epilogue
   leave
@@ -19,6 +23,8 @@ main:
   subq $16, %rsp
   ## contenu
 main_body:
+  movl  $5, -4(%rbp)
+  movl -4(%rbp), %rdi
   call  function
   movl  %eax, -8(%rbp)
   movl  -8(%rbp), %eax
