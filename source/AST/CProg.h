@@ -16,5 +16,8 @@ public:
     string to_asm() const;
     
     vector<CFunction> functions;
+
+    //vector<string> func;
+    //map<string, CType> funcType;
 };
 

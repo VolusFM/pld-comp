@@ -4,8 +4,8 @@
 
 #include <iostream>
 
-CFunctionHeader::CFunctionHeader(string name, vector<CParameter>& parameters_)
-: name(name)
+CFunctionHeader::CFunctionHeader(string name, CType type, vector<CParameter>& parameters_)
+: name(name), type(type)
 {
     parameters = std::move(parameters_);
     parameters_.clear();

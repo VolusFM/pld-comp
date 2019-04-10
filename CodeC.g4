@@ -5,7 +5,7 @@ prog: function*;
 
 function: functionheader instructionsblock;
 
-functionheader: type IDENT parameters;
+functionheader: (type|VOID) IDENT parameters;
 
 
 anyinstruction: instructionsblock // some instructions
@@ -20,7 +20,7 @@ instruction: instrreturn ';' #return
 	| rvalue ';' #instr_expr
 	| ifblock #if_block
 	| whileblock #while_block
-        | forblock #for_block
+    | forblock #for_block
 	| dowhileblock #do_while_block;
 
 ifblock: 'if' '(' rvalue ')' anyinstruction elseblock?;
@@ -81,6 +81,7 @@ parameters: '(' (singleparameter (',' singleparameter)*)? ')';
 singleparameter : type IDENT;
 parametercall : rvalue;
 
+VOID : 'void';
 
 INTDEC : [1-9][0-9]*|'0';
 INTHEX : '0x'[0-9A-F]+;

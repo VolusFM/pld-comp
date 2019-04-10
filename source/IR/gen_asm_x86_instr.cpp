@@ -142,11 +142,11 @@ void IRInstr::gen_asm_x86(ostream& o) const {
     //TODO : quoi de la fuck de l accolade ?
     case op_call :
         {
-        int index = 0;
-        for (auto it = params.begin()+2 ; it != params.end() ; ++it) {
-            o << "  movl " << cfg->tos_get_asm_x86(*it) << ", " << registerName[index] << "\n";
-            if (++index==6) break;
-        }
+            int index = 0;
+            for (auto it = params.begin()+2 ; it != params.end() ; ++it) {
+                o << "  movl " << cfg->tos_get_asm_x86(*it) << ", " << registerName[index] << "\n";
+                if (++index==6) break;
+            }
         }
         o << "  call  " << params[0] << "\n";
         o << "  movl  %eax, " << cfg->tos_get_asm_x86(params[1]) << "\n";

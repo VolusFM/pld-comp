@@ -65,7 +65,6 @@ void CFG::gen_asm_x86(ostream& o) const {
                 nullbbs.push_back(b);
                 continue;
             }
-            
             b->gen_asm_x86(o);
             o << "  jmp " << name << "_end\n";
         } else {

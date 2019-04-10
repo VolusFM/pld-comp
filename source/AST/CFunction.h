@@ -16,7 +16,7 @@ class CFG;
 
 class CFunction {
 public:
-    CFunction(string name, vector<CParameter>& parameters, CInstructions& block);
+    CFunction(string name, CType type, vector<CParameter>& parameters, CInstructions& block);
     ~CFunction() = default;
     
     void optimize();
@@ -24,6 +24,7 @@ public:
     string to_asm() const;
     
     string name;
+    CType type;
     
     vector<string> tos;
     map<string, bool> tosUsed;

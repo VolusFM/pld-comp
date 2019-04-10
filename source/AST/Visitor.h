@@ -42,7 +42,7 @@ public:
             override {
         CFunctionHeader* functionHeader = visit(ctx->functionheader());
         CInstructions* block = (CInstructions*) visit(ctx->instructionsblock());
-        CFunction* func = new CFunction(functionHeader->name,
+        CFunction* func = new CFunction(functionHeader->name, functionHeader->type,
                 functionHeader->parameters, *block);
         delete functionHeader;
         delete block;
@@ -52,10 +52,17 @@ public:
 
     virtual antlrcpp::Any visitFunctionheader(
             CodeCParser::FunctionheaderContext *ctx) override {
-        string s = ctx->IDENT()->getText();
+        string name = ctx->IDENT()->getText();;
+        string type;
+        if (ctx->type() != nullptr){
+            type = ctx->type()->getText();
+        }
+        else if (ctx->VOID() != nullptr){
+            type = ctx->VOID()->getText();
+        }
         vector<CParameter>* parameters = (vector<CParameter>*) visit(
                 ctx->parameters());
-        CFunctionHeader* functionHeader = new CFunctionHeader(s, *parameters);
+        CFunctionHeader* functionHeader = new CFunctionHeader(name, type, *parameters);
         delete parameters;
         return functionHeader;
     }

@@ -13,7 +13,7 @@ using std::to_string;
 #include "CInstruction.h"
 
 
-CFunction::CFunction(string name, vector<CParameter>& parameters_, CInstructions& block_)
+CFunction::CFunction(string name, CType type, vector<CParameter>& parameters_, CInstructions& block_)
 : name(name)
 {
     temp_id = 0;

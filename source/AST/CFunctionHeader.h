@@ -15,11 +15,12 @@ class CParameter;
  */
 class CFunctionHeader {
 public:
-    CFunctionHeader(string name, vector<CParameter>& parameters);
+    CFunctionHeader(string name, CType  type, vector<CParameter>& parameters);
     ~CFunctionHeader() = default;
     string to_asm(const CFunction* f) const;
     
     string name;
+    CType type;
     vector<CParameter> parameters;
 };
 

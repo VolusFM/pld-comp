@@ -63,10 +63,13 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         string lhsvar;
 
         CExpressionVarArray* vararray = dynamic_cast<CExpressionVarArray*>(lhs);
+        //CFunctionCall* functionCall = dynamic_cast<CFunctionCall*>(rhs);
+
         if (vararray == nullptr)
             lhsvar = lhs->to_IR(cfg);
         else
             lhsvar = vararray->to_IR_address(cfg);
+        
         string rhsvar = rhs->to_IR(cfg);
 
         CType type = "int"; //TODO handle other types
@@ -76,14 +79,18 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         if (vararray == nullptr){
             if (rhsvar.at(0) == '$')
                 bb->add_IRInstr(op_ldconst, type, {lhsvar, rhsvar});
-            else
+            else //if(functionCall==nullptr || funcType[functionCall->functionName].compare("void") == 0)
                 bb->add_IRInstr(op_copy, type, {lhsvar, rhsvar});
+            //else
+            //    cerr << "ERROR : " << functionCall->functionName << " does not return anything";
         }
         else {
             if (rhsvar.at(0) == '$')
                 bb->add_IRInstr(op_ldconst_array, type, {lhsvar, rhsvar});
-            else
+            else //if(functionCall==nullptr || funcType[functionCall->functionName].compare("void") == 0)
                 bb->add_IRInstr(op_copy_array, type, {lhsvar, rhsvar});
+            //else
+            //    cerr << "ERROR : " << functionCall->functionName << " does not return anything";
         }
 
         variable = lhsvar;
@@ -162,6 +169,20 @@ string CFunctionCall::to_IR(CFG* cfg) const {
     string variable = cfg->tos_add_temp("int");
 
     vector < string > results;
+
+    bool functionExist = false;
+    /*for(auto fName:func){
+        std::cout << fName + " : " + functionName << endl;
+        if (functionName.compare(fName)==0){
+            functionExist = true;
+            break;
+        }
+    }
+
+    if (!functionExist){
+        cerr << "ERROR : function " << functionName << " is not declared" << endl;
+    }*/
+
     results.push_back(functionName);
     results.push_back(variable);
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
