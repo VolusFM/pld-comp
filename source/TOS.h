@@ -28,8 +28,10 @@ public:
     
     
     void fill_address_x86();
-    string get_address_x86(string variable) const;
-    
+    string get_address_x86(string name) const;
+    string get_address_x86_array(string name) const;
+    int get_index(string name) const;
+    CType get_type(string name) const;
     
     map<string, int> tosIndex;
     map<string, bool> tosUsed;

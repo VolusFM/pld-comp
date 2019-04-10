@@ -30,19 +30,19 @@ void CInstrExpression::to_IR(CFG* cfg) const {
 void CInstrArray::to_IR(CFG* cfg) const {
     if (exprs.size() <= size) {
         BasicBlock* bb = cfg->current_bb;
-
+        
         int index;
-
-        cfg->tos_add_array(name, type, size);
-        int address = cfg->tos_get_index(name);
-
+        
+        cfg->tos.add(name, type, size);
+        int address = cfg->tos.get_index(name);
+        
         if (exprs.size() != size && exprs.size() != 0) {
             for (index = 0; index < size; index++) {
                 bb->add_IRInstr(op_ldconst_mem, type,
                         { to_string(address - 4 * index), "$0" });
             }
         }
-
+        
         index = 0;
         for (auto expr : exprs) {
             if (dynamic_cast<CExpressionInt*>(expr) != NULL) {

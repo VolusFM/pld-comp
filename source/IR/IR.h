@@ -11,6 +11,7 @@ using std::ostream;
 #include <initializer_list>
 
 #include "../AST/CType.h"
+#include "../TOS.h"
 class CFunction;
 
 static const string registerName[] = { "%edi", "%esi", "%edx", "%ecx", "%e8d", "%e9d" };
@@ -116,26 +117,14 @@ class CFG {
 public:
     CFG(const CFunction* ast, string name);
     ~CFG();
-    
-    const CFunction* ast; /**< The AST this CFG comes from */
-    
+    const CFunction* ast; /* The AST this CFG comes from */
     
     void optimize();
     
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream& o) const;
-    string tos_get_asm_x86(string reg) const; /* helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
-    string tos_get_asm_x86_array(string reg) const;
     void gen_asm_x86_prologue(ostream& o) const;
     void gen_asm_x86_epilogue(ostream& o) const;
-    
-    // symbol table methods
-    void tos_add(string name, CType t);
-    void tos_add_array(string name, CType t, int size);
-    string tos_add_temp(CType t);
-    void tos_free_temp(string name);
-    int tos_get_index(string name) const;
-    CType tos_get_type(string name) const;
     
     // basic block management
     void add_bb(BasicBlock* bb); 
@@ -146,12 +135,7 @@ public:
 public: // FIXME should be protected
     string name;
     
-    vector<string> tos; /* part of the symbol table */
-    map<string, CType> tosType; /* part of the symbol table */
-    map<string, int> tosIndex; /* part of the symbol table */
-    map<string, bool> tosUsed; /* part of the symbol table */
-    int tosIndexLast; /* to allocate new symbols in the symbol table */
-    int tosTempLast;
+    TOS tos;
     
     vector<BasicBlock*> bbs; /* all the basic blocks of this CFG */
     int bbNumberLast; /* just for naming */

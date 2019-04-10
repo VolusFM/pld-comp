@@ -10,13 +10,14 @@ using std::to_string;
 #include <utility>
 using std::swap;
 
-IRInstr::IRInstr(BasicBlock* bb, Operation op, CType type,
-        vector<string> params) :
-        bb(bb), op(op), type(type), params(params) {
+IRInstr::IRInstr(BasicBlock* bb, Operation op, CType type, vector<string> params)
+: bb(bb), op(op), type(type), params(params)
+{
 }
 
-BasicBlock::BasicBlock(CFG* cfg, string name) :
-        exit_true(nullptr), exit_false(nullptr), label(name), cfg(cfg) {
+BasicBlock::BasicBlock(CFG* cfg, string name)
+: exit_true(nullptr), exit_false(nullptr), label(name), cfg(cfg)
+{
 }
 
 BasicBlock::~BasicBlock() {
@@ -30,9 +31,9 @@ void BasicBlock::add_IRInstr(Operation op, string type, vector<string> params) {
     instrs.push_back(instr);
 }
 
-CFG::CFG(const CFunction* f, string name) :
-        ast(f), name(name), current_bb(nullptr), tosIndexLast(0), tosTempLast(
-                0), bbNumberLast(0) {
+CFG::CFG(const CFunction* f, string name)
+: ast(f), name(name), current_bb(nullptr), bbNumberLast(0)
+{
 }
 
 CFG::~CFG() {
@@ -44,64 +45,6 @@ CFG::~CFG() {
 void CFG::add_bb(BasicBlock* bb) {
     bbs.push_back(bb);
     current_bb = bb;
-}
-
-void CFG::tos_add(string name, CType type) {
-    tos.push_back(name);
-    tosType[name] = type;
-    tosIndexLast += 4;
-    tosIndex[name] = tosIndexLast;
-}
-
-void CFG::tos_add_array(string name, CType type, int size) {
-    tos.push_back(name);
-    tosType[name] = type;
-    tosIndexLast += 4*size;
-    tosIndex[name] = tosIndexLast;
-}
-
-string CFG::tos_add_temp(CType type) {
-    for (auto it = tosUsed.begin(); it != tosUsed.end(); ++it) {
-        if (!it->second) {
-            string name = it->first;
-            if (tosType[name] == type) {
-                tosUsed[name] = true;
-                return name;
-            }
-        }
-    }
-    
-    string name = "!tmp" + to_string(++tosTempLast);
-    tos_add(name, type);
-    tosUsed[name] = true;
-    return name;
-}
-
-void CFG::
-tos_free_temp(string name) {
-    // if (name.at(0) != '!') return;
-    auto it = tosUsed.find(name);
-    if (it != tosUsed.end()) (*it).second = false;
-}
-
-int CFG::tos_get_index(string variable) const {
-    try {
-        return tosIndex.at(variable);
-    } catch (...) {
-        cerr << "ERROR: reference to undeclared variable '" << variable << "'"
-                << endl;
-        throw;
-    }
-}
-
-CType CFG::tos_get_type(string variable) const {
-    try {
-        return tosType.at(variable);
-    } catch (...) {
-        cerr << "ERROR: reference to undeclared variable '" << variable << "'"
-                << endl;
-        throw;
-    }
 }
 
 string CFG::new_BB_name(const string& prefix) {

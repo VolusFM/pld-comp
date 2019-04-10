@@ -17,11 +17,7 @@ IProg* CProg::to_IR() const {
 CFG* CFunction::to_IR() const {
     CFG* cfg = new CFG(this, name);
     
-    //TODO can be improved
-    cfg->tos = tos.tos;
-    cfg->tosType = tos.tosType;
-    cfg->tosIndex = tos.tosIndex;
-    cfg->tosIndexLast = tos.tosOffset;
+    cfg->tos = tos;
     
     BasicBlock* bb = new BasicBlock(cfg, name + "_body");
     bb->exit_true = nullptr;

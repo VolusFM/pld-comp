@@ -30,7 +30,7 @@ void TOS::add(string name, CType type, int count) {
     
     tos.push_back(name);
     tosType[name] = type;
-    tosCount[name] = 1;
+    tosCount[name] = count;
 }
 
 string TOS::add_temp(CType type) {
@@ -82,19 +82,51 @@ void TOS::fill_address_x86() {
     tosOffset = 0;
     
     for (const string& name : tos) {
-        tosOffset += 4; //FIXME
+        tosOffset += 4 * tosCount[name]; //FIXME
         tosIndex[name] = tosOffset;
     }
 }
 
-string TOS::get_address_x86(string variable) const {
-    if (has(variable)) {
-        int addr = -tosIndex.at(variable);
+string TOS::get_address_x86(string name) const {
+    if (name.at(0) == '$') return name;
+    
+    if (has(name)) {
+        int addr = -tosIndex.at(name);
         return to_string(addr) + "(%rbp)";
     } else if (parent != nullptr) {
-        return parent->get_address_x86(variable);
+        return parent->get_address_x86(name);
     } else {
-        cerr << "ERROR: reference to undeclared variable '" << variable << "'" << endl;
+        cerr << "ERROR: reference to undeclared variable '" << name << "'" << endl;
+        throw;
+    }
+}
+
+string TOS::get_address_x86_array(string name) const {
+    if (has(name)) {
+        int addr = -tosIndex.at(name);
+        return to_string(addr) + "(%rbp,%rax,4)";
+    } else if (parent != nullptr) {
+        return parent->get_address_x86_array(name);
+    } else {
+        cerr << "ERROR: reference to undeclared variable '" << name << "'" << endl;
+        throw;
+    }
+}
+
+int TOS::get_index(string name) const {
+    try {
+        return tosIndex.at(name);
+    } catch (...) {
+        cerr << "ERROR: reference to undeclared variable '" << name << "'" << endl;
+        throw;
+    }
+}
+
+CType TOS::get_type(string name) const {
+    if (has(name)) {
+        return tosType.at(name);
+    } else {
+        cerr << "ERROR: reference to undeclared variable '" << name << "'" << endl;
         throw;
     }
 }

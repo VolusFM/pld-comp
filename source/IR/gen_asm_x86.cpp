@@ -17,23 +17,14 @@ void IProg::gen_asm_x86(ostream& o) const {
 
     try {
         for (const CFG* f : functions) {
+            TOS* tos = const_cast<TOS*>(&f->tos);
+            tos->fill_address_x86();
             f->gen_asm_x86(o);
+            tos->clear_temp();
         }
     } catch (...) {
         cerr << "ERROR: couldn't generate assembly code" << endl;
     }
-}
-
-string CFG::tos_get_asm_x86(string name) const {
-    if (name.at(0) == '$')
-        return name;
-    int index = tos_get_index(name);
-    return "-" + to_string(index) + "(%rbp)";
-}
-
-string CFG::tos_get_asm_x86_array(string name) const {
-    int index = tos_get_index(name);
-    return "-" + to_string(index) + "(%rbp,%rax,4)";
 }
 
 void CFG::gen_asm_x86_prologue(ostream& o) const {
@@ -44,14 +35,14 @@ void CFG::gen_asm_x86_prologue(ostream& o) const {
       << "  movq %rsp, %rbp # define %rbp for the current function\n";
     
     // TODO : adapt for different types (size has to change)
-    int rspshift = (1+(int)(4*tos.size()/16))*16;
+    int rspshift = (1+(int)(tos.tosOffset/16))*16;
     if (rspshift != 0) {
         o << "  subq $" << rspshift << ", %rsp\n";
     }
     
     int index = 0;
     for (auto it = ast->parameters.cbegin(); it != ast->parameters.cend() ; ++it) {
-        o << "  movl " << registerName[index++] << ", " << tos_get_asm_x86(it->name) << "\n";
+        o << "  movl " << registerName[index++] << ", " << tos.get_address_x86(it->name) << "\n";
     }
     
     o << "  ## contenu\n";

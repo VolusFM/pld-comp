@@ -14,7 +14,7 @@ using std::to_string;
 string CExpressionInt::to_IR(CFG* cfg) const {
     /*
     BasicBlock* bb = cfg->current_bb;
-    string variable = cfg->tos_add_temp("int");
+    string variable = cfg->tos.add_temp("int");
     bb->add_IRInstr(op_ldconst, "int", {variable, to_string(value)});
     return variable;
     */
@@ -32,7 +32,7 @@ string CExpressionVarArray::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
     string addressIndex = index->to_IR(cfg);
     
-    string temp = cfg->tos_add_temp("int");
+    string temp = cfg->tos.add_temp("int");
     
     if (addressIndex.at(0) == '$')
         bb->add_IRInstr(op_index_ldconst, "int", {addressIndex});
@@ -100,7 +100,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         string lhsvar = lhs->to_IR(cfg);
         string rhsvar = rhs->to_IR(cfg);
 
-        variable = cfg->tos_add_temp("int");
+        variable = cfg->tos.add_temp("int");
 
         vector<string> params = {variable, lhsvar, rhsvar};
         CType type = "int"; //TODO handle other types
@@ -118,7 +118,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             CExpressionInt* exprInt = dynamic_cast<CExpressionInt*> (rhs);
             if (exprInt!=nullptr){
                 BasicBlock* bb = cfg->current_bb;
-                string var = cfg->tos_add_temp("int");
+                string var = cfg->tos.add_temp("int");
                 bb->add_IRInstr(op_ldconst, "int", {var, rhsvar});
                 rhsvar = var;
             }
@@ -163,8 +163,8 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             bb->add_IRInstr(op_binary_xor, type, params);
         }
         
-        cfg->tos_free_temp(lhsvar);
-        cfg->tos_free_temp(rhsvar);
+        cfg->tos.free_temp(lhsvar);
+        cfg->tos.free_temp(rhsvar);
     }
     // to do
 
@@ -174,7 +174,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
 string CExpressionCall::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
 
-    string variable = cfg->tos_add_temp("int");
+    string variable = cfg->tos.add_temp("int");
 
     vector < string > results;
 

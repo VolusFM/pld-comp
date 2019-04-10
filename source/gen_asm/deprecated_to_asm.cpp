@@ -16,11 +16,11 @@ string CProg::to_asm() const {
     try {
         for (const CFunction& f : functions) {
             TOS* tos = const_cast<TOS*>(&f.tos);
-            tos->clear_temp();
             tos->fill_address_x86();
             code += f.to_asm();
+            tos->clear_temp();
         }
-    } catch(...) {
+    } catch (...) {
         cerr << "ERROR: couldn't generate assembly code" << endl;
     }
     return code;
