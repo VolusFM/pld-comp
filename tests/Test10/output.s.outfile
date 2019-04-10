@@ -9,22 +9,22 @@ main:
 main_body:
   movl  $0, %eax
   subl  $4, %eax
-  movl  %eax, -8(%rbp)
+  movl  %eax, -12(%rbp)
   movl  $2, %eax
-  imull -8(%rbp), %eax
-  movl  %eax, -12(%rbp)
-  movl  -12(%rbp), %eax
-  addl  $5, %eax
-  movl  %eax, -8(%rbp)
-  movl  $0, %eax
-  subl  $6, %eax
-  movl  %eax, -12(%rbp)
-  movl  -8(%rbp), %eax
-  subl  -12(%rbp), %eax
+  imull -12(%rbp), %eax
   movl  %eax, -16(%rbp)
   movl  -16(%rbp), %eax
-  movl  %eax, -4(%rbp)
-  movl  -4(%rbp), %eax
+  addl  $5, %eax
+  movl  %eax, -12(%rbp)
+  movl  $0, %eax
+  subl  $6, %eax
+  movl  %eax, -16(%rbp)
+  movl  -12(%rbp), %eax
+  subl  -16(%rbp), %eax
+  movl  %eax, -20(%rbp)
+  movl  -20(%rbp), %eax
+  movl  %eax, -8(%rbp)
+  movl  -8(%rbp), %eax
 main_1:
 main_end:
   ## epilogue
