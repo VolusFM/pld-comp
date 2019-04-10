@@ -16,9 +16,10 @@ main_body:
   movl  -16(%rbp), %eax
   subl  -12(%rbp), %eax
   movl  %eax, -20(%rbp)
+  movl  $6, -24(%rbp)
   movl  -8(%rbp), %eax
   cltd
-  idivl $6
+  idivl -24(%rbp)
   movl  %eax, -16(%rbp)
   movl  -20(%rbp), %eax
   addl  -16(%rbp), %eax

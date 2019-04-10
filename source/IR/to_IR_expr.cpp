@@ -115,7 +115,14 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             bb->add_IRInstr(op_mul, type, params);
         }
         if (op == "/") {
-            bb->add_IRInstr(op_div, type, params);
+            CExpressionInt* exprInt = dynamic_cast<CExpressionInt*> (rhs);
+            if (exprInt!=nullptr){
+                BasicBlock* bb = cfg->current_bb;
+                string var = cfg->tos_add_temp("int");
+                bb->add_IRInstr(op_ldconst, "int", {var, rhsvar});
+                rhsvar = var;
+            }
+            bb->add_IRInstr(op_div, type, {variable,lhsvar,rhsvar});
         }
         if (op == "%") {
             bb->add_IRInstr(op_mod, type, params);
