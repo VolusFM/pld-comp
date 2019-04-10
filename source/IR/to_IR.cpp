@@ -8,6 +8,8 @@ IProg* CProg::to_IR() const {
     IProg* ir = new IProg();
     
     for (const CFunction& f : functions) {
+        //func.push_back(f.name);
+        //funcType[f.name] = f.type;
         ir->functions.push_back(f.to_IR());
     }
     

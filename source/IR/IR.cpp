@@ -78,7 +78,8 @@ string CFG::tos_add_temp(CType type) {
     return name;
 }
 
-void CFG::tos_free_temp(string name) {
+void CFG::
+tos_free_temp(string name) {
     // if (name.at(0) != '!') return;
     auto it = tosUsed.find(name);
     if (it != tosUsed.end()) (*it).second = false;
