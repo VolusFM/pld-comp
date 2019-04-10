@@ -11,7 +11,7 @@ code_visitors/
 yottacompilatron9001
 *.s
 temp.c
-exe
+exe*
 *.d
 *.o
 *.gch
