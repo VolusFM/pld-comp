@@ -5,7 +5,7 @@ int test(int a, int b) {
 int main() {
 
   int i = test(2,3);
-  /*int a = 4;
+  int a = 4;
   int j = 1, k=4, l=8, m=2;
   
   do {
@@ -15,11 +15,10 @@ int main() {
 
   int b = 42;
 
-  i = test (i, i);*/
+  i = test (i, i);
 
   return i;
 }
-
 
 /*
 int test(int a, int b){
@@ -30,3 +29,4 @@ int test(int a, int b){
   }
   return 0;
 }*/
+

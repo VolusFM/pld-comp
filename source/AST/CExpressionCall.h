@@ -13,19 +13,18 @@ using std::vector;
 class CFunction;
 class CFG;
 
-
-class CFunctionCall: public CExpression {
+class CExpressionCall: public CExpression {
 public:
-    CFunctionCall(string name, vector<CExpression*> parameters);
+    CExpressionCall(string name, vector<CExpression*> parameters);
     string to_IR(CFG* cfg) const;
     pair<string, string> to_asm(CFunction* f) const;
-    ~CFunctionCall();
+    ~CExpressionCall();
 
     string functionName;
     vector<CExpression*> parameters;
     
 private: // no copy wanted
-    CFunctionCall(const CFunctionCall&); // no implementation
-    CFunctionCall& operator=(const CFunctionCall&); // no implementation
+    CExpressionCall(const CExpressionCall&); // no implementation
+    CExpressionCall& operator=(const CExpressionCall&); // no implementation
 };
 

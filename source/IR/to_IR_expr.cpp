@@ -9,7 +9,7 @@ using std::string;
 using std::to_string;
 
 #include "../AST/CExpression.h"
-#include "../AST/CFunctionCall.h"
+#include "../AST/CExpressionCall.h"
 
 string CExpressionInt::to_IR(CFG* cfg) const {
     /*
@@ -64,7 +64,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         string lhsvar;
 
         CExpressionVarArray* vararray = dynamic_cast<CExpressionVarArray*>(lhs);
-        //CFunctionCall* functionCall = dynamic_cast<CFunctionCall*>(rhs);
+        //CExpressionCall* functionCall = dynamic_cast<CExpressionCall*>(rhs);
 
         if (vararray == nullptr)
             lhsvar = lhs->to_IR(cfg);
@@ -171,7 +171,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
     return variable;
 }
 
-string CFunctionCall::to_IR(CFG* cfg) const {
+string CExpressionCall::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
 
     string variable = cfg->tos_add_temp("int");

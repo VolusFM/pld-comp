@@ -20,7 +20,7 @@ using std::vector;
 #include "CInstrWhile.h"
 #include "CInstrDoWhile.h"
 #include "CInstrFor.h"
-#include "CFunctionCall.h"
+#include "CExpressionCall.h"
 
 class Visitor: public CodeCBaseVisitor {
 public:
@@ -357,7 +357,7 @@ public:
 			parameters->push_back(((CExpression*) visit(ctx_param)));
 		}
 
-		CFunctionCall* function = new CFunctionCall(functionName, *parameters);
+		CExpressionCall* function = new CExpressionCall(functionName, *parameters);
 		delete parameters;
 		return (CExpression*) function;
 	}

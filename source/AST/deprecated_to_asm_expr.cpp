@@ -1,4 +1,5 @@
 #include "CExpression.h"
+#include "CExpressionCall.h"
 
 #include <string>
 using std::to_string;
@@ -115,5 +116,10 @@ pair<string, string> CExpressionComposed::to_asm(CFunction* f) const {
     f->tos_free_temp(rhsvar);
     
     return pair<string, string>(code, variable);
+}
+
+pair<string, string> CExpressionCall::to_asm(CFunction* f) const {
+    cerr << "PROBLEM: to_asm unimplemented for control statements" << endl;
+    throw;
 }
 
