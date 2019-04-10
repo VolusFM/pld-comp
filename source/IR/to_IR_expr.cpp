@@ -40,6 +40,7 @@ string CExpressionVarArray::to_IR(CFG* cfg) const {
         bb->add_IRInstr(op_index, "int", {addressIndex});
     bb->add_IRInstr(op_copy_from_array, "int", {temp,variable});
     
+    cfg->tos.free_temp(addressIndex);
     return temp;
 }
 
@@ -52,6 +53,7 @@ string CExpressionVarArray::to_IR_address(CFG* cfg) const {
     else
         bb->add_IRInstr(op_index, "int", {addressIndex});
     
+    cfg->tos.free_temp(addressIndex);
     return variable;
 }
 
@@ -173,11 +175,11 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
 
 string CExpressionCall::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
-
+    
     string variable = cfg->tos.add_temp("int");
-
-    vector < string > results;
-
+    
+    vector<string> results;
+    
     /*
     bool functionExist = false;
     
@@ -188,15 +190,19 @@ string CExpressionCall::to_IR(CFG* cfg) const {
         throw;
     }
     */
-
+    
     results.push_back(functionName);
     results.push_back(variable);
     for (auto it = parameters.begin(); it != parameters.end(); ++it) {
         results.push_back((*it)->to_IR(cfg));
     }
-
+    
     bb->add_IRInstr(op_call, "int", results);
-
+    
+    for (const string& result : results) {
+        cfg->tos.free_temp(result);
+    }
+    
     return variable;
 }
 

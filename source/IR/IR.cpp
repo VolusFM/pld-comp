@@ -26,7 +26,7 @@ BasicBlock::~BasicBlock() {
     }
 }
 
-void BasicBlock::add_IRInstr(Operation op, string type, vector<string> params) {
+void BasicBlock::add_IRInstr(Operation op, const CType& type, vector<string> params) {
     IRInstr* instr = new IRInstr(this, op, type, params);
     instrs.push_back(instr);
 }

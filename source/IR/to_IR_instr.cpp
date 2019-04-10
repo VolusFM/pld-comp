@@ -36,37 +36,34 @@ void CInstrArray::to_IR(CFG* cfg) const {
     
     BasicBlock* bb = cfg->current_bb;
     
-    int index;
-    
     // cfg->tos.add(name, type, size);
-    int address = cfg->tos.get_index(name);
     
-    if (exprs.size() != size && exprs.size() != 0) {
-        for (index = 0; index < size; index++) {
-            bb->add_IRInstr(op_ldconst_mem, type,
-                    { to_string(address - 4 * index), "$0" });
-        }
-    }
-    
-    index = 0;
+    int index = 0;
     for (CExpression* expr : exprs) {
-        if (dynamic_cast<CExpressionInt*>(expr) != NULL) {
-            bb->add_IRInstr(op_ldconst_mem, type,
-                    { to_string(address - 4 * index), '$'+to_string(
-                            dynamic_cast<CExpressionInt*>(expr)->value) });
+        CExpressionInt* exprint = dynamic_cast<CExpressionInt*>(expr); 
+        if (exprint != nullptr) {
+            bb->add_IRInstr(op_ldconst_to_array_index, type,
+                            { name, to_string(index), '$'+to_string(exprint->value) });
         } else {
             string temp = expr->to_IR(cfg);
-            bb->add_IRInstr(op_copy_mem, type,
-                    { to_string(address - 4 * index), temp });
+            bb->add_IRInstr(op_copy_to_array_index, type,
+                            { name, to_string(index), temp });
+            cfg->tos.free_temp(temp);
         }
         index++;
+    }
+    for (; index < size; index++) {
+        bb->add_IRInstr(op_ldconst_to_array_index, type,
+                        { name, to_string(index), "$0" });
     }
 }
 
 void CInstrVariable::to_IR(CFG* cfg) const {
     // cfg->tos_add(name, type);
-    if (expr != nullptr)
-        expr->to_IR(cfg);
+    if (expr != nullptr) {
+        string temp = expr->to_IR(cfg);
+        cfg->tos.free_temp(temp);
+    }
 }
 
 void CInstrReturn::to_IR(CFG* cfg) const {
@@ -75,6 +72,7 @@ void CInstrReturn::to_IR(CFG* cfg) const {
     if (expr != nullptr) {
         string result = expr->to_IR(cfg);
         bb->add_IRInstr(op_return, "int", {result});
+        cfg->tos.free_temp(result);
     }
     
     bb->exit_true = nullptr;
@@ -86,7 +84,7 @@ void CInstrIf::to_IR(CFG* cfg) const {
     BasicBlock* bb = cfg->current_bb;
 
     // Add condition to the current block
-    condition->to_IR(cfg);
+    cfg->tos.free_temp(condition->to_IR(cfg));
 
     bool hasTrue = !blockTrue.instructions.empty();
     bool hasFalse = !blockFalse.instructions.empty();
@@ -139,7 +137,7 @@ void CInstrWhile::to_IR(CFG* cfg) const {
     bbCondition->exit_false = bbNext;
     cfg->add_bb(bbCondition);
     // Add condition to the current block
-    condition->to_IR(cfg);
+    cfg->tos.free_temp(condition->to_IR(cfg));
 
     // Prepare the exit_true and exit_false and link them to the next block
     cfg->add_bb(bbContent);
@@ -172,7 +170,7 @@ void CInstrDoWhile::to_IR(CFG* cfg) const {
     bbCondition->exit_true = bbContent;
     bbCondition->exit_false = bbNext;
     // Add condition to the current block
-    condition->to_IR(cfg);
+    cfg->tos.free_temp(condition->to_IR(cfg));
 
     // Add next block to CFG
     cfg->add_bb(bbNext);
@@ -192,7 +190,7 @@ void CInstrFor::to_IR(CFG* cfg) const {
     BasicBlock* bbNext = new BasicBlock(cfg, cfg->new_BB_name());
 
     bb->exit_true = bbStopCondition != nullptr ? bbStopCondition : bbContent;
-    if (start != nullptr) start->to_IR(cfg);
+    if (start != nullptr) cfg->tos.free_temp(start->to_IR(cfg));
 
     if (stopCondition != nullptr) {
         // Link current block to the contents of the while
@@ -200,14 +198,14 @@ void CInstrFor::to_IR(CFG* cfg) const {
         bbStopCondition->exit_true = bbContent;
         bbStopCondition->exit_false = bbNext;
         // Add condition to the current block
-        stopCondition->to_IR(cfg);
+        cfg->tos.free_temp(stopCondition->to_IR(cfg));
     }
 
     // Prepare the exit_true and exit_false and link them to the next block
     cfg->add_bb(bbContent);
     bbContent->exit_true = bbStopCondition != nullptr ? bbStopCondition : bbContent;
     blockContent.to_IR(cfg);
-    if (evolution != nullptr) evolution->to_IR(cfg);
+    if (evolution != nullptr) cfg->tos.free_temp(evolution->to_IR(cfg));
 
     // Add next block to CFG
     cfg->add_bb(bbNext);

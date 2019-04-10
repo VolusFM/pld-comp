@@ -23,7 +23,7 @@ class CFG;
 /* the instructions themselves */
 typedef enum {
     op_ldconst,
-    op_ldconst_mem,
+    op_ldconst_to_array_index,
     op_ldconst_array,
     op_index,
     op_index_ldconst,
@@ -33,7 +33,7 @@ typedef enum {
     op_div,
     op_mod,
     op_copy,
-    op_copy_mem,
+    op_copy_to_array_index,
     op_copy_array,
     op_copy_from_array,
     op_rmem,  // va lire a une adresse memoire donnee dans le premier paramatre
@@ -95,7 +95,7 @@ public:
     ~BasicBlock();
     void gen_asm_x86(ostream &o) const; /* x86 assembly code generation for this basic block */
     
-    void add_IRInstr(Operation op, CType type, vector<string> params);
+    void add_IRInstr(Operation op, const CType& type, vector<string> params);
     
     BasicBlock* exit_true;  /* pointer to the next basic block, true branch. If nullptr, return from procedure */ 
     BasicBlock* exit_false; /* pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
