@@ -1,4 +1,6 @@
 
+BINARY=yottacompilatron9001
+
 # commands
 
 GRAM=grammar
@@ -26,8 +28,6 @@ OBJS_ANTLR=objects/antlr
 
 OBJSDIRS=$(OBJSDIR) $(OBJS_ANTLR)# $(OBJS_AST) $(OBJS_IR) $(OBJS_X86) $(OBJS_Z80)
 
-BINARY=yottacompilatron9001
-
 # tools and paths
 
 JAVA=/usr/bin/java
@@ -40,7 +40,7 @@ RM=rm
 RMFLAGS=-rf
 ECHO=@echo
 GRAMFLAGS=-visitor -no-listener -Dlanguage=Cpp
-COMPFLAGS=-DTRACE -g -std=c++11
+COMPFLAGS=-g -std=c++11
 COMPFLAGSALL=$(COMPFLAGS) -I $(ANTLRRUNTIME)
 CPPC=clang++
 
@@ -62,23 +62,41 @@ ifeq ($(FOR),dev)
 POSTTREATMENT:=
 endif
 
-ANTLRDIR=ANTLR/$(OSNAME)-CPP
+
+ANTLRDIR=/shares/public/tp/ANTLR4-CPP
 ANTLR=$(ANTLRDIR)/bin/antlr4
 ANTLRRUNTIME=$(ANTLRDIR)/antlr4-runtime
 ANTLRLIBRUNTIME=$(ANTLRDIR)/lib/libantlr4-runtime.a
+
+# ANTLR path chosen by default:
+# - on linux: /shares/public/tp/ANTLR4-CPP
+# - on mac: ./ANTLR/
+
+# ANTLR path chosen if arguments specified:
+# - with USE="local": ./ANTLR
+# - with USE="shares": /shares/public/tp/ANTLR4-CPP
+# - with USE="alt": local binary with shared libraries
+
+ifeq ($(OSNAME),MAC)
+ANTLRDIR=ANTLR/$(OSNAME)-CPP
+endif
+ifeq ($(USE),local)
+ANTLRDIR=ANTLR/$(OSNAME)-CPP
+endif
+ifeq ($(USE),shares)
+ANTLRDIR=/shares/public/tp/ANTLR4-CPP
+endif
+ifeq ($(USE),alt)
+ANTLR=ANTLR/$(OSNAME)-CPP/bin/antlr4
+ANTLRDIR=/shares/public/tp/antlr
+endif
+
 
 CPPC=clang++
 # if clang++ isn't found, use g++ instead
 # useful for some IF computers without clang++
 ifeq (,$(shell which $(CPPC)))
 CPPC=g++-6 -Wno-attributes
-endif
-
-# make USE="shares" to compile
-# without having the ANTLR/ folder
-ifeq ($(USE),shares)
-ANTLR:=$(ANTLRDIR)/bin/antlr4
-ANTLRDIR=/shares/public/tp/antlr
 endif
 
 .PHONY : $(GRAM) $(OBJECTS) $(EXE) $(CLEAN)
