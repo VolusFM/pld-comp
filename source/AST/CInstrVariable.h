@@ -11,24 +11,24 @@ class TOS;
 class CExpression;
 class CExpressionPart;
 
-class CInstrVariable : public CInstruction {
+class CInstrVariable: public CInstruction {
 public:
-    CInstrVariable(string name, CType type);
-    CInstrVariable(string name, CType type, CExpressionPart* expr);
-    ~CInstrVariable();
-    
-    void explore_tos(TOS& tos) const;
-    void optimize();
-    void to_IR(CFG* cfg) const;
-    void gen_asm_z80(ostream& o, const CFunction* f) const;
-    
-    string name;
-    CType type;
-    CExpression* expr;
-    
+	CInstrVariable(string name, CType type);
+	CInstrVariable(string name, CType type, CExpressionPart* expr);
+	~CInstrVariable();
+
+	void explore_tos(TOS& tos) const;
+	void optimize();
+	void to_IR(CFG* cfg) const;
+	void gen_asm_z80(ostream& o, const CFunction* f) const;
+
+	string name;
+	CType type;
+	CExpression* expr;
+
 private:
-    // no copy wanted
-    CInstrVariable(const CInstrVariable&); // no implementation
-    CInstrVariable& operator=(const CInstrVariable&); // no implementation
+	// no copy wanted
+	CInstrVariable(const CInstrVariable&); // no implementation
+	CInstrVariable& operator=(const CInstrVariable&); // no implementation
 };
 

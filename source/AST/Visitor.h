@@ -28,15 +28,16 @@ public:
 	virtual antlrcpp::Any visitProg(CodeCParser::ProgContext *ctx) override
 	{
 		CProg* prog = new CProg();
-        
+
 		for (auto ctx_func : ctx->function()) {
 			CFunction* func = (CFunction*) visit(ctx_func);
-            func->prog = prog; func->tos.parent = &prog->tos;
-		    func->explore_tos();
+			func->prog = prog;
+			func->tos.parent = &prog->tos;
+			func->explore_tos();
 			prog->functions.push_back(std::move(*func));
 			delete func;
 		}
-        
+
 		return prog;
 	}
 
@@ -54,7 +55,7 @@ public:
 	virtual antlrcpp::Any visitFunctionheader(
 			CodeCParser::FunctionheaderContext *ctx) override {
 		string name = ctx->IDENT()->getText();
-		
+
 		string type;
 		if (ctx->type() != nullptr) {
 			type = ctx->type()->getText();
@@ -128,49 +129,51 @@ public:
 			override {
 		CType type = ctx->type()->getText();
 		vector<CInstruction*> instructionsVariables;
-        
+
 		for (auto ctx_def : ctx->symboldefinition()) {
 			CInstruction* instrdef = (CInstruction*) visit(ctx_def);
 			CInstrVariable* instrvar = dynamic_cast<CInstrVariable*>(instrdef);
-            if (instrvar != nullptr) instrvar->type = type;
-            CInstrArray* instrarray = dynamic_cast<CInstrArray*>(instrdef);
-			if (instrarray != nullptr) instrarray->type = type;
+			if (instrvar != nullptr)
+				instrvar->type = type;
+			CInstrArray* instrarray = dynamic_cast<CInstrArray*>(instrdef);
+			if (instrarray != nullptr)
+				instrarray->type = type;
 			instructionsVariables.push_back(instrdef);
 		}
-        
+
 		return new CInstructions(instructionsVariables);
 	}
-    
+
 	virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx)
 			override {
 		string name = ctx->IDENT()->getText();
 		return (CInstruction*) new CInstrVariable(name, CType());
 	}
-    
+
 	virtual antlrcpp::Any visitDef_var_with_expr(
 			CodeCParser::Def_var_with_exprContext *ctx) override {
 		string name = ctx->IDENT()->getText();
 		CExpressionPart* expr = (CExpressionPart*) visit(ctx->expressionpart());
 		return (CInstruction*) new CInstrVariable(name, CType(), expr);
 	}
-    
+
 	virtual antlrcpp::Any visitDef_array(CodeCParser::Def_arrayContext *ctx)
 			override {
 		string name = ctx->IDENT()->getText();
 		int count = (int) (long) visit(ctx->intval());
 		return (CInstruction*) new CInstrArray(name, CType(), count);
 	}
-    
+
 	virtual antlrcpp::Any visitDef_array_with_expr(
 			CodeCParser::Def_array_with_exprContext *ctx) override {
 		string name = ctx->IDENT()->getText();
 		int count = (int) (long) visit(ctx->intval());
-        
+
 		list<CExpressionPart*> exprs;
 		for (auto ctx_expr : ctx->expressionpart()) {
 			exprs.push_back((CExpressionPart*) visit(ctx_expr));
 		}
-        
+
 		return (CInstruction*) new CInstrArray(name, CType(), count, exprs);
 	}
 
@@ -283,7 +286,7 @@ public:
 	virtual antlrcpp::Any visitExpression(CodeCParser::ExpressionContext *ctx)
 			override
 			{
-        CExpressionPart* part = (CExpressionPart*) visit(ctx->expressionpart());
+		CExpressionPart* part = (CExpressionPart*) visit(ctx->expressionpart());
 		return (CExpression*) new CExpression(part);
 	}
 
@@ -358,12 +361,13 @@ public:
 			CodeCParser::Function_callContext *ctx) override {
 		string functionName = ctx->IDENT()->getText();
 		vector<CExpressionPart*>* parameters = new vector<CExpressionPart*>;
-        
+
 		for (auto ctx_param : ctx->expressionpart()) {
 			parameters->push_back((CExpressionPart*) visit(ctx_param));
 		}
-        
-		CExpressionCall* function = new CExpressionCall(functionName, *parameters);
+
+		CExpressionCall* function = new CExpressionCall(functionName,
+				*parameters);
 		delete parameters;
 		return (CExpressionPart*) function;
 	}
@@ -511,7 +515,8 @@ public:
 	virtual antlrcpp::Any visitVariable_in_array(
 			CodeCParser::Variable_in_arrayContext *ctx) override {
 		CExpressionVarArray* expr = new CExpressionVarArray(
-				ctx->IDENT()->getText(), (CExpressionPart*) visit(ctx->rvalue()));
+				ctx->IDENT()->getText(),
+				(CExpressionPart*) visit(ctx->rvalue()));
 		return (CExpressionPart*) expr;
 	}
 };

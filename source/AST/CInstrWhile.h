@@ -11,21 +11,21 @@ class TOS;
 
 class CInstrWhile: public CInstruction {
 public:
-    CInstrWhile() = default;
-    CInstrWhile(CExpression* condition, CInstructions& blockContent);
-    ~CInstrWhile();
-    
-    void explore_tos(TOS& tos) const;
-    void optimize();
-    void to_IR(CFG* cfg) const;
-    void gen_asm_z80(ostream& o, const CFunction* f) const;
-    
-    CInstructions blockContent;
-    CExpression* condition;
-    
+	CInstrWhile() = default;
+	CInstrWhile(CExpression* condition, CInstructions& blockContent);
+	~CInstrWhile();
+
+	void explore_tos(TOS& tos) const;
+	void optimize();
+	void to_IR(CFG* cfg) const;
+	void gen_asm_z80(ostream& o, const CFunction* f) const;
+
+	CInstructions blockContent;
+	CExpression* condition;
+
 private:
-    // no copy wanted
-    CInstrWhile(const CInstrWhile&); // no implementation
-    CInstrWhile& operator=(const CInstrWhile&); // no implementation
+	// no copy wanted
+	CInstrWhile(const CInstrWhile&); // no implementation
+	CInstrWhile& operator=(const CInstrWhile&); // no implementation
 };
 

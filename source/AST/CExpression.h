@@ -12,79 +12,79 @@ class CFG;
 
 class CExpressionPart {
 public:
-    virtual ~CExpressionPart() = default;
-    virtual CExpressionPart* optimize();
-    virtual string to_IR(CFG* cfg) const = 0;
-    virtual string gen_asm_z80(ostream& o, CFunction* f) const = 0;
+	virtual ~CExpressionPart() = default;
+	virtual CExpressionPart* optimize();
+	virtual string to_IR(CFG* cfg) const = 0;
+	virtual string gen_asm_z80(ostream& o, CFunction* f) const = 0;
 };
 
 class CExpression {
 public:
-    CExpression(CExpressionPart* expr);
-    ~CExpression();
-    
-    void to_IR_full(CFG* cfg) const;
-    void gen_asm_z80_full(ostream& o, const CFunction* f) const;
-    
-    string to_IR_part(CFG* cfg) const;
-    string gen_asm_z80_part(ostream& o, const CFunction* f) const;
-    
-    void to_IR_bool(CFG* cfg) const;
-    void gen_asm_z80_bool(ostream& o, const CFunction* f) const;
-    
-    void optimize();
-    
+	CExpression(CExpressionPart* expr);
+	~CExpression();
+
+	void to_IR_full(CFG* cfg) const;
+	void gen_asm_z80_full(ostream& o, const CFunction* f) const;
+
+	string to_IR_part(CFG* cfg) const;
+	string gen_asm_z80_part(ostream& o, const CFunction* f) const;
+
+	void to_IR_bool(CFG* cfg) const;
+	void gen_asm_z80_bool(ostream& o, const CFunction* f) const;
+
+	void optimize();
+
 private:
-    CExpressionPart* expr;
+	CExpressionPart* expr;
 };
 
 class CExpressionInt: public CExpressionPart {
 public:
-    CExpressionInt(int value);
-    ~CExpressionInt() = default;
-    string to_IR(CFG* cfg) const;
-    string gen_asm_z80(ostream& o, CFunction* f) const;
-    
-    int value;
+	CExpressionInt(int value);
+	~CExpressionInt() = default;
+	string to_IR(CFG* cfg) const;
+	string gen_asm_z80(ostream& o, CFunction* f) const;
+
+	int value;
 };
 
 class CExpressionVar: public CExpressionPart {
 public:
-    CExpressionVar(string variable);
-    ~CExpressionVar() = default;
-    string to_IR(CFG* cfg) const;
-    string gen_asm_z80(ostream& o, CFunction* f) const;
-    
-    string variable;
+	CExpressionVar(string variable);
+	~CExpressionVar() = default;
+	string to_IR(CFG* cfg) const;
+	string gen_asm_z80(ostream& o, CFunction* f) const;
+
+	string variable;
 };
 
 class CExpressionVarArray: public CExpressionPart {
 public:
-    CExpressionVarArray(string variable, CExpressionPart* index);
-    ~CExpressionVarArray();
-    string to_IR(CFG* cfg) const;
-    string to_IR_address(CFG* cfg) const;
-    string gen_asm_z80(ostream& o, CFunction* f) const;
-    
-    string variable;
-    CExpressionPart* index;
+	CExpressionVarArray(string variable, CExpressionPart* index);
+	~CExpressionVarArray();
+	string to_IR(CFG* cfg) const;
+	string to_IR_address(CFG* cfg) const;
+	string gen_asm_z80(ostream& o, CFunction* f) const;
+
+	string variable;
+	CExpressionPart* index;
 };
 
 class CExpressionComposed: public CExpressionPart {
 public:
-    CExpressionComposed(CExpressionPart* lhs, string op, CExpressionPart* rhs);
-    ~CExpressionComposed();
-    CExpressionPart* optimize();
-    string to_IR(CFG* cfg) const;
-    string gen_asm_z80(ostream& o, CFunction* f) const;
-    
-    CExpressionPart* lhs;
-    string op;
-    CExpressionPart* rhs;
-    
+	CExpressionComposed(CExpressionPart* lhs, string op, CExpressionPart* rhs);
+	~CExpressionComposed();
+	CExpressionPart* optimize();
+	string to_IR(CFG* cfg) const;
+	string gen_asm_z80(ostream& o, CFunction* f) const;
+
+	CExpressionPart* lhs;
+	string op;
+	CExpressionPart* rhs;
+
 private:
-    // no copy wanted
-    CExpressionComposed(const CExpressionComposed&); // no implementation
-    CExpressionComposed& operator=(const CExpressionComposed&); // no implementation
+	// no copy wanted
+	CExpressionComposed(const CExpressionComposed&); // no implementation
+	CExpressionComposed& operator=(const CExpressionComposed&); // no implementation
 };
 
