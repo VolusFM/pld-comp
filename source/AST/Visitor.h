@@ -129,15 +129,13 @@ public:
 		CType type = ctx->type()->getText();
 		vector<CInstruction*> instructionsVariables;
         
-		for (auto ctx_varDef : ctx->vardefinition()) {
-			CInstrVariable* instrVar = (CInstrVariable*) visit(ctx_varDef);
-			instrVar->type = type;
-			instructionsVariables.push_back(instrVar);
-		}
-		for (auto ctx_arrayDef : ctx->arraydefinition()) {
-			CInstrArray* instrArray = (CInstrArray*) visit(ctx_arrayDef);
-			instrArray->type = type;
-			instructionsVariables.push_back(instrArray);
+		for (auto ctx_def : ctx->symboldefinition()) {
+			CInstruction* instrdef = (CInstruction*) visit(ctx_def);
+			CInstrVariable* instrvar = dynamic_cast<CInstrVariable*>(instrdef);
+            if (instrvar != nullptr) instrvar->type = type;
+            CInstrArray* instrarray = dynamic_cast<CInstrArray*>(instrdef);
+			if (instrarray != nullptr) instrarray->type = type;
+			instructionsVariables.push_back(instrdef);
 		}
         
 		return new CInstructions(instructionsVariables);
@@ -146,21 +144,21 @@ public:
 	virtual antlrcpp::Any visitDef_var(CodeCParser::Def_varContext *ctx)
 			override {
 		string name = ctx->IDENT()->getText();
-		return new CInstrVariable(name, CType());
+		return (CInstruction*) new CInstrVariable(name, CType());
 	}
     
 	virtual antlrcpp::Any visitDef_var_with_expr(
 			CodeCParser::Def_var_with_exprContext *ctx) override {
 		string name = ctx->IDENT()->getText();
 		CExpressionPart* expr = (CExpressionPart*) visit(ctx->expressionpart());
-		return new CInstrVariable(name, CType(), expr);
+		return (CInstruction*) new CInstrVariable(name, CType(), expr);
 	}
     
 	virtual antlrcpp::Any visitDef_array(CodeCParser::Def_arrayContext *ctx)
 			override {
 		string name = ctx->IDENT()->getText();
 		int count = (int) (long) visit(ctx->intval());
-		return new CInstrArray(name, CType(), count);
+		return (CInstruction*) new CInstrArray(name, CType(), count);
 	}
     
 	virtual antlrcpp::Any visitDef_array_with_expr(
@@ -173,7 +171,7 @@ public:
 			exprs.push_back((CExpressionPart*) visit(ctx_expr));
 		}
         
-		return new CInstrArray(name, CType(), count, exprs);
+		return (CInstruction*) new CInstrArray(name, CType(), count, exprs);
 	}
 
 	virtual antlrcpp::Any visitIf_block(CodeCParser::If_blockContext *ctx)

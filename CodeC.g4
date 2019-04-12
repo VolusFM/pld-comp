@@ -45,12 +45,13 @@ forevolution: expression;
 dowhileblock: 'do' anyinstruction 'while' '(' expression ')' ';';
 
 
-definition: type (vardefinition|arraydefinition) (','(vardefinition|arraydefinition))*;
+definition: type symboldefinition (',' symboldefinition)*;
+symboldefinition : vardefinition | arraydefinition;
 
 vardefinition : IDENT #def_var
 	| IDENT '=' expressionpart #def_var_with_expr;
 
-arraydefinition : IDENT'['intval']'	#def_array
+arraydefinition : IDENT'['intval']' #def_array
 	| IDENT'['intval']' '=' '{'(expressionpart (',' expressionpart)*)?'}' #def_array_with_expr;
 
 
@@ -90,10 +91,10 @@ type: 'int' | 'char' ;
 
 VOID : 'void';
 
-INTDEC : [1-9][0-9]*|'0';
+INTOCT :'0'[0-7]+;
 INTHEX : '0x'[0-9A-F]+;
 INTBIN : '0b'[01]+;
-INTOCT :'0'[0-7]+;
+INTDEC : [1-9][0-9]*|'0';
 INTCHAR : ['].['];
 IDENT : [a-zA-Z][a-zA-Z0-9_]*;
 
