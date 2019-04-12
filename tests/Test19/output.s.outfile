@@ -1,5 +1,22 @@
 .text
 .global main
+function:
+  ## prologue
+  pushq %rbp # save %rbp on the stack
+  movq %rsp, %rbp # define %rbp for the current function
+  subq $16, %rsp
+  movl %edi, -4(%rbp)
+  ## contenu
+function_body:
+  movl  -4(%rbp), %eax
+  subl  $1, %eax
+  movl  %eax, -4(%rbp)
+  movl  -4(%rbp), %eax
+function_1:
+function_end:
+  ## epilogue
+  leave
+  ret
 main:
   ## prologue
   pushq %rbp # save %rbp on the stack
@@ -7,24 +24,12 @@ main:
   subq $16, %rsp
   ## contenu
 main_body:
-  movl  $1, -8(%rbp)
-main_while1:
-  movl  -8(%rbp), %eax
-  addl  $1, %eax
-  movl  %eax, -12(%rbp)
-  movl  -12(%rbp), %eax
+  movl  $5, -4(%rbp)
+  movl -4(%rbp), %edi
+  call  function
   movl  %eax, -8(%rbp)
-main_while1condition:
   movl  -8(%rbp), %eax
-  cmpl  $5, %eax
-  setl    %al
-  movzbl  %al, %eax
-  movl  %eax, -16(%rbp)
-  cmpl $0, %eax
-  je main_2
-  jmp main_while1
-main_2:
-  movl  $6, -8(%rbp)
+  movl  %eax, -4(%rbp)
 main_end:
   ## epilogue
   leave

@@ -1,9 +1,13 @@
 
 int main() {
-    int a;
-    int b = 0b1100;
-    int c = 0b0101;
-    a = b & c;
-    a = b | c;
-    a = b ^ c;
+    int a = 1;
+    int b;
+    
+    if(a == 1) {
+        b=1;
+    }
+    else{
+        b=2;
+    }
+    b=3;
 }
