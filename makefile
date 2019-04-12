@@ -70,14 +70,14 @@ ANTLRLIBRUNTIME=$(ANTLRDIR)/lib/libantlr4-runtime.a
 
 # ANTLR path chosen by default:
 # - on linux: /shares/public/tp/ANTLR4-CPP
-# - on mac: ./ANTLR/
+# - on mac/windows: ./ANTLR/
 
 # ANTLR path chosen if arguments specified:
 # - with USE="local": ./ANTLR
 # - with USE="shares": /shares/public/tp/ANTLR4-CPP
 # - with USE="alt": local binary with shared libraries
 
-ifeq ($(OSNAME),MAC)
+ifneq ($(OSNAME),LINUX)
 ANTLRDIR=ANTLR/$(OSNAME)-CPP
 endif
 ifeq ($(USE),local)
