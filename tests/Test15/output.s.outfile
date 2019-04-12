@@ -14,13 +14,14 @@ main_while1condition:
   setl    %al
   movzbl  %al, %eax
   movl  %eax, -8(%rbp)
+  movl  -8(%rbp), %eax
   cmpl $0, %eax
   je main_2
 main_while1:
   movl  -4(%rbp), %eax
   addl  $1, %eax
-  movl  %eax, -12(%rbp)
-  movl  -12(%rbp), %eax
+  movl  %eax, -8(%rbp)
+  movl  -8(%rbp), %eax
   movl  %eax, -4(%rbp)
   jmp main_while1condition
 main_2:

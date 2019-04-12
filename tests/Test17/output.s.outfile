@@ -20,6 +20,7 @@ main_while1condition:
   setl    %al
   movzbl  %al, %eax
   movl  %eax, -12(%rbp)
+  movl  -12(%rbp), %eax
   cmpl $0, %eax
   je main_2
   jmp main_while1

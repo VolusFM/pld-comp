@@ -10,8 +10,8 @@ function:
 function_body:
   movl  -4(%rbp), %eax
   subl  $1, %eax
-  movl  %eax, -4(%rbp)
-  movl  -4(%rbp), %eax
+  movl  %eax, -8(%rbp)
+  movl  -8(%rbp), %eax
 function_1:
 function_end:
   ## epilogue

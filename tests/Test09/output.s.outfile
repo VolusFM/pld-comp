@@ -4,7 +4,7 @@ main:
   ## prologue
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
-  subq $16, %rsp
+  subq $32, %rsp
   ## contenu
 main_body:
   movl  $0, %eax

@@ -4,7 +4,7 @@ main:
   ## prologue
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
-  subq $16, %rsp
+  subq $32, %rsp
   ## contenu
 main_body:
   movl  $1, -4(%rbp)
@@ -16,6 +16,7 @@ main_for1condition:
   setl    %al
   movzbl  %al, %eax
   movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
   cmpl $0, %eax
   je main_2
 main_for1:
@@ -27,14 +28,15 @@ main_for3condition:
   cmpl  $10, %eax
   setl    %al
   movzbl  %al, %eax
-  movl  %eax, -20(%rbp)
+  movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
   cmpl $0, %eax
   je main_4
 main_for3:
   movl  -12(%rbp), %eax
   addl  $1, %eax
-  movl  %eax, -24(%rbp)
-  movl  -24(%rbp), %eax
+  movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
   movl  %eax, -12(%rbp)
   jmp main_for3condition
 main_4:
@@ -44,19 +46,20 @@ main_for5condition:
   cmpl  $10, %eax
   setl    %al
   movzbl  %al, %eax
-  movl  %eax, -28(%rbp)
+  movl  %eax, -20(%rbp)
+  movl  -20(%rbp), %eax
   cmpl $0, %eax
   je main_6
 main_for5:
   movl  -4(%rbp), %eax
   addl  $1, %eax
-  movl  %eax, -32(%rbp)
-  movl  -32(%rbp), %eax
+  movl  %eax, -20(%rbp)
+  movl  -20(%rbp), %eax
   movl  %eax, -4(%rbp)
   movl  -12(%rbp), %eax
   addl  $1, %eax
-  movl  %eax, -36(%rbp)
-  movl  -36(%rbp), %eax
+  movl  %eax, -24(%rbp)
+  movl  -24(%rbp), %eax
   movl  %eax, -12(%rbp)
   jmp main_for5condition
 main_6:

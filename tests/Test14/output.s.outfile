@@ -13,6 +13,7 @@ main_body:
   sete    %al
   movzbl  %al, %eax
   movl  %eax, -12(%rbp)
+  movl  -12(%rbp), %eax
   cmpl $0, %eax
   je main_if1false
 main_if1true:

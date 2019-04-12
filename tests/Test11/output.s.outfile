@@ -4,27 +4,31 @@ main:
   ## prologue
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
-  subq $16, %rsp
+  subq $32, %rsp
   ## contenu
 main_body:
+  movl  $0, -16(%rbp)
+  movl  $0, -12(%rbp)
+  movl  $0, -8(%rbp)
+  movl  $0, -4(%rbp)
   movl  $1, -20(%rbp)
   movl  $4, -24(%rbp)
-  movl  $0, %eax 
+  movl  $0, %eax
   cltq 
   movl  $1, -16(%rbp,%rax,4)
-  movl  -20(%rbp), %eax 
+  movl  -20(%rbp), %eax
   cltq 
   movl  $2, -16(%rbp,%rax,4)
   movl  $3, %eax
   subl  $1, %eax
   movl  %eax, -28(%rbp)
-  movl  -28(%rbp), %eax 
+  movl  -28(%rbp), %eax
   cltq 
   movl  $3, -16(%rbp,%rax,4)
   movl  -24(%rbp), %eax
   imull -20(%rbp), %eax
-  movl  %eax, -32(%rbp)
-  movl  -32(%rbp), %eax 
+  movl  %eax, -28(%rbp)
+  movl  -28(%rbp), %eax
   cltq 
   movl  $4, -16(%rbp,%rax,4)
 main_end:
