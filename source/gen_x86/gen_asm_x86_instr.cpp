@@ -9,6 +9,8 @@ using std::endl;
 using std::stoi;
 using std::to_string;
 
+#include "gen_asm_x86_util.h"
+
 void IRInstr::gen_asm_x86(ostream& o) const {
 	CFG* cfg = bb->cfg;
 	TOS& tos = cfg->tos;

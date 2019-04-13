@@ -14,8 +14,6 @@ using std::ostream;
 #include "../TOS.h"
 class CFunction;
 
-static const string registerName[] = { "%edi", "%esi", "%edx", "%ecx", "%e8d", "%e9d" };
-
 class IRInstr;
 class BasicBlock;
 class CFG;

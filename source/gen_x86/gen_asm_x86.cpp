@@ -12,6 +12,8 @@ using std::endl;
 #include <string>
 using std::to_string;
 
+#include "gen_asm_x86_util.h"
+
 void IProg::gen_asm_x86(ostream& o) const {
 	o << ".text\n" << ".global main\n";
 
