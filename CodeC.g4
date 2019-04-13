@@ -25,7 +25,8 @@ instruction: instrreturn ';' #return
 	| ifblock #if_block
 	| whileblock #while_block
 	| forblock #for_block
-	| dowhileblock #do_while_block;
+	| dowhileblock #do_while_block
+	| instructionsblock #block;
 
 instrreturn: 'return' expressionpart #return_expr
 	| 'return' #return_void;

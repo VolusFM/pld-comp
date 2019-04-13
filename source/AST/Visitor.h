@@ -196,6 +196,12 @@ public:
 		return (CInstruction*) instr;
 	}
 
+	virtual antlrcpp::Any visitBlock(CodeCParser::BlockContext *ctx)
+			override {
+		CInstructions* block = (CInstructions*) visit(ctx->instructionsblock());
+		return (CInstruction*) block;
+	}
+
 	virtual antlrcpp::Any visitWhile_block(CodeCParser::While_blockContext *ctx)
 			override {
 		CExpression* condition = (CExpression*) visit(
