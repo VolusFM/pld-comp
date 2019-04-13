@@ -87,7 +87,7 @@ int main(int argc, const char* argv[]) {
         if (args.lo == "x86")
             ir->gen_asm_x86(*os);
         else if (args.lo == "z80")
-            ast->gen_asm_z80(*os);
+            ir->gen_asm_z80(*os);
         
         *os << endl;
         if (!args.fo.empty())

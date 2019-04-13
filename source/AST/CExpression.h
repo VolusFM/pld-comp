@@ -15,7 +15,6 @@ public:
     virtual ~CExpressionPart() = default;
     virtual CExpressionPart* optimize();
     virtual string to_IR(CFG* cfg) const = 0;
-    virtual string gen_asm_z80(ostream& o, CFunction* f) const = 0;
 };
 
 class CExpression {
@@ -24,13 +23,8 @@ public:
     ~CExpression();
     
     void to_IR_full(CFG* cfg) const;
-    void gen_asm_z80_full(ostream& o, const CFunction* f) const;
-    
     string to_IR_part(CFG* cfg) const;
-    string gen_asm_z80_part(ostream& o, const CFunction* f) const;
-    
     void to_IR_bool(CFG* cfg) const;
-    void gen_asm_z80_bool(ostream& o, const CFunction* f) const;
     
     void optimize();
     
@@ -43,7 +37,6 @@ public:
     CExpressionInt(int value);
     ~CExpressionInt() = default;
     string to_IR(CFG* cfg) const;
-    string gen_asm_z80(ostream& o, CFunction* f) const;
     
     int value;
 };
@@ -53,7 +46,6 @@ public:
     CExpressionVar(string variable);
     ~CExpressionVar() = default;
     string to_IR(CFG* cfg) const;
-    string gen_asm_z80(ostream& o, CFunction* f) const;
     
     string variable;
 };
@@ -64,7 +56,6 @@ public:
     ~CExpressionVarArray();
     string to_IR(CFG* cfg) const;
     string to_IR_address(CFG* cfg) const;
-    string gen_asm_z80(ostream& o, CFunction* f) const;
     
     string variable;
     CExpressionPart* index;
@@ -76,7 +67,6 @@ public:
     ~CExpressionComposed();
     CExpressionPart* optimize();
     string to_IR(CFG* cfg) const;
-    string gen_asm_z80(ostream& o, CFunction* f) const;
     
     CExpressionPart* lhs;
     string op;

@@ -126,10 +126,10 @@ void TOS::fill_address_x86() {
     }
 }
 
-string TOS::get_address_z80(string name) const {
+int TOS::get_address_z80(string name) const {
     if (has(name)) {
         int addr = tosIndex.at(name);
-        return to_string(addr);
+        return addr;
     } else if (parent != nullptr) {
         return parent->get_address_z80(name);
     } else {

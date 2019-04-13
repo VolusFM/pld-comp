@@ -36,8 +36,8 @@ typedef enum {
     op_copy_to_array_index,
     op_copy_array,
     op_copy_from_array,
-    op_rmem,  // va lire a une adresse memoire donnee dans le premier paramatre
-    op_wmem,  // va ecrire a une adresse memoire donnee dans le premier parametre.
+    op_rmem,  // va lire a une adresse memoire donnee dans le premier parametre
+    op_wmem,  // va ecrire a une adresse memoire donnee dans le premier parametre
     op_call, 
     op_cmp_eq,
     op_cmp_ne,
@@ -61,6 +61,7 @@ public:
     
     /* code generation */
     void gen_asm_x86(ostream &o) const; /* x86 assembly code generation for this IR instruction */
+    void gen_asm_z80(ostream &o) const; /* x86 assembly code generation for this IR instruction */
     
 private:
     BasicBlock* bb; /* the BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
@@ -94,6 +95,7 @@ public:
     BasicBlock(CFG* cfg, string entry_label);
     ~BasicBlock();
     void gen_asm_x86(ostream &o) const; /* x86 assembly code generation for this basic block */
+    void gen_asm_z80(ostream &o) const; /* z80 assembly code generation for this basic block */
     
     void add_IRInstr(Operation op, const CType& type, vector<string> params);
     
@@ -121,10 +123,14 @@ public:
     
     void optimize();
     
-    // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
+    // x86 code generation
     void gen_asm_x86(ostream& o) const;
     void gen_asm_x86_prologue(ostream& o) const;
     void gen_asm_x86_epilogue(ostream& o) const;
+    // z80 code generation
+    void gen_asm_z80(ostream& o) const;
+    void gen_asm_z80_prologue(ostream& o) const;
+    void gen_asm_z80_epilogue(ostream& o) const;
     
     // basic block management
     void add_bb(BasicBlock* bb); 

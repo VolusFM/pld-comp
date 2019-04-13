@@ -25,7 +25,6 @@ public:
     
     void optimize();
     CFG* to_IR() const;
-    void gen_asm_z80(ostream& o) const;
     
     const CProg* prog;
     string name;

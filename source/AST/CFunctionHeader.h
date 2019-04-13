@@ -15,7 +15,6 @@ class CFunctionHeader {
 public:
     CFunctionHeader(string name, CType  type, vector<CParameter>& parameters);
     ~CFunctionHeader() = default;
-    void gen_asm_z80(ostream& o, const CFunction* f) const;
     
     string name;
     CType type;
@@ -26,8 +25,6 @@ class CParameter {
 public:
     CParameter(string name, CType type);
     ~CParameter() = default;
-    
-    void gen_asm_z80(ostream& o, const CFunction* f, int index) const;
     
     CType type;
     string name;

@@ -18,7 +18,6 @@ public:
     void explore_tos(TOS& tos) const;
     void optimize();
     void to_IR(CFG* cfg) const;
-    void gen_asm_z80(ostream& o, const CFunction* f) const;
 
     CExpressionPart* expr;
 

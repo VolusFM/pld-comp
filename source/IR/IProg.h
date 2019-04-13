@@ -14,6 +14,7 @@ public:
     
     void optimize();
     void gen_asm_x86(ostream &o) const;
+    void gen_asm_z80(ostream &o) const;
     
     TOS tos;
     vector<CFG*> functions;
