@@ -7,23 +7,22 @@ main:
   subq $16, %rsp
   ## contenu
 main_body:
-  movl  $12, -20(%rbp)
-  movl  $5, -24(%rbp)
-  movl  -20(%rbp), %eax
-  andl  -24(%rbp), %eax
-  movl  %eax, -28(%rbp)
-  movl  -28(%rbp), %eax
-  movl  %eax, -16(%rbp)
-  movl  -20(%rbp), %eax
-  orl   -24(%rbp), %eax
-  movl  %eax, -32(%rbp)
-  movl  -32(%rbp), %eax
-  movl  %eax, -16(%rbp)
-  movl  -20(%rbp), %eax
-  xorl  -24(%rbp), %eax
-  movl  %eax, -36(%rbp)
-  movl  -36(%rbp), %eax
-  movl  %eax, -16(%rbp)
+  movl  $1, -4(%rbp)
+  movl  -4(%rbp), %eax
+  cmpl  $1, %eax
+  sete    %al
+  movzbl  %al, %eax
+  movl  %eax, -12(%rbp)
+  movl  -12(%rbp), %eax
+  cmpl $0, %eax
+  je main_if1false
+main_if1true:
+  movl  $1, -8(%rbp)
+  jmp main_2
+main_if1false:
+  movl  $2, -8(%rbp)
+main_2:
+  movl  $3, -8(%rbp)
 main_end:
   ## epilogue
   leave

@@ -4,34 +4,33 @@ main:
   ## prologue
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
-  subq $16, %rsp
+  subq $32, %rsp
   ## contenu
 main_body:
-  movl  $3, -12(%rbp)
-  movl  $4, -16(%rbp)
-  movl  $1, -36(%rbp) 
-  movl  $2, -32(%rbp) 
-  movl  $3, -28(%rbp) 
-  movl  $0, -56(%rbp) 
-  movl  $0, -52(%rbp) 
-  movl  $0, -48(%rbp) 
-  movl  $0, -44(%rbp) 
-  movl  $0, -40(%rbp) 
-  movl  $0, -56(%rbp) 
-  movl  $1, -52(%rbp) 
-  movl  -12(%rbp), %eax
-  movl  %eax, -68(%rbp) 
-  movl  -12(%rbp), %eax
-  addl  -16(%rbp), %eax
-  movl  %eax, -72(%rbp)
-  movl  -72(%rbp), %eax
-  movl  %eax, -64(%rbp) 
-  movl  -16(%rbp), %eax
-  movl  %eax, -12(%rbp)
-  movl  -12(%rbp), %eax
-  movl  %eax, -60(%rbp) 
+  movl  $0, -16(%rbp)
+  movl  $0, -12(%rbp)
+  movl  $0, -8(%rbp)
+  movl  $0, -4(%rbp)
+  movl  $1, -20(%rbp)
+  movl  $4, -24(%rbp)
   movl  $0, %eax
-main_1:
+  cltq 
+  movl  $1, -16(%rbp,%rax,4)
+  movl  -20(%rbp), %eax
+  cltq 
+  movl  $2, -16(%rbp,%rax,4)
+  movl  $3, %eax
+  subl  $1, %eax
+  movl  %eax, -28(%rbp)
+  movl  -28(%rbp), %eax
+  cltq 
+  movl  $3, -16(%rbp,%rax,4)
+  movl  -24(%rbp), %eax
+  imull -20(%rbp), %eax
+  movl  %eax, -28(%rbp)
+  movl  -28(%rbp), %eax
+  cltq 
+  movl  $4, -16(%rbp,%rax,4)
 main_end:
   ## epilogue
   leave

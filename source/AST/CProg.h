@@ -14,10 +14,10 @@ class IProg;
 
 class CProg {
 public:
-    void optimize();
-    IProg* to_IR() const;
-    
-    TOS tos;
-    vector<CFunction> functions;
+	void optimize();
+	IProg* to_IR() const;
+
+	TOS tos;
+	vector<CFunction> functions;
 };
 

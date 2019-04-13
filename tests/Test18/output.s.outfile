@@ -1,5 +1,18 @@
 .text
 .global main
+function:
+  ## prologue
+  pushq %rbp # save %rbp on the stack
+  movq %rsp, %rbp # define %rbp for the current function
+  subq $16, %rsp
+  ## contenu
+function_body:
+  movl  $2, %eax
+function_1:
+function_end:
+  ## epilogue
+  leave
+  ret
 main:
   ## prologue
   pushq %rbp # save %rbp on the stack
@@ -7,64 +20,10 @@ main:
   subq $16, %rsp
   ## contenu
 main_body:
-  movl  $1, -16(%rbp)
-  movl  $2, -20(%rbp)
-  movl  $3, -24(%rbp)
-main_for1condition:
-  movl  -16(%rbp), %eax
-  cmpl  -20(%rbp), %eax
-  setl    %al
-  movzbl  %al, %eax
-  movl  %eax, -28(%rbp)
-  cmpl $0, %eax
-  je main_2
-main_for1:
-  jmp main_for1condition
-main_2:
-  movl  $0, -24(%rbp)
-main_for3condition:
-  movl  -24(%rbp), %eax
-  cmpl  $10, %eax
-  setl    %al
-  movzbl  %al, %eax
-  movl  %eax, -32(%rbp)
-  cmpl $0, %eax
-  je main_4
-main_for3:
-  movl  -24(%rbp), %eax
-  addl  $1, %eax
-  movl  %eax, -36(%rbp)
-  movl  -36(%rbp), %eax
-  movl  %eax, -24(%rbp)
-  jmp main_for3condition
-main_4:
-  movl  $0, -24(%rbp)
-main_for5condition:
-  movl  -24(%rbp), %eax
-  cmpl  $10, %eax
-  setl    %al
-  movzbl  %al, %eax
-  movl  %eax, -40(%rbp)
-  cmpl $0, %eax
-  je main_6
-main_for5:
-  movl  -16(%rbp), %eax
-  addl  $1, %eax
-  movl  %eax, -44(%rbp)
-  movl  -44(%rbp), %eax
-  movl  %eax, -16(%rbp)
-  movl  -24(%rbp), %eax
-  addl  $1, %eax
-  movl  %eax, -48(%rbp)
-  movl  -48(%rbp), %eax
-  movl  %eax, -24(%rbp)
-  jmp main_for5condition
-main_6:
-  movl  $0, -24(%rbp)
-main_for7:
-  jmp main_for7
-main_8:
-  movl  $6, -16(%rbp)
+  call  function
+  movl  %eax, -8(%rbp)
+  movl  -8(%rbp), %eax
+  movl  %eax, -4(%rbp)
 main_end:
   ## epilogue
   leave

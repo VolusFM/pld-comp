@@ -12,24 +12,25 @@ class TOS;
 #include "CInstruction.h"
 class CExpressionPart;
 
-class CInstrArray : public CInstruction {
+class CInstrArray: public CInstruction {
 public:
-    CInstrArray(string name, CType type, int count);
-    CInstrArray(string name, CType type, int count, list<CExpressionPart*> exprs);
-    ~CInstrArray();
-    
-    void explore_tos(TOS& tos) const;
-    void optimize();
-    void to_IR(CFG* cfg) const;
-    
-    string name;
-    CType type;
-    int count;
-    list<CExpressionPart*> exprs;
-    
+	CInstrArray(string name, CType type, int count);
+	CInstrArray(string name, CType type, int count,
+			list<CExpressionPart*> exprs);
+	~CInstrArray();
+
+	void explore_tos(TOS& tos) const;
+	void optimize();
+	void to_IR(CFG* cfg) const;
+
+	string name;
+	CType type;
+	int count;
+	list<CExpressionPart*> exprs;
+
 private:
-    // no copy wanted
-    CInstrArray(const CInstrArray&); // no implementation
-    CInstrArray& operator=(const CInstrArray&); // no implementation
+	// no copy wanted
+	CInstrArray(const CInstrArray&); // no implementation
+	CInstrArray& operator=(const CInstrArray&); // no implementation
 };
 

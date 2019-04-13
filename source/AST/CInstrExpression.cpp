@@ -5,21 +5,19 @@
 void CInstrExpression::explore_tos(TOS& tos) const {
 }
 
-CInstrExpression::CInstrExpression(CExpression* expr)
-: expr(expr)
-{
+CInstrExpression::CInstrExpression(CExpression* expr) :
+		expr(expr) {
 }
 
 CInstrExpression::~CInstrExpression() {
-    if (expr != nullptr) {
-        delete expr;
-    }
+	if (expr != nullptr) {
+		delete expr;
+	}
 }
 
-void CInstrExpression::optimize()
-{
-    if (expr != nullptr) {
-        expr->optimize();
-    }
+void CInstrExpression::optimize() {
+	if (expr != nullptr) {
+		expr->optimize();
+	}
 }
 

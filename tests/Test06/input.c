@@ -1,6 +1,5 @@
+
 int main() {
-    int a;
-    a = 0x9;
-    a = 0xF;
-    a = 0x10;
+    int e = 2*3+4-4/(4-2);
+    return e;
 }

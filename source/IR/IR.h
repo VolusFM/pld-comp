@@ -61,7 +61,7 @@ public:
     
     /* code generation */
     void gen_asm_x86(ostream &o) const; /* x86 assembly code generation for this IR instruction */
-    void gen_asm_z80(ostream &o) const; /* x86 assembly code generation for this IR instruction */
+    void gen_asm_z80(ostream &o) const; /* z80 assembly code generation for this IR instruction */
     
 private:
     BasicBlock* bb; /* the BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
@@ -73,7 +73,7 @@ private:
         for 3-op instrs: d, x, y;
         for ldconst: d, c;
         for call: label, d, params;
-        for wmem and rmem: choose yourself
+        for wmem and rmem: variable, address
     */
 };
 

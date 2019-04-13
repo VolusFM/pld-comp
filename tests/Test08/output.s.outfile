@@ -7,26 +7,24 @@ main:
   subq $32, %rsp
   ## contenu
 main_body:
-  movl  $36, -20(%rbp)
-  movl  $12, -24(%rbp)
-  movl  $5, -28(%rbp)
+  movl  $36, -4(%rbp)
+  movl  $12, -8(%rbp)
+  movl  $5, -12(%rbp)
   movl  $4, %eax
-  imull -20(%rbp), %eax
-  movl  %eax, -36(%rbp)
-  movl  -36(%rbp), %eax
-  subl  -28(%rbp), %eax
-  movl  %eax, -40(%rbp)
-  movl  $6, -44(%rbp)
-  movl  -24(%rbp), %eax
+  imull -4(%rbp), %eax
+  movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
+  subl  -12(%rbp), %eax
+  movl  %eax, -20(%rbp)
+  movl  $6, -24(%rbp)
+  movl  -8(%rbp), %eax
   cltd
-  idivl -44(%rbp)
-  movl  %eax, -36(%rbp)
-  movl  -40(%rbp), %eax
-  addl  -36(%rbp), %eax
-  movl  %eax, -44(%rbp)
-  movl  -44(%rbp), %eax
-  movl  %eax, -32(%rbp)
-  movl  -32(%rbp), %eax
+  idivl -24(%rbp)
+  movl  %eax, -16(%rbp)
+  movl  -20(%rbp), %eax
+  addl  -16(%rbp), %eax
+  movl  %eax, -24(%rbp)
+  movl  -24(%rbp), %eax
 main_1:
 main_end:
   ## epilogue

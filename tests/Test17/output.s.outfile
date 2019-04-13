@@ -7,24 +7,25 @@ main:
   subq $16, %rsp
   ## contenu
 main_body:
-  movl  $1, -8(%rbp)
-main_while1condition:
+  movl  $1, -4(%rbp)
+main_while1:
+  movl  -4(%rbp), %eax
+  addl  $1, %eax
+  movl  %eax, -8(%rbp)
   movl  -8(%rbp), %eax
+  movl  %eax, -4(%rbp)
+main_while1condition:
+  movl  -4(%rbp), %eax
   cmpl  $5, %eax
   setl    %al
   movzbl  %al, %eax
   movl  %eax, -12(%rbp)
+  movl  -12(%rbp), %eax
   cmpl $0, %eax
   je main_2
-main_while1:
-  movl  -8(%rbp), %eax
-  addl  $1, %eax
-  movl  %eax, -16(%rbp)
-  movl  -16(%rbp), %eax
-  movl  %eax, -8(%rbp)
-  jmp main_while1condition
+  jmp main_while1
 main_2:
-  movl  $6, -8(%rbp)
+  movl  $6, -4(%rbp)
 main_end:
   ## epilogue
   leave

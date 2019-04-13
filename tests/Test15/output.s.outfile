@@ -4,34 +4,28 @@ main:
   ## prologue
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
+  subq $16, %rsp
   ## contenu
 main_body:
-  movl    $1, -8(%rbp)
-  movl    $0, -12(%rbp)
-  cmpl    $0, -8(%rbp)
-  je      .L2
-  cmpl    $0, -12(%rbp)
-  je      .L2
-  movl    $1, %eax
-  jmp     .L3
-.L2:
-  movl    $0, %eax
-.L3:
+  movl  $1, -4(%rbp)
+main_while1condition:
+  movl  -4(%rbp), %eax
+  cmpl  $5, %eax
+  setl    %al
   movzbl  %al, %eax
-  movl    %eax, -4(%rbp)
-  cmpl    $0, -8(%rbp)
-  jne     .L4
-  cmpl    $0, -12(%rbp)
-  je      .L5
-.L4:
-  movl    $1, %eax
-  jmp     .L6
-.L5:
-  movl    $0, %eax
-.L6:
-  movzbl  %al, %eax
-  movl    %eax, -4(%rbp)
-  movl    $0, %eax
+  movl  %eax, -8(%rbp)
+  movl  -8(%rbp), %eax
+  cmpl $0, %eax
+  je main_2
+main_while1:
+  movl  -4(%rbp), %eax
+  addl  $1, %eax
+  movl  %eax, -8(%rbp)
+  movl  -8(%rbp), %eax
+  movl  %eax, -4(%rbp)
+  jmp main_while1condition
+main_2:
+  movl  $6, -4(%rbp)
 main_end:
   ## epilogue
   leave

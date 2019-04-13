@@ -4,24 +4,70 @@ main:
   ## prologue
   pushq %rbp # save %rbp on the stack
   movq %rsp, %rbp # define %rbp for the current function
-  subq $16, %rsp
+  subq $32, %rsp
   ## contenu
 main_body:
-  movl  $1, -12(%rbp)
+  movl  $1, -4(%rbp)
+  movl  $2, -8(%rbp)
+  movl  $3, -12(%rbp)
+main_for1condition:
+  movl  -4(%rbp), %eax
+  cmpl  -8(%rbp), %eax
+  setl    %al
+  movzbl  %al, %eax
+  movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
+  cmpl $0, %eax
+  je main_2
+main_for1:
+  jmp main_for1condition
+main_2:
+  movl  $0, -12(%rbp)
+main_for3condition:
   movl  -12(%rbp), %eax
-  cmpl  $1, %eax
-  sete    %al
+  cmpl  $10, %eax
+  setl    %al
+  movzbl  %al, %eax
+  movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
+  cmpl $0, %eax
+  je main_4
+main_for3:
+  movl  -12(%rbp), %eax
+  addl  $1, %eax
+  movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
+  movl  %eax, -12(%rbp)
+  jmp main_for3condition
+main_4:
+  movl  $0, -12(%rbp)
+main_for5condition:
+  movl  -12(%rbp), %eax
+  cmpl  $10, %eax
+  setl    %al
   movzbl  %al, %eax
   movl  %eax, -20(%rbp)
+  movl  -20(%rbp), %eax
   cmpl $0, %eax
-  je main_if1false
-main_if1true:
-  movl  $1, -16(%rbp)
-  jmp main_2
-main_if1false:
-  movl  $2, -16(%rbp)
-main_2:
-  movl  $3, -16(%rbp)
+  je main_6
+main_for5:
+  movl  -4(%rbp), %eax
+  addl  $1, %eax
+  movl  %eax, -20(%rbp)
+  movl  -20(%rbp), %eax
+  movl  %eax, -4(%rbp)
+  movl  -12(%rbp), %eax
+  addl  $1, %eax
+  movl  %eax, -24(%rbp)
+  movl  -24(%rbp), %eax
+  movl  %eax, -12(%rbp)
+  jmp main_for5condition
+main_6:
+  movl  $0, -12(%rbp)
+main_for7:
+  jmp main_for7
+main_8:
+  movl  $6, -4(%rbp)
 main_end:
   ## epilogue
   leave

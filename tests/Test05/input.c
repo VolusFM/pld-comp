@@ -1,5 +1,6 @@
 int main() {
     int a;
-    a = 07;
-    a = 010;
+    a = 0x9;
+    a = 0xF;
+    a = 0x10;
 }

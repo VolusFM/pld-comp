@@ -1,10 +1,9 @@
 
-int main() {
-    int a = 1;
-    
-    do {
-        a = a+1;
-    } while(a<5);
+int function (int a){
+    return a-1;
+}
 
-    a=6;
+int main() {
+    int a = 5;
+    a = function(a);
 }
