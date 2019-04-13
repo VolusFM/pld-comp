@@ -14,7 +14,8 @@ using std::to_string;
 void IRInstr::gen_asm_x86(ostream& o) const {
 	CFG* cfg = bb->cfg;
 	TOS& tos = cfg->tos;
-	int index;
+	int index, address;
+	string loc;
 
 	/*
 		for 3-op instrs: d, x, y;
@@ -43,21 +44,19 @@ void IRInstr::gen_asm_x86(ostream& o) const {
 		o << "  movl  " << tos.get_address_x86_array(params[1]) << ", %eax\n";
 		o << "  movl  %eax, " << tos.get_address_x86(params[0]) << "\n";
 		break;
-	case op_copy_to_array_index: {
-		int address = cfg->tos.get_index(params[0]);
-		int index = stoi(params[1]);
-		string loc = "-" + to_string(address - 4 * index) + "(%rbp)";
+	case op_copy_to_array_index:
+		address = cfg->tos.get_index(params[0]);
+		index = stoi(params[1]);
+		loc = "-" + to_string(address - 4 * index) + "(%rbp)";
 		o << "  movl  " << tos.get_address_x86(params[2]) << ", %edx\n";
 		o << "  movl  %edx, " << loc << "\n";
 		break;
-	}
-	case op_ldconst_to_array_index: {
-		int address = cfg->tos.get_index(params[0]);
-		int index = stoi(params[1]);
-		string loc = "-" + to_string(address - 4 * index) + "(%rbp)";
+	case op_ldconst_to_array_index:
+		address = cfg->tos.get_index(params[0]);
+		index = stoi(params[1]);
+		loc = "-" + to_string(address - 4 * index) + "(%rbp)";
 		o << "  movl  " << params[2] << ", " << loc << "\n";
 		break;
-	}
 	case op_index:
 		o << "  movl  " << tos.get_address_x86(params[0]) << ", %eax\n";
 		o << "  cltq \n";

@@ -22,13 +22,15 @@ public:
     bool use_CMP_GE;
 };
 
-void ld_hl_var(ostream& o, const TOS& tos, const string& param);
+void ld_hl_adr(ostream& o, const TOS& tos, const string& param, int index = 0);
 
+void ld_hl_var(ostream& o, const TOS& tos, const string& param);
 void ld_de_var(ostream& o, const TOS& tos, const string& param);
+void ld_bc_var(ostream& o, const TOS& tos, const string& param);
 
 void ld_a_nibble(ostream& o, const TOS& tos, const string& param, int which);
 
 void ld_var_hl(ostream& o, const TOS& tos, const string& param);
-
 void ld_var_de(ostream& o, const TOS& tos, const string& param);
+void ld_var_bc(ostream& o, const TOS& tos, const string& param);
 

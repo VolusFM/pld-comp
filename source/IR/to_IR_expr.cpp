@@ -121,6 +121,7 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         }
         
         variable = lhsvar;
+        cfg->tos.free_temp(rhsvar);
     } else {
         string lhsvar = lhs->to_IR(cfg);
         string rhsvar = rhs->to_IR(cfg);

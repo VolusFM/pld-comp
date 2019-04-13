@@ -16,13 +16,13 @@ main_body:
   movl  %eax, -4(%rbp)
   movl  -8(%rbp), %eax
   orl   -12(%rbp), %eax
-  movl  %eax, -20(%rbp)
-  movl  -20(%rbp), %eax
+  movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
   movl  %eax, -4(%rbp)
   movl  -8(%rbp), %eax
   xorl  -12(%rbp), %eax
-  movl  %eax, -24(%rbp)
-  movl  -24(%rbp), %eax
+  movl  %eax, -16(%rbp)
+  movl  -16(%rbp), %eax
   movl  %eax, -4(%rbp)
 main_end:
   ## epilogue
