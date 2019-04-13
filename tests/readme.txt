@@ -2,6 +2,12 @@ Programme de tests automatiques - mode d'emploi
 
 
 -------------------------------------------------------------------------------
+mktest.sh
+
+Fichier à personnaliser. Dans l'état, il cherche à valider tous les tests 
+contenus dans les répertoires dont le nom commence par Test.
+
+-------------------------------------------------------------------------------
 test.sh [ repertoire [ fichier.csv ] ]
 
 - repertoire indique le répertoire dans lequel se trouvent les fichiers de 
@@ -28,9 +34,3 @@ Fichiers de configuration :
 *validation indique que le script va tester la conformité, si cette conformité 
 n'est pas 
 satisfaite, il l'indiquera
-
--------------------------------------------------------------------------------
-mktest.sh
-
-Fichier à personnaliser. Dans l'état, il cherche à valider tous les tests 
-contenus dans les répertoires dont le nom commence par Test.

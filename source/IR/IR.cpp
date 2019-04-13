@@ -54,7 +54,7 @@ string CFG::new_BB_name(const string& prefix) {
 void CFG::optimize() {
     if (bbs.size() == 0) return;
     
-    // replace empty bbs
+    // REPLACE EMPTY BBS
     
     map<BasicBlock*, BasicBlock*> bbReplace;
     
@@ -87,7 +87,7 @@ void CFG::optimize() {
         }
     }
     
-    // remove unused bbs
+    // REMOVE UNUSED BBS
     
     map<BasicBlock*, bool> bbUsed;
     bbUsed[bbs[0]] = true;
@@ -116,7 +116,7 @@ void CFG::optimize() {
         }
     }
     
-    // move empty bbs at the back
+    // MOVE EMPTY BBS AT THE BACK
     
     vector<BasicBlock*> bbsmoved;
     bool moved = false;

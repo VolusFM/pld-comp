@@ -15,7 +15,7 @@ Options are:
   * `clean` : removes generated files
 
 ## Usage
-Syntax: `yottacompilatron9001 <input.c> [-a] [-o] [-c [<output.s>]]`
+Syntax: `yottacompilatron9001 <input.c> [-a] [-o] [-c [<output.s>]] [--x86 | --z80]`
 
 The command line arguments are:
   * `-a` : enables static analysis.
@@ -34,3 +34,4 @@ To run tests, simply run `cd tests && ./mktests.sh`. The results will be printed
 
 The demo folder contains several example C files to showcase the features of our compilator. The title of these files are self-explainatory.
 The input.c file in the root folder is another example file that can be compiled with yottacompilatron9001.
+

@@ -34,8 +34,8 @@ typedef enum {
     op_copy_to_array_index,
     op_copy_array,
     op_copy_from_array,
-    op_rmem,  // va lire a une adresse memoire donnee dans le premier parametre
-    op_wmem,  // va ecrire a une adresse memoire donnee dans le premier parametre
+    op_rmem,
+    op_wmem,
     op_call, 
     op_cmp_eq,
     op_cmp_ne,
@@ -71,7 +71,7 @@ private:
         for 3-op instrs: d, x, y;
         for ldconst: d, c;
         for call: label, d, params;
-        for wmem and rmem: variable, address
+        for wmem and rmem: variable, address;
     */
 };
 
@@ -136,7 +136,7 @@ public:
     BasicBlock* current_bb;
     
     
-public: // FIXME should be protected
+public:
     string name;
     
     TOS tos;

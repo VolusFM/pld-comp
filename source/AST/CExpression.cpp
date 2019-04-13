@@ -50,7 +50,8 @@ CExpressionPart* CExpressionPart::optimize() {
 }
 
 CExpressionPart* CExpressionComposed::optimize() {
-	// optimize each subexpression
+
+	// OPTIMIZE EACH SUBEXPRESSION
 
 	CExpressionPart* opti;
 
@@ -66,7 +67,7 @@ CExpressionPart* CExpressionComposed::optimize() {
 		rhs = opti;
 	}
 
-	// optimize composed expression
+	// OPTIMIZE COMPOSED EXPRESSION
 
 	CExpressionInt* lhsval = dynamic_cast<CExpressionInt*>(lhs);
 	CExpressionInt* rhsval = dynamic_cast<CExpressionInt*>(rhs);

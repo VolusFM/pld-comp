@@ -14,13 +14,14 @@ using std::to_string;
 void IRInstr::gen_asm_x86(ostream& o) const {
 	CFG* cfg = bb->cfg;
 	TOS& tos = cfg->tos;
+	int index;
 
 	/*
-	 for 3-op instrs: d, x, y;
-	 for ldconst: d, c;
-	 for call: label, d, params;
-	 for wmem and rmem: choose yourself
-	 */
+		for 3-op instrs: d, x, y;
+		for ldconst: d, c;
+		for call: label, d, params;
+		for wmem and rmem: variable, address;
+	*/
 	switch (op) {
 	case op_copy:
 		o << "  movl  " << tos.get_address_x86(params[1]) << ", %eax\n";
@@ -155,16 +156,14 @@ void IRInstr::gen_asm_x86(ostream& o) const {
 		o << "  movzbl  %al, %eax\n";
 		o << "  movl  %eax, " << tos.get_address_x86(params[0]) << "\n";
 		break;
-		//TODO : quoi de la fuck de l accolade ?
-	case op_call: {
-		int index = 0;
+	case op_call:
+		index = 0;
 		for (auto it = params.begin() + 2; it != params.end(); ++it) {
 			o << "  movl " << tos.get_address_x86(*it) << ", "
 					<< registerName[index] << "\n";
 			if (++index == 6)
 				break;
 		}
-	}
 		o << "  call  " << params[0] << "\n";
 		o << "  movl  %eax, " << tos.get_address_x86(params[1]) << "\n";
 		break;
@@ -175,13 +174,12 @@ void IRInstr::gen_asm_x86(ostream& o) const {
 				<< ", %eax\n";
 		break;
 
-		// TODO
-		/*
-		 case op_rmem:
-		 break;
-		 case op_wmem:
-		 break;
-		 */
+	/*
+	case op_rmem:
+		break;
+	case op_wmem:
+		break;
+	*/
 	default:
 		cerr << "PROBLEM: operator not yet supported" << endl;
 		throw;

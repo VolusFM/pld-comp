@@ -26,7 +26,7 @@ int main(int argc, const char* argv[]) {
 
 	if (!argsparse(argc, argv, args)) {
 		cerr
-				<< "Syntax: ./yottacompilatron9001 <input_file> [-a] [-o] [-c [<output_file>]]"
+				<< "Syntax: ./yottacompilatron9001 <input_file> [-a] [-o] [-c [<output_file>]] [--x86 | --z80]"
 				<< endl;
 		exit (EXIT_FAILURE);
 	}

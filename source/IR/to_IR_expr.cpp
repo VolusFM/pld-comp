@@ -152,7 +152,6 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
             bb->add_IRInstr(op_mod, type, params);
         }
         
-        //   code += "  cmpl  " + rhsvar + ", %eax\n";
         if (op == "<") {
             bb->add_IRInstr(op_cmp_lt, type, params);
         }
@@ -171,8 +170,6 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         if (op == "!=") {
             bb->add_IRInstr(op_cmp_ne, type, params);
         }
-        //    code += "  %al\n";
-        //    code += "  movzbl  %al, %eax\n";
         
         if (op == "!") {
             bb->add_IRInstr(op_not, type, params);
@@ -190,7 +187,6 @@ string CExpressionComposed::to_IR(CFG* cfg) const {
         cfg->tos.free_temp(lhsvar);
         cfg->tos.free_temp(rhsvar);
     }
-    // to do
     
     return variable;
 }

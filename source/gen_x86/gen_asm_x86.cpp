@@ -35,10 +35,9 @@ void CFG::gen_asm_x86_prologue(ostream& o) const {
 	<< "  ## prologue\n" << "  pushq %rbp # save %rbp on the stack\n"
 			<< "  movq %rsp, %rbp # define %rbp for the current function\n";
 
-	// TODO : adapt for different types (size has to change)
-	int rspshift = (1 + (int) (tos.tosOffset / 16)) * 16;
-	if (rspshift != 0) {
-		o << "  subq $" << rspshift << ", %rsp\n";
+	int shift = (1 + (int) (tos.tosOffset / 16)) * 16;
+	if (shift != 0) {
+		o << "  subq $" << shift << ", %rsp\n";
 	}
 
 	int index = 0;
@@ -54,7 +53,8 @@ void CFG::gen_asm_x86_prologue(ostream& o) const {
 void CFG::gen_asm_x86(ostream& o) const {
 	gen_asm_x86_prologue(o);
 
-	// merge all basic blocks at the end that are empty and terminating
+	// merge all basic blocks that are
+	// empty, terminating, and at the end of the bbs list
 
 	auto nullbbs = bbs.cbegin();
 	for (auto it = bbs.cbegin(); it != bbs.cend(); ++it) {
@@ -64,8 +64,6 @@ void CFG::gen_asm_x86(ostream& o) const {
 			nullbbs = it + 1;
 		}
 	}
-
-	// remove unnecessary basic block jumps
 
 	for (auto it = bbs.cbegin(); it != nullbbs; ++it) {
 		const BasicBlock* b = (*it);
@@ -78,6 +76,8 @@ void CFG::gen_asm_x86(ostream& o) const {
 		// generate basic block code and necessary jumps
 
 		b->gen_asm_x86(o);
+
+		// no jump generated if destination is next block
 
 		if (b->exit_false != nullptr) {
 			o << "  cmpl $0, %eax" << "\n";
