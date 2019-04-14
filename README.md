@@ -17,7 +17,7 @@ The are other options to make only a step of the building process:
 Additional settings are:
   * `make USE="shares"` to use the shared ANTLR distribution, located in /shares/public/tp/ANTLR4-CPP (default choice)
   * `make USE="local"` to use a local ANTLR distribution, located in ANTLR/"OS"-CPP where "OS" is LINUX, MAC or WINDOWS
-  * `make FOR="DEV"` to produce the full (>5MB) compiler (instead of its stripped (~1MB) version), useful for debugging purposes
+  * `make FOR="dev"` to produce the full (>5MB) compiler (instead of its stripped (~1MB) version), useful for debugging purposes
 
 ## Usage
 
