@@ -46,20 +46,22 @@ void CFG::gen_asm_z80_prologue(ostream& o) const {
     o << name << ":\n";
     
     o << "  ;; prologue\n";
+    
+    o << "  pop   de\n";
+    if (!ast->parameters.empty()) {
+        for (auto it = ast->parameters.cbegin(); it != ast->parameters.cend() ; ++it) {
+            o << "  pop   hl\n";
+            ld_hl_var(o,tos, it->name);
+        }
+    }
+    o << "  push  de\n";
+    
     o << "  push  ix\n";
     int shift = tos.tosOffset;
     if (shift != 0) {
         o << "  ld    bc, " << shift << "\n";
         o << "  add   ix, bc\n";
-    }
-    
-    if (!ast->parameters.empty()) {
-    o << "  pop   de\n";
-        for (auto it = ast->parameters.cbegin(); it != ast->parameters.cend() ; ++it) {
-            o << "  pop   hl\n";
-            ld_hl_var(o,tos, it->name);
-        }
-        o << "  push  de\n";
+        o << "  ex    (sp), ix\n";
     }
     
     o << "  ;; contenu\n";
