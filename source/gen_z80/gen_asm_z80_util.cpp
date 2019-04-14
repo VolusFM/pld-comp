@@ -18,9 +18,9 @@ void Info_z80::gen_asm_z80(ostream& o)
         o << "_op_cmp_eq:\n";
         o << "  xor   a\n";
         o << "  sbc   hl, de\n";
-        o << "  ld    h, a\n";
         o << "  ld    l, a\n";
-        o << "  ret   z\n";
+        o << "  ld    h, a\n";
+        o << "  ret   nz\n";
         o << "  inc   l\n";
         o << "  ret\n";
     }
@@ -29,8 +29,8 @@ void Info_z80::gen_asm_z80(ostream& o)
         o << "  xor   a\n";
         o << "  sbc   hl, de\n";
         o << "  ret   z\n";
-        o << "  ld    h, a\n";
         o << "  ld    l, 1\n";
+        o << "  ld    h, a\n";
         o << "  ret\n";
     }
     
