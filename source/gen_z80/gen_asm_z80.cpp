@@ -56,14 +56,6 @@ void CFG::gen_asm_z80_prologue(ostream& o) const {
     }
     o << "  push  de\n";
     
-    o << "  push  ix\n";
-    int shift = tos.tosOffset;
-    if (shift != 0) {
-        o << "  ld    bc, " << shift << "\n";
-        o << "  add   ix, bc\n";
-        o << "  ex    (sp), ix\n";
-    }
-    
     o << "  ;; contenu\n";
 }
 

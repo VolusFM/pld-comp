@@ -219,13 +219,26 @@ void IRInstr::gen_asm_z80(ostream& o) const {
         ld_var_hl(o,tos, params[0]);
         break;
     case op_call:
-        o << "  ex    (sp), ix\n";
+        address = tos.tosOffset;
+        
+        if (address != 0) {
+            o << "  push  ix\n";
+        }
+        
         for (auto it = params.rbegin() ; it != params.rend()-2 ; ++it) {
             ld_hl_var(o,tos, *it);
             o << "  push  hl\n";
         }
+        
+        if (address != 0) {
+            o << "  ld    bc, " << address << "\n";
+            o << "  add   ix, bc\n";
+        }
         o << "  call  " << params[0] << "\n";
-        o << "  ex    (sp), ix\n";
+        if (address != 0) {
+            o << "  pop   ix\n";
+        }
+        
         ld_var_hl(o,tos, params[1]);
         break;
     case op_return:
