@@ -6,6 +6,7 @@ Info_z80 z80_additionnal;
 
 Info_z80::Info_z80()
 : use_MUL(false), use_DIV(false), use_MOD(false),
+  use_CMP_EQ(false), use_CMP_NE(false),
   use_CMP_LT(false), use_CMP_LE(false),
   use_CMP_GT(false), use_CMP_GE(false)
 {
@@ -13,6 +14,26 @@ Info_z80::Info_z80()
 
 void Info_z80::gen_asm_z80(ostream& o)
 {
+    if (use_CMP_EQ) {
+        o << "_op_cmp_eq:\n";
+        o << "  xor   a\n";
+        o << "  sbc   hl, de\n";
+        o << "  ld    h, a\n";
+        o << "  ld    l, a\n";
+        o << "  ret   z\n";
+        o << "  inc   l\n";
+        o << "  ret\n";
+    }
+    if (use_CMP_NE) {
+        o << "_op_cmp_ne:\n";
+        o << "  xor   a\n";
+        o << "  sbc   hl, de\n";
+        o << "  ret   z\n";
+        o << "  ld    h, a\n";
+        o << "  ld    l, 1\n";
+        o << "  ret\n";
+    }
+    
     // Les codes assembleurs z80 générés pour les opérations *, /, %
     // proviennent du fichier "Commands.inc" de l'archive suivante :
     // https://www.ticalc.org/archives/files/fileinfo/456/45659.html

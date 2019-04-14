@@ -165,11 +165,21 @@ void IRInstr::gen_asm_z80(ostream& o) const {
         ld_var_hl(o,tos, params[0]);
 	break;
     case op_cmp_eq:
+        ld_hl_var(o,tos, params[1]);
+        ld_de_var(o,tos, params[2]);
+        
+        o << "  call  _op_cmp_eq\n";
+        z80_additionnal.use_CMP_EQ = true;
+        
+        ld_var_hl(o,tos, params[0]);
+        break;
     case op_cmp_ne:
         ld_hl_var(o,tos, params[1]);
         ld_de_var(o,tos, params[2]);
-        o << "  or    a\n";
-        o << "  sbc   hl, de\n";
+        
+        o << "  call  _op_cmp_ne\n";
+        z80_additionnal.use_CMP_NE = true;
+        
         ld_var_hl(o,tos, params[0]);
         break;
     case op_cmp_lt:

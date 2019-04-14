@@ -16,6 +16,9 @@ public:
     bool use_DIV;
     bool use_MOD;
     
+    bool use_CMP_EQ;
+    bool use_CMP_NE;
+    
     bool use_CMP_LT;
     bool use_CMP_LE;
     bool use_CMP_GT;
