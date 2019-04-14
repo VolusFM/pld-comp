@@ -74,13 +74,13 @@ void CFG::gen_asm_z80(ostream& o) const {
     
     // remove unnecessary basic block jumps
     
-	for (auto it = bbs.cbegin(); it != nullbbs; ++it) {
-	    const BasicBlock* b = (*it);
+    for (auto it = bbs.cbegin(); it != nullbbs; ++it) {
+        const BasicBlock* b = (*it);
         
-	    auto itn = it+1;
-	    const BasicBlock* bn = nullptr;
-	    if (itn != bbs.cend() && !(*it)->instrs.empty()) bn = (*itn);
-	    
+        auto itn = it+1;
+        const BasicBlock* bn = nullptr;
+        if (itn != bbs.cend() && !(*it)->instrs.empty()) bn = (*itn);
+        
         // generate basic block code and necessary jumps
         
         b->gen_asm_z80(o);
@@ -88,17 +88,17 @@ void CFG::gen_asm_z80(ostream& o) const {
         if (b->exit_false != nullptr) {
             o << "  ld    a, h\n";
             o << "  or    l\n";
-            o << "  jp z, " << b->exit_false->label << "\n";
+            o << "  jp    z, " << b->exit_false->label << "\n";
         }
         if (b->exit_true != nullptr) {
             if (bn != b->exit_true)
-            o << "  jp    " << b->exit_true->label << "\n";
+                o << "  jp    " << b->exit_true->label << "\n";
         }
         if (b->exit_true == nullptr && b->exit_false == nullptr) {
             if (itn != nullbbs)
-            o << "  jp    " << name << "_end\n";
+                o << "  jp    " << name << "_end\n";
         }
-	}
+    }
     
     for (auto it = nullbbs; it != bbs.cend(); ++it) {
         o << (*it)->label << ":\n";
@@ -110,7 +110,6 @@ void CFG::gen_asm_z80(ostream& o) const {
 void CFG::gen_asm_z80_epilogue(ostream& o) const {
     o << name << "_end:\n"
       << "  ;; epilogue\n"
-      << "  pop   ix\n"
       << "  ret\n";
 }
 
