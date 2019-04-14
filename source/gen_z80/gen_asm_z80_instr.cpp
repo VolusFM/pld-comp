@@ -73,7 +73,7 @@ void IRInstr::gen_asm_z80(ostream& o) const {
         index = stoi(params[1]);
         ld_hl_adr(o,tos, params[0], index*2);
         
-        o << "  ld    de, " << params[1].c_str()+1 << "\n";
+        o << "  ld    de, " << params[2].c_str()+1 << "\n";
         o << "  ld    (hl), e\n";
         o << "  inc   hl\n";
         o << "  ld    (hl), d\n";

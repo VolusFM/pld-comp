@@ -1,4 +1,4 @@
-#include "gen_asm_z80_util.h"
+﻿#include "gen_asm_z80_util.h"
 
 #include "../TOS.h"
 
@@ -22,13 +22,13 @@ void Info_z80::gen_asm_z80(ostream& o)
         o << "_op_mul:\n";
         o << "  xor   a\n";
         o << "  cp    h\n";
-        o << "  jr    z, _op_mul_step\n";
+        o << "  jr    z, _op_mul__step\n";
         o << "  ex    de, hl\n";
         o << "_op_mul__step:\n";
         o << "  ld    c, l\n";
         o << "  ld    l, a\n";
         o << "  add   a, h\n";
-        o << "  call  nz, _op_mul_byte\n";
+        o << "  call  nz, _op_mul__byte\n";
         o << "  ld    a, c\n";
         o << "_op_mul__byte:\n";
         o << "  ld    b, $08\n";

@@ -45,10 +45,11 @@ void IProg::gen_asm_z80(ostream& o) const {
 void CFG::gen_asm_z80_prologue(ostream& o) const {
     o << name << ":\n";
     
+    o << "  ;; prologue\n";
     o << "  push  ix\n";
     int shift = tos.tosOffset;
     if (shift != 0) {
-        o << "  lb    bc, " << shift << "\n";
+        o << "  ld    bc, " << shift << "\n";
         o << "  add   ix, bc\n";
     }
     
@@ -61,7 +62,7 @@ void CFG::gen_asm_z80_prologue(ostream& o) const {
         o << "  push  de\n";
     }
     
-    o << "  ## contenu\n";
+    o << "  ;; contenu\n";
 }
 
 void CFG::gen_asm_z80(ostream& o) const {
@@ -114,7 +115,7 @@ void CFG::gen_asm_z80(ostream& o) const {
 
 void CFG::gen_asm_z80_epilogue(ostream& o) const {
     o << name << "_end:\n"
-      << "  ## epilogue\n"
+      << "  ;; epilogue\n"
       << "  pop   ix\n"
       << "  ret\n";
 }
