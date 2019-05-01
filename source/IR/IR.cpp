@@ -82,6 +82,10 @@ void CFG::optimize() {
                         b->exit_false = itr->second;
                         evolves = true;
                     }
+                    if (b->exit_true != nullptr && b->exit_false == b->exit_true) {
+                        b->exit_false = nullptr;
+                        evolves = true;
+                    }
                 }
             }
         }
