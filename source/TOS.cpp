@@ -45,6 +45,7 @@ string TOS::add_temp(CType type) {
 	add(name, type);
 
 	if (platform == "z80") {
+		tosIndex[name] = tosOffset;
 		tosOffset += type.size_z80();
 	} else if (platform == "x86") {
 		int size = type.size_x86();
@@ -54,8 +55,6 @@ string TOS::add_temp(CType type) {
 			tosOffset += size - shift;
 		}
 		tosOffset += size;
-	}
-	if (platform != "") {
 		tosIndex[name] = tosOffset;
 	}
 
@@ -98,9 +97,9 @@ void TOS::fill_address_z80() {
 	platform = "z80";
 
 	for (const string& name : tos) {
+		tosIndex[name] = tosOffset;
 		int size = tosType.at(name).size_z80();
 		tosOffset += size * tosCount[name];
-		tosIndex[name] = tosOffset;
 	}
 }
 
