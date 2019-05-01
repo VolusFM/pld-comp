@@ -51,7 +51,7 @@ void CFG::gen_asm_z80_prologue(ostream& o) const {
     if (!ast->parameters.empty()) {
         for (auto it = ast->parameters.cbegin(); it != ast->parameters.cend() ; ++it) {
             o << "  pop   hl\n";
-            ld_hl_var(o,tos, it->name);
+            ld_var_hl(o,tos, it->name);
         }
     }
     o << "  push  de\n";
