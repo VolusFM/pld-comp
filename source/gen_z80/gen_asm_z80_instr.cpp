@@ -44,6 +44,7 @@ void IRInstr::gen_asm_z80(ostream& o) const {
     case op_ldconst_array:
         ld_hl_adr(o,tos, params[0]);
         o << "  add   hl, bc\n";
+        o << "  add   hl, bc\n";
         
         o << "  ld    de, " << params[1].c_str()+1 << "\n";
         o << "  ld    (hl), e\n";
@@ -52,6 +53,7 @@ void IRInstr::gen_asm_z80(ostream& o) const {
         break;
     case op_copy_from_array:
         ld_hl_adr(o,tos, params[1]);
+        o << "  add   hl, bc\n";
         o << "  add   hl, bc\n";
         
         o << "  ld    e, (hl)\n";
